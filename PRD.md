@@ -86,7 +86,7 @@ Must contain the following sections in this exact order:
    - Message textarea (`#contact-message`) with validation error span (`#message-error`).
    - Submit button (`#contact-submit`). When sending, disables fields and displays `"Sending..."`.
    - Status banner (`#contact-status`) displaying success (class `success`) or error messages (class `error`). The form POSTs to `/api/contact` appending active URL query parameters (e.g. `?status=500`) to test API errors.
-   - Outbound social links: GitHub (ID `#contact-github`), LinkedIn (ID `#contact-linkedin`), and Email (ID `#contact-email-link`, pointing to `mailto:alkam.fariz@outlook.com`).
+   - Outbound social links: GitHub (ID `#contact-github`), LinkedIn (ID `#contact-linkedin`), and Email (ID `#contact-email-link`, pointing to `mailto:alkamfrz@gmail.com`).
 
 #### 2. Projects Catalog (`/projects`)
 * Renders the full array of projects from `src/data/projects.js` inside grid `#projects-grid`.
@@ -114,17 +114,20 @@ Must contain the following sections in this exact order:
 Styling uses **Vanilla CSS** with scoped rules. Global design tokens are defined in `src/styles/global.css`.
 
 ### Core Color Palette & Variables
-* **Body Background (`--bg-dark`)**: `#0a0b10` (deep slate black).
-* **Card Overlay (`--bg-card`)**: `rgba(255, 255, 255, 0.03)` (semi-transparent white).
-* **Card Border (`--border-card`)**: `rgba(255, 255, 255, 0.08)`.
-* **Primary Text (`--text-primary`)**: `#f8fafc`.
-* **Secondary Text (`--text-secondary`)**: `#94a3b8`.
-* **Accent Colors**: Blue (`#3b82f6`) and Purple (`#8b5cf6`).
-* **Linear Gradient (`--gradient-accent`)**: `linear-gradient(135deg, var(--accent-blue), var(--accent-purple))`.
+* **Body Background (`--bg-dark`)**: `#0f172a` (deep slate black / `rgb(15, 23, 42)`).
+* **Card Overlay (`--glass-bg`)**: `rgba(255, 255, 255, 0.03)` (semi-transparent white).
+* **Card Border (`--glass-border`)**: `rgba(255, 255, 255, 0.08)`.
+* **Primary Text (`--text-light`)**: `#f8fafc`.
+* **Secondary Text (`--text-muted`)**: `#94a3b8`.
+* **Accent Colors**: Cyan (`#22d3ee`), Blue (`#3b82f6`), and Purple (`#a855f7`).
+* **Linear Gradients**:
+  - Primary (`--gradient-primary`): `linear-gradient(135deg, var(--accent-cyan), var(--accent-blue))`
+  - Secondary (`--gradient-secondary`): `linear-gradient(135deg, var(--accent-blue), var(--accent-purple))`
+  - Text (`--gradient-text`): `linear-gradient(to right, var(--accent-cyan), var(--accent-purple))`
 * **Typography**: Outfit/Inter font family.
 
 ### Glassmorphism Styles (`.glass-card`, `.project-card`)
-* Background set to `var(--bg-card)` with `backdrop-filter: blur(12px)` and `-webkit-backdrop-filter: blur(12px)`.
+* Background set to `var(--glass-bg)` with `backdrop-filter: blur(12px)` and `-webkit-backdrop-filter: blur(12px)`.
 * Hover state raises cards by `-4px` using `transform` transitions, glows the border with blue, and adds a drop-shadow.
 
 ---
