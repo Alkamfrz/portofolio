@@ -47,6 +47,8 @@ To guarantee the website meets premium quality standards, the production build m
   - **Mobile**: Largest Contentful Paint (LCP) under **2.0 seconds**.
 * **Functional Integrity**: 
   - **100%** of the Playwright E2E test cases must execute successfully.
+* **Automated Audit Gates**:
+  - **Lighthouse CI (LHCI)**: Executes automatically during the local build step or pre-deployment phase. Any build that scores below the target budgets (95 across all audits) is blocked and rejected.
 
 ---
 
@@ -84,6 +86,8 @@ Must contain the following sections in this exact order:
    - Name input (`#contact-name`) with validation error span (`#name-error`).
    - Email input (`#contact-email`) with validation error span (`#email-error`).
    - Message textarea (`#contact-message`) with validation error span (`#message-error`).
+   - Honeypot input (CSS-hidden, named `#contact-honeypot`) to deter bot submissions. If filled, the submission is silently dropped with a `200 OK` response but not processed.
+   - Server-side rate-limiting on `/api/contact` (max 5 submissions per IP per 15 minutes) to protect against API abuse.
    - Submit button (`#contact-submit`). When sending, disables fields and displays `"Sending..."`.
    - Status banner (`#contact-status`) displaying success (class `success`) or error messages (class `error`). The form POSTs to `/api/contact` appending active URL query parameters (e.g. `?status=500`) to test API errors.
    - Outbound social links: GitHub (ID `#contact-github`), LinkedIn (ID `#contact-linkedin`), and Email (ID `#contact-email-link`, pointing to `mailto:alkamfrz@gmail.com`).
@@ -130,6 +134,10 @@ Styling uses **Vanilla CSS** with scoped rules. Global design tokens are defined
 * Background set to `var(--glass-bg)` with `backdrop-filter: blur(12px)` and `-webkit-backdrop-filter: blur(12px)`.
 * Hover state raises cards by `-4px` using `transform` transitions, glows the border with blue, and adds a drop-shadow.
 
+### Asset Optimization & Media Specs
+* **Image Formats**: All images must be served in WebP or AVIF next-gen formats.
+* **Responsive Optimization**: Use Astro's native `<Image />` component for automatic optimization, cropping, and dynamic resizing of media assets during the build process to minimize Largest Contentful Paint (LCP).
+
 ---
 
 ## ♿ 6. Accessibility (a11y) & SEO Requirements
@@ -143,7 +151,10 @@ Styling uses **Vanilla CSS** with scoped rules. Global design tokens are defined
 ### Search Engine Optimization (SEO)
 * **Metadata**: Every page must render unique title tags, meta descriptions, and viewport declarations.
 * **Social Graph (Open Graph)**: Renders Open Graph tags (`og:title`, `og:description`, `og:type`, `og:image`) for rich link sharing.
-* **JSON-LD Schema**: Generates JSON-LD structured data for blog posts and project structures to improve search engine crawling.
+* **JSON-LD Schema**: Generates structured data to improve search engine crawling:
+  - Home Page: `Person` and `ProfilePage` schemas detailing author info and career bio.
+  - Blog detail pages: `BlogPosting` schema containing article timestamps, author profile, and headings.
+  - Project detail pages: `CreativeWork` schema listing project description, technologies, and repositories.
 * **Sitemap**: Compiles an automated XML sitemap during build stage.
 
 ---
@@ -195,3 +206,7 @@ If a deployment fails in production (e.g. causes a container crash or HAProxy 50
    ```bash
    ssh root@10.1.30.5 "cd /root/stacks/Portfolio && docker compose --env-file stack.env up -d --build"
    ```
+
+### Observability & Telemetry Rules
+1. **Local Telemetry**: Write all runtime exception logs and console telemetry to stdout/stderr inside the Docker/Nginx containers.
+2. **Production Tracking**: Integrate a lightweight tracking client (such as Sentry or a self-hosted GlitchTip instance) to capture uncaught client-side exceptions and report backend API errors in real-time.
