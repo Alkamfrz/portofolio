@@ -1,0 +1,99 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const sortedPosts = allPosts.sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+---
+
+<Layout title="Blog">
+  <section class="section">
+    <div class="section-container">
+      <h1 class="section-title text-gradient">Blog</h1>
+      <p class="section-subtitle">Thoughts, tutorials, and deep dives into tech I care about.</p>
+
+      {sortedPosts.length === 0 ? (
+        <p id="no-posts" class="empty-state">No posts found</p>
+      ) : (
+        <div id="blog-grid" class="blog-grid">
+          {sortedPosts.map(post => (
+            <div class="glass-card blog-post-card">
+              <h3 class="post-title">{post.data.title}</h3>
+              <small class="post-date">{formatDate(post.data.date)}</small>
+              <p class="post-desc">{post.data.description}</p>
+              <a href={`/blog/${post.id}`} class="read-more">Read More &rarr;</a>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .section {
+    padding: 5rem 1.5rem;
+  }
+  .section-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-title {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    margin-bottom: 0.75rem;
+    text-align: center;
+  }
+  .section-subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: 3rem;
+    font-size: 1.1rem;
+  }
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .blog-post-card {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .post-title {
+    font-size: 1.2rem;
+    color: var(--text-light);
+  }
+  .post-date {
+    color: var(--accent-cyan);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .post-desc {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    flex-grow: 1;
+  }
+  .read-more {
+    color: var(--accent-cyan);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+    align-self: flex-start;
+  }
+  .read-more:hover { color: #a855f7; }
+  .empty-state {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    padding: 4rem;
+  }
+</style>

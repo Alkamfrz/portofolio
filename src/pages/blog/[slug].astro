@@ -1,0 +1,128 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+---
+
+<Layout title={post.data.title}>
+  <article class="section">
+    <div class="section-container">
+      <a href="/blog" class="back-link">&larr; Back to Blog</a>
+      <div class="glass-card blog-post-detail">
+        <h1 class="post-title">{post.data.title}</h1>
+        <p class="post-meta">Published on {formatDate(post.data.date)}</p>
+        <div class="post-content">
+          <Content />
+        </div>
+      </div>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .section {
+    padding: 4rem 1.5rem;
+  }
+  .section-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .back-link {
+    display: inline-block;
+    color: var(--accent-cyan);
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: #a855f7; }
+  .blog-post-detail {
+    padding: 2.5rem;
+  }
+  .post-title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    color: var(--text-light);
+    margin-bottom: 0.75rem;
+  }
+  .post-meta {
+    color: var(--accent-cyan);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--glass-border);
+  }
+  .post-content {
+    color: var(--text-muted);
+    line-height: 1.8;
+    font-size: 1rem;
+  }
+  :global(.post-content h1),
+  :global(.post-content h2),
+  :global(.post-content h3),
+  :global(.post-content h4) {
+    color: var(--text-light);
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+  :global(.post-content p) {
+    margin-bottom: 1rem;
+  }
+  :global(.post-content ul),
+  :global(.post-content ol) {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  :global(.post-content li) {
+    margin-bottom: 0.5rem;
+  }
+  :global(.post-content blockquote) {
+    border-left: 4px solid var(--accent-cyan);
+    padding: 0.75rem 1.5rem;
+    background: rgba(34, 211, 238, 0.05);
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    color: var(--text-light);
+    font-style: italic;
+  }
+  :global(.post-content pre) {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+  }
+  :global(.post-content code) {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    color: var(--accent-cyan);
+  }
+  :global(.post-content pre code) {
+    color: var(--text-light);
+  }
+  :global(.post-content a) {
+    color: var(--accent-cyan);
+    text-decoration: underline;
+  }
+  :global(.post-content img) {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+  }
+</style>

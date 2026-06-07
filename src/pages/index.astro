@@ -1,17 +1,559 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import ContactForm from '../components/ContactForm.jsx';
+import { projects } from '../data/projects.js';
+import { skills } from '../data/skills.js';
+import { getCollection } from 'astro:content';
 
+const allPosts = await getCollection('blog');
+const recentPosts = allPosts
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 2);
+
+const featuredProjects = projects.filter(p => p.featured).slice(0, 3);
+
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Home">
+  <!-- =================== HERO =================== -->
+  <section class="hero-section">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Hello, I'm</p>
+      <h1 class="hero-title">
+        <span class="text-gradient">Alkam Fariz</span>
+      </h1>
+      <p class="hero-subtitle">Developer &amp; Home Server Enthusiast</p>
+      <p class="hero-description">
+        Building robust infrastructure, self-hosted services, and polished web applications — one commit at a time.
+      </p>
+      <div class="hero-ctas">
+        <a href="/projects" class="btn btn-primary">View Projects</a>
+        <a href="/blog" class="btn btn-secondary">Read Blog</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== ABOUT =================== -->
+  <section class="section" id="about-section">
+    <div class="section-container">
+      <h2 class="section-title text-gradient">About Me</h2>
+      <div class="glass-card about-card" id="welcome-card">
+        <p class="about-text">
+          I'm a passionate developer with a love for self-hosted infrastructure and open-source technology.
+          I run my own home server stack — a Kubernetes cluster, Docker containers, Traefik proxies, and a full
+          observability suite — all managed with Ansible and GitOps practices. When I'm not tuning my home lab,
+          I'm building web apps with modern frameworks like Astro and React, and writing E2E tests with Playwright.
+        </p>
+        <p class="about-text">
+          My philosophy: own your data, automate everything, and never stop learning.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== SKILLS =================== -->
+  <section class="section" id="skills-section">
+    <div class="section-container">
+      <h2 class="section-title text-gradient">Skills</h2>
+      <div class="skills-grid">
+        {Object.entries(skills).map(([category, items]) => (
+          <div class="glass-card skill-category">
+            <h3 class="skill-category-title">{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
+            <div class="skill-badges">
+              {items.map(skill => (
+                <span class="skill-badge">{skill}</span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== PROJECTS PREVIEW =================== -->
+  <section class="section" id="projects-preview-section">
+    <div class="section-container">
+      <h2 class="section-title text-gradient">Featured Projects</h2>
+      <div class="projects-grid" id="projects-grid">
+        {featuredProjects.map(project => (
+          <div class="glass-card project-card">
+            <h3 class="project-title">{project.title}</h3>
+            <p class="project-desc">{project.description}</p>
+            <div class="tech-badges">
+              {project.techStack.map(tech => (
+                <span class="tech-badge">{tech}</span>
+              ))}
+            </div>
+            <div class="project-links">
+              <a href={project.githubUrl} class="github-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+              <a href={project.liveUrl} class="live-link" target="_blank" rel="noopener noreferrer">Live Demo</a>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div class="view-all-wrapper">
+        <a href="/projects" class="btn btn-secondary">View All Projects</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== BLOG PREVIEW =================== -->
+  <section class="section" id="blog-preview-section">
+    <div class="section-container">
+      <h2 class="section-title text-gradient">Latest Posts</h2>
+      <div class="blog-grid">
+        {recentPosts.map(post => (
+          <div class="glass-card blog-post-card">
+            <h3 class="post-title">{post.data.title}</h3>
+            <small class="post-date">{formatDate(post.data.date)}</small>
+            <p class="post-desc">{post.data.description}</p>
+            <a href={`/blog/${post.id}`} class="read-more">Read More &rarr;</a>
+          </div>
+        ))}
+      </div>
+      <div class="view-all-wrapper">
+        <a href="/blog" class="btn btn-secondary">View All Posts</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== CONTACT =================== -->
+  <section class="section" id="contact-section">
+    <div class="section-container">
+      <h2 class="section-title text-gradient">Get in Touch</h2>
+      <div class="glass-card contact-card">
+        <p class="contact-intro">
+          Have a project in mind or just want to say hi? Fill out the form below and I'll get back to you.
+        </p>
+        <ContactForm client:load />
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  /* ---- Hero ---- */
+  .hero-section {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 90vh;
+    padding: 6rem 1.5rem;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.35;
+    pointer-events: none;
+    animation: orbFloat 8s ease-in-out infinite;
+  }
+  .hero-orb-1 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, #22d3ee 0%, transparent 70%);
+    top: -100px;
+    left: -150px;
+    animation-delay: 0s;
+  }
+  .hero-orb-2 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, #a855f7 0%, transparent 70%);
+    bottom: -100px;
+    right: -100px;
+    animation-delay: 3s;
+  }
+  .hero-orb-3 {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, #3b82f6 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation-delay: 1.5s;
+  }
+
+  @keyframes orbFloat {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-20px) scale(1.05); }
+  }
+  .hero-orb-3 {
+    animation: orbFloat3 8s ease-in-out infinite;
+    animation-delay: 1.5s;
+  }
+  @keyframes orbFloat3 {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, calc(-50% - 20px)) scale(1.05); }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+    animation: fadeInUp 0.8s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-eyebrow {
+    font-size: 1.1rem;
+    color: var(--accent-cyan);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .hero-title {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+
+  .hero-subtitle {
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+  }
+
+  .hero-description {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    max-width: 550px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ---- Buttons ---- */
+  .btn {
+    display: inline-block;
+    padding: 0.85rem 2rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+    color: #0f172a;
+    box-shadow: 0 4px 20px rgba(34, 211, 238, 0.3);
+  }
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(34, 211, 238, 0.5);
+  }
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-light);
+    border: 1px solid var(--glass-border);
+  }
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-cyan);
+    transform: translateY(-3px);
+  }
+
+  /* ---- Sections ---- */
+  .section {
+    padding: 5rem 1.5rem;
+  }
+
+  .section-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    margin-bottom: 2.5rem;
+    text-align: center;
+  }
+
+  /* ---- About ---- */
+  .about-card {
+    padding: 2.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .about-text {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+  .about-text:last-child { margin-bottom: 0; }
+
+  /* ---- Skills ---- */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  .skill-category {
+    padding: 1.5rem;
+  }
+  .skill-category-title {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent-cyan);
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+  .skill-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .skill-badge {
+    display: inline-block;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    color: var(--text-light);
+    padding: 0.3rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+  }
+  .skill-badge:hover {
+    background: rgba(56, 189, 248, 0.2);
+    border-color: var(--accent-cyan);
+  }
+
+  /* ---- Projects ---- */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .project-card {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .project-title {
+    font-size: 1.25rem;
+    color: var(--text-light);
+  }
+  .project-desc {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    flex-grow: 1;
+  }
+  .tech-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+  .tech-badge {
+    display: inline-block;
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+  }
+  .project-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .github-link {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+  .github-link:hover { color: var(--text-light); }
+  .live-link {
+    color: var(--accent-cyan);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+  .live-link:hover { color: #a855f7; }
+
+  .view-all-wrapper {
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  /* ---- Blog ---- */
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .blog-post-card {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .post-title {
+    font-size: 1.2rem;
+    color: var(--text-light);
+  }
+  .post-date {
+    color: var(--accent-cyan);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .post-desc {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    flex-grow: 1;
+  }
+  .read-more {
+    color: var(--accent-cyan);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+    align-self: flex-start;
+  }
+  .read-more:hover { color: #a855f7; }
+
+  /* ---- Contact ---- */
+  .contact-card {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 2.5rem;
+  }
+  .contact-intro {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* ---- Contact Form styles (used by ContactForm.jsx) ---- */
+  :global(.contact-form-wrapper) {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  :global(.form-group) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+  :global(.form-group label) {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  :global(.form-group input),
+  :global(.form-group textarea) {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--glass-border);
+    color: var(--text-light);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+    font-family: inherit;
+  }
+  :global(.form-group input:focus),
+  :global(.form-group textarea:focus) {
+    outline: none;
+    border-color: var(--accent-cyan);
+  }
+  :global(.error-msg) {
+    color: #f87171;
+    font-size: 0.82rem;
+    min-height: 1.25rem;
+  }
+  :global(.submit-btn) {
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+    color: #0f172a;
+    border: none;
+    padding: 0.85rem 2rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  :global(.submit-btn:hover:not(:disabled)) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(34, 211, 238, 0.4);
+  }
+  :global(.submit-btn:disabled) {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  :global(#contact-status) {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+  }
+  :global(#contact-status.success) {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    color: #4ade80;
+  }
+  :global(#contact-status.error) {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #f87171;
+  }
+  :global(.social-links-section) {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  :global(.social-link) {
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.03);
+  }
+  :global(.social-link:hover) {
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+  }
+
+  /* ---- Container for sections ---- */
+  main.container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+</style>
