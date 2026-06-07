@@ -295,7 +295,7 @@ function getPage(title, content, activeNav = '') {
     <div class="social-links">
       <a href="https://github.com/alkamfrz" id="contact-github" target="_blank" rel="noopener noreferrer">GitHub</a>
       <a href="https://linkedin.com/in/alkamfrz" id="contact-linkedin" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-      <a href="mailto:alkamfrz@example.com" id="contact-email">Email</a>
+      <a href="mailto:alkamfrz@gmail.com" id="contact-email">Email</a>
     </div>
     <p>&copy; 2026 Alkamfrz. All rights reserved.</p>
   </footer>

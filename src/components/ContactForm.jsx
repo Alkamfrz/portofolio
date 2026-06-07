@@ -158,7 +158,7 @@ export default function ContactForm() {
         </a>
         <a
           id="contact-email-link"
-          href="mailto:alkam.fariz@outlook.com"
+          href="mailto:alkamfrz@gmail.com"
           className="social-link"
         >
           <span>Email</span>
