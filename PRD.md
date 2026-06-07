@@ -27,7 +27,7 @@ graph TD
     UserWAN["🌍 External Visitor"] -->|HTTPS| CF["☁️ Cloudflare Edge"]
     CF -->|Cloudflare Tunnel| CFTunnel["☁️ Tunnel Gateway (10.1.30.2)"]
     UserLAN["💻 Local LAN Visitor"] -->|DNS: 10.1.30.4| HAProxy
-    CFTunnel -->|HTTPS (SNI: alkamfrz.my.id)| HAProxy["🔄 HAProxy Reverse Proxy (10.1.30.3)"]
+    CFTunnel -->|HTTPS SNI: alkamfrz.my.id| HAProxy["🔄 HAProxy Reverse Proxy (10.1.30.3)"]
     HAProxy -->|HTTP Port 8085| DockerHost["🐳 Docker Engine VM (10.1.30.5)"]
     DockerHost -->|Nginx Container| App["🌌 Portfolio Static App"]
 ```
