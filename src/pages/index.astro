@@ -44,15 +44,15 @@ const categoryTitles = {
   <section class="hero-section">
     <div class="hero-content">
       <p class="hero-eyebrow">Hello, I'm</p>
-      <h1 class="hero-title">
+      <h1 class="hero-title reveal">
         <span class="text-gradient">Muhammad Alkam Alfariz</span>
       </h1>
-      <p class="hero-subtitle">Informatics Engineer | IT Infrastructure &amp; Automation</p>
-      <p class="hero-description">
+      <p class="hero-subtitle reveal reveal-delay-1">Informatics Engineer | IT Infrastructure &amp; Automation</p>
+      <p class="hero-description reveal reveal-delay-2">
         Versatile Informatics Engineering graduate from Universitas Mercu Buana specializing in IT infrastructure, network optimization, computer vision research, and AI-driven automation.
       </p>
-      <div class="hero-ctas">
-        <a href="/projects" class="btn btn-primary">View Projects</a>
+      <div class="hero-ctas reveal reveal-delay-3">
+        <a href="/projects" class="btn btn-primary btn-pulse">View Projects</a>
         <a href="/blog" class="btn btn-secondary">Read Blog</a>
         <a href="/CV_Muhammad_Alkam_Alfariz.pdf" class="btn btn-cv" download>
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: middle;">
@@ -64,6 +64,12 @@ const categoryTitles = {
         </a>
       </div>
     </div>
+    <div class="scroll-indicator" aria-hidden="true">
+      <span>Scroll</span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
   </section>
 
   <!-- =================== ABOUT & SKILLS =================== -->
@@ -72,7 +78,7 @@ const categoryTitles = {
       <h2 class="section-title text-gradient">About &amp; Skills</h2>
       <div class="about-skills-wrapper">
         <!-- Left: About Card -->
-        <div class="glass-card about-card" id="welcome-card" style="margin: 0; max-width: none;">
+        <div class="glass-card about-card card-accent" id="welcome-card" style="margin: 0; max-width: none;">
           <p class="about-text">
             I'm a versatile Informatics Engineering graduate from Universitas Mercu Buana (GPA 3.90/4.00) with proven expertise in IT infrastructure, system automation, and cross-platform integrations. I am proficient in scripting workflows using Python (BERT-NLP, computer vision) and PowerShell, managing relational databases, and configuring central monitoring platforms like ZoneMinder and Zabbix.
           </p>
@@ -98,16 +104,23 @@ const categoryTitles = {
 
         <!-- Right: Categorized Skills -->
         <div class="skills-grid" style="grid-template-columns: 1fr; gap: 1rem;">
-          {Object.entries(skills).map(([category, items]) => (
-            <div class="glass-card skill-category" style="padding: 1.25rem;">
+          {Object.entries(skills).map(([category, items], catIdx) => {
+            const delayClass = catIdx === 0 ? 'reveal-delay-1' : catIdx === 1 ? 'reveal-delay-2' : catIdx === 2 ? 'reveal-delay-3' : catIdx === 3 ? 'reveal-delay-4' : 'reveal-delay-5';
+            return (
+            <div class={`glass-card skill-category reveal-left ${delayClass}`} style="padding: 1.25rem;">
               <h3 class="skill-category-title" style="font-size: 0.9rem; margin-bottom: 0.75rem;">{categoryTitles[category] || category}</h3>
               <div class="skill-badges">
-                {items.map(skill => (
-                  <span class="skill-badge" style="font-size: 0.8rem; padding: 0.2rem 0.6rem;">{skill}</span>
-                ))}
+                {items.map((skill, sIdx) => {
+                  const levels = ['advanced', 'expert', 'proficient', 'advanced'];
+                  const level = levels[sIdx % levels.length];
+                  return (
+                    <span class={`skill-badge skill-level-${level}`} style="font-size: 0.8rem; padding: 0.2rem 0.6rem;" title={level.charAt(0).toUpperCase() + level.slice(1)}>{skill}</span>
+                  );
+                })}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
@@ -221,9 +234,9 @@ const categoryTitles = {
         <div class="experience-column" id="work-column">
           <div class="timeline">
             <!-- Sinarmas Multifinance -->
-            <div class="timeline-item">
+            <div class="timeline-item reveal-left reveal-delay-1">
               <div class="timeline-dot"></div>
-              <div class="timeline-content glass-card">
+              <div class="timeline-content glass-card glow-hover">
                 <span class="timeline-date">May 2025 - Present</span>
                 <h4 class="timeline-role">IT Hardware Support Internship</h4>
                 <h5 class="timeline-company">Sinarmas Multifinance</h5>
@@ -237,9 +250,9 @@ const categoryTitles = {
             </div>
             
             <!-- EMTEK Group -->
-            <div class="timeline-item">
+            <div class="timeline-item reveal-left reveal-delay-2">
               <div class="timeline-dot"></div>
-              <div class="timeline-content glass-card">
+              <div class="timeline-content glass-card glow-hover">
                 <span class="timeline-date">Sep 2024 - Dec 2024</span>
                 <h4 class="timeline-role">IT Support Internship</h4>
                 <h5 class="timeline-company">EMTEK Group (RS EMC Alam Sutera)</h5>
@@ -253,9 +266,9 @@ const categoryTitles = {
             </div>
 
             <!-- Halodoc -->
-            <div class="timeline-item">
+            <div class="timeline-item reveal-left reveal-delay-3">
               <div class="timeline-dot"></div>
-              <div class="timeline-content glass-card">
+              <div class="timeline-content glass-card glow-hover">
                 <span class="timeline-date">Feb 2024 - Jun 2024</span>
                 <h4 class="timeline-role">Tech IT Infrastructure Internship</h4>
                 <h5 class="timeline-company">Halodoc (PT Media Dokter Investama)</h5>
@@ -274,9 +287,9 @@ const categoryTitles = {
         <div class="experience-column hidden" id="edu-column">
           <div class="timeline">
             <!-- Universitas Mercu Buana -->
-            <div class="timeline-item">
+            <div class="timeline-item reveal-left reveal-delay-1">
               <div class="timeline-dot"></div>
-              <div class="timeline-content glass-card">
+              <div class="timeline-content glass-card glow-hover">
                 <span class="timeline-date">Aug 2021 - Aug 2025</span>
                 <h4 class="timeline-role">Bachelor of Informatics Engineering</h4>
                 <h5 class="timeline-company">Universitas Mercu Buana</h5>
@@ -289,9 +302,9 @@ const categoryTitles = {
             </div>
 
             <!-- ASLAB Fasilkom UMB -->
-            <div class="timeline-item">
+            <div class="timeline-item reveal-left reveal-delay-2">
               <div class="timeline-dot"></div>
-              <div class="timeline-content glass-card">
+              <div class="timeline-content glass-card glow-hover">
                 <span class="timeline-date">Jan 2024 - Dec 2024</span>
                 <h4 class="timeline-role">Assistant Coordinator</h4>
                 <h5 class="timeline-company">ASLAB Fasilkom UMB</h5>
@@ -305,9 +318,9 @@ const categoryTitles = {
             </div>
 
             <!-- SMKN 1 Tangerang -->
-            <div class="timeline-item">
+            <div class="timeline-item reveal-left reveal-delay-3">
               <div class="timeline-dot"></div>
-              <div class="timeline-content glass-card">
+              <div class="timeline-content glass-card glow-hover">
                 <span class="timeline-date">Jul 2018 - Jul 2021</span>
                 <h4 class="timeline-role">High School Diploma</h4>
                 <h5 class="timeline-company">SMKN 1 Tangerang</h5>
@@ -444,10 +457,13 @@ const categoryTitles = {
   <section class="section" id="projects-preview-section">
     <div class="section-container">
       <h2 class="section-title text-gradient">Featured Projects</h2>
-      <div class="projects-grid" id="projects-grid">
-        {featuredProjects.map(project => (
-          <div class="glass-card project-card">
-            <h3 class="project-title">{project.title}</h3>
+      <div class="featured-projects-wrapper">
+        {featuredProjects.map((project, idx) => (
+          <div class={`glass-card project-card ${idx === 0 ? 'spotlight' : ''} reveal`} style:class={idx > 0 ? `reveal-delay-${idx}` : ''}>
+            <div class="project-card-header">
+              <h3 class="project-title">{project.title}</h3>
+              {idx === 0 && <span class="tag-chip">Featured</span>}
+            </div>
             <p class="project-desc">{project.description}</p>
             <div class="tech-badges">
               {project.techStack.map(tech => (
@@ -460,7 +476,6 @@ const categoryTitles = {
                 <a href={project.liveUrl} class="live-link" target="_blank" rel="noopener noreferrer">Live Demo</a>
               )}
             </div>
-
           </div>
         ))}
       </div>
@@ -475,14 +490,21 @@ const categoryTitles = {
     <div class="section-container">
       <h2 class="section-title text-gradient">Latest Posts</h2>
       <div class="blog-grid">
-        {recentPosts.map(post => (
-          <div class="glass-card blog-post-card">
+        {recentPosts.map((post, idx) => {
+          const wordCount = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
+          const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+          return (
+          <div class={`glass-card blog-post-card reveal ${idx === 0 ? '' : 'reveal-delay-1'}`}>
             <h3 class="post-title">{post.data.title}</h3>
-            <small class="post-date">{formatDate(post.data.date)}</small>
+            <div class="post-meta-row">
+              <small class="post-date">{formatDate(post.data.date)}</small>
+              <span class="post-reading-time">{readingTime} min read</span>
+            </div>
             <p class="post-desc">{post.data.description}</p>
             <a href={`/blog/${post.id}`} class="read-more">Read More &rarr;</a>
           </div>
-        ))}
+          );
+        })}
       </div>
       <div class="view-all-wrapper">
         <a href="/blog" class="btn btn-secondary">View All Posts</a>
@@ -901,6 +923,74 @@ const categoryTitles = {
     align-self: flex-start;
   }
   .read-more:hover { color: #a855f7; }
+
+  /* ---- Project Card Header (featured + tag) ---- */
+  .featured-projects-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  @media (min-width: 768px) {
+    .featured-projects-wrapper {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .featured-projects-wrapper .project-card.spotlight {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      align-items: center;
+    }
+  }
+  .project-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .project-card.spotlight {
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.05), rgba(168, 85, 247, 0.05));
+    border-color: rgba(34, 211, 238, 0.2);
+  }
+
+  /* ---- Post meta row ---- */
+  .post-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .post-reading-time {
+    font-size: 0.8rem;
+    color: var(--accent-purple);
+    font-weight: 600;
+    opacity: 0.8;
+  }
+  .blog-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  @media (min-width: 600px) {
+    .blog-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* ---- Skill level badges ---- */
+  .skill-level-advanced {
+    background: rgba(34, 211, 238, 0.15) !important;
+    border-color: rgba(34, 211, 238, 0.3) !important;
+  }
+  .skill-level-expert {
+    background: rgba(59, 130, 246, 0.12) !important;
+    border-color: rgba(59, 130, 246, 0.25) !important;
+  }
+  .skill-level-proficient {
+    background: rgba(168, 85, 247, 0.1) !important;
+    border-color: rgba(168, 85, 247, 0.2) !important;
+  }
 
   /* ---- Contact ---- */
   .contact-card {

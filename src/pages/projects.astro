@@ -43,7 +43,13 @@ const jsonLd = {
         <div id="projects-grid" class="projects-grid">
           {allProjects.map((project) => (
             <div class="glass-card project-card" id={`project-${project.id}`} data-tags={project.techStack.join(',')}>
-              <h3 class="project-title">{project.title}</h3>
+              <div class="project-card-header">
+                <h3 class="project-title">{project.title}</h3>
+                {project.status && (
+                  <span class={`status-badge ${project.status}`}>{project.status}</span>
+                )}
+              </div>
+              {project.date && <small style="color: var(--text-muted); font-size: 0.8rem;">{project.date}</small>}
               <p class="project-desc">{project.description}</p>
               <div class="tech-badges">
                 {project.techStack.map(tech => (
@@ -63,39 +69,60 @@ const jsonLd = {
     </div>
   </section>
 
-  <!-- Client-side filter script -->
+  <!-- Client-side filter script with URL params -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const buttons = document.querySelectorAll('.filter-btn');
       const cards = document.querySelectorAll('.project-card');
 
+      function applyFilter(filter) {
+        buttons.forEach(b => {
+          b.classList.toggle('active', b.getAttribute('data-filter') === filter);
+        });
+        cards.forEach(card => {
+          const tags = card.getAttribute('data-tags')?.split(',') || [];
+          const isMatch = filter === 'All' || tags.includes(filter);
+          if (isMatch) {
+            (card as HTMLElement).style.display = 'flex';
+            card.animate([
+              { opacity: 0, transform: 'scale(0.96)' },
+              { opacity: 1, transform: 'scale(1)' }
+            ], { duration: 250, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', fill: 'forwards' });
+          } else {
+            (card as HTMLElement).style.display = 'none';
+          }
+        });
+        // Update URL without reload
+        const url = new URL(window.location.href);
+        if (filter === 'All') {
+          url.searchParams.delete('tag');
+        } else {
+          url.searchParams.set('tag', filter);
+        }
+        window.history.replaceState({}, '', url.toString());
+      }
+
+      // Restore filter from URL on load
+      const urlParams = new URLSearchParams(window.location.search);
+      const tagParam = urlParams.get('tag');
+      if (tagParam) {
+        const matchBtn = Array.from(buttons).find(b => b.getAttribute('data-filter') === tagParam);
+        if (matchBtn) {
+          applyFilter(tagParam);
+        }
+      }
+
       buttons.forEach(btn => {
         btn.addEventListener('click', () => {
-          // Toggle active class
-          buttons.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-
-          const filter = btn.getAttribute('data-filter');
-
-          cards.forEach(card => {
-            const tags = card.getAttribute('data-tags')?.split(',') || [];
-            const isMatch = filter === 'All' || tags.includes(filter);
-            
-            if (isMatch) {
-              (card as HTMLElement).style.display = 'flex';
-              card.animate([
-                { opacity: 0, transform: 'scale(0.96)' },
-                { opacity: 1, transform: 'scale(1)' }
-              ], {
-                duration: 250,
-                easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
-                fill: 'forwards'
-              });
-            } else {
-              (card as HTMLElement).style.display = 'none';
-            }
-          });
+          applyFilter(btn.getAttribute('data-filter'));
         });
+      });
+
+      // Handle browser back/forward
+      window.addEventListener('popstate', () => {
+        const params = new URLSearchParams(window.location.search);
+        const tag = params.get('tag') || 'All';
+        applyFilter(tag);
       });
     });
   </script>
@@ -166,6 +193,12 @@ const jsonLd = {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+  }
+  .project-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
   }
   .project-title {
     font-size: 1.25rem;

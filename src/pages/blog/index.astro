@@ -19,22 +19,53 @@ function formatDate(dateStr) {
       <h1 class="section-title text-gradient">Blog</h1>
       <p class="section-subtitle">Thoughts, tutorials, and deep dives into tech I care about.</p>
 
+      <div class="blog-search-wrapper">
+        <input type="search" id="blog-search" class="blog-search-input" placeholder="Search posts by title..." aria-label="Search blog posts" />
+      </div>
+
       {sortedPosts.length === 0 ? (
         <p id="no-posts" class="empty-state">No posts found</p>
       ) : (
         <div id="blog-grid" class="blog-grid">
-          {sortedPosts.map(post => (
-            <div class="glass-card blog-post-card">
+          {sortedPosts.map(post => {
+            const words = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
+            const readingTime = Math.max(1, Math.ceil(words / 200));
+            return (
+            <div class="glass-card blog-post-card" data-title={post.data.title.toLowerCase()}>
               <h3 class="post-title">{post.data.title}</h3>
-              <small class="post-date">{formatDate(post.data.date)}</small>
+              <div class="post-meta-row">
+                <small class="post-date">{formatDate(post.data.date)}</small>
+                <span class="post-reading-time">{readingTime} min read</span>
+              </div>
               <p class="post-desc">{post.data.description}</p>
               <a href={`/blog/${post.id}`} class="read-more">Read More &rarr;</a>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
   </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchInput = document.getElementById('blog-search');
+      const cards = document.querySelectorAll('.blog-post-card');
+      if (!searchInput) return;
+
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase().trim();
+        cards.forEach(card => {
+          const title = card.getAttribute('data-title') || '';
+          if (!query || title.includes(query)) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
 </Layout>
 
 <style>
@@ -95,5 +126,41 @@ function formatDate(dateStr) {
     color: var(--text-muted);
     font-size: 1.2rem;
     padding: 4rem;
+  }
+  .blog-search-wrapper {
+    max-width: 500px;
+    margin: 0 auto 2.5rem;
+  }
+  .blog-search-input {
+    width: 100%;
+    padding: 0.75rem 1.25rem;
+    border-radius: 9999px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: var(--text-light);
+    font-size: 0.95rem;
+    font-family: inherit;
+    outline: none;
+    transition: var(--transition-smooth);
+    backdrop-filter: blur(8px);
+  }
+  .blog-search-input:focus {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15);
+  }
+  .blog-search-input::placeholder {
+    color: var(--text-muted);
+  }
+  .post-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .post-reading-time {
+    font-size: 0.8rem;
+    color: var(--accent-purple);
+    font-weight: 600;
+    opacity: 0.8;
   }
 </style>

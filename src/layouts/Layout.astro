@@ -19,11 +19,17 @@ const { title } = Astro.props;
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content="Alkam Fariz – Developer & Home Server Enthusiast. Building robust infrastructure, self-hosted services, and polished web applications." />
+    <meta property="og:title" content={title + ' - Alkamfrz Portfolio'} />
+    <meta property="og:description" content="Alkam Fariz – Developer & Home Server Enthusiast. Building robust infrastructure, self-hosted services, and polished web applications." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://alkamfrz.my.id" />
     <title>{title} - Alkamfrz Portfolio</title>
     <!-- Google Fonts: Inter & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" /></noscript>
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to content</a>
@@ -31,6 +37,7 @@ const { title } = Astro.props;
     <div class="bg-orb bg-orb-2"></div>
     <div class="bg-orb bg-orb-3"></div>
     <Header client:load />
+    <div class="nav-overlay" id="nav-overlay"></div>
     <main id="main-content" class="container">
       <slot />
     </main>
@@ -43,27 +50,74 @@ const { title } = Astro.props;
       </svg>
     </button>
 
+    <div id="reading-progress-badge" class="reading-progress-badge" aria-hidden="true">0% read</div>
+
     <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="false"></div>
 
     <script>
       document.addEventListener('DOMContentLoaded', () => {
+        // ----- Back to Top -----
         const backToTopBtn = document.getElementById('back-to-top');
-        if (!backToTopBtn) return;
-
-        window.addEventListener('scroll', () => {
-          if (window.scrollY > 400) {
-            backToTopBtn.classList.add('visible');
-          } else {
-            backToTopBtn.classList.remove('visible');
-          }
-        });
-
-        backToTopBtn.addEventListener('click', () => {
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
+        if (backToTopBtn) {
+          window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+              backToTopBtn.classList.add('visible');
+            } else {
+              backToTopBtn.classList.remove('visible');
+            }
           });
-        });
+          backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        }
+
+        // ----- Reading Progress Badge -----
+        const progressBadge = document.getElementById('reading-progress-badge');
+        const readingContent = document.querySelector('.post-content');
+        if (progressBadge && readingContent) {
+          window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const percent = docHeight > 0 ? Math.round((scrollTop / docHeight) * 100) : 0;
+            progressBadge.textContent = percent + '% read';
+            if (scrollTop > 600 && percent < 98) {
+              progressBadge.classList.add('visible');
+            } else {
+              progressBadge.classList.remove('visible');
+            }
+          });
+        }
+
+        // ----- Scroll Reveal (Intersection Observer) -----
+        const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-scale');
+        if (revealElements.length > 0) {
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+          revealElements.forEach(el => observer.observe(el));
+        }
+
+        // ----- Section Observer (sections fade in) -----
+        const sections = document.querySelectorAll('.section');
+        if (sections.length > 0) {
+          const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('section-visible');
+                sectionObserver.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0.05 });
+          sections.forEach(s => {
+            s.classList.add('section-hidden');
+            sectionObserver.observe(s);
+          });
+        }
       });
     </script>
   </body>

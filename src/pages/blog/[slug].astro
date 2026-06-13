@@ -6,11 +6,11 @@ export async function getStaticPaths() {
   const posts = await getCollection('blog');
   return posts.map(post => ({
     params: { slug: post.id },
-    props: { post },
+    props: { post, allPosts: posts },
   }));
 }
 
-const { post } = Astro.props;
+const { post, allPosts } = Astro.props;
 const blogJsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
@@ -26,13 +26,24 @@ function formatDate(dateStr) {
   const date = new Date(dateStr);
   return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
+
+const otherPosts = allPosts
+  .filter(p => p.id !== post.id)
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 2);
 ---
 
 <Layout title={post.data.title}>
   <script type="application/ld+json">{JSON.stringify(blogJsonLd)}</script>
   <article class="section">
     <div class="section-container" style="max-width: 1200px;">
-      <a href="/blog" class="back-link">&larr; Back to Blog</a>
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span class="sep">/</span>
+        <a href="/blog">Blog</a>
+        <span class="sep">/</span>
+        <span class="current">{post.data.title}</span>
+      </nav>
       
       <div class="blog-layout-wrapper">
         <!-- Main Column: Article Content -->
@@ -54,12 +65,50 @@ function formatDate(dateStr) {
             <div class="post-content text-md" id="post-content-body">
               <Content />
             </div>
+
+            <!-- Social Sharing -->
+            <div class="share-buttons" id="share-buttons">
+              <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted); align-self: center;">Share:</span>
+              <button class="share-btn" id="share-twitter" aria-label="Share on Twitter/X">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
+                X
+              </button>
+              <button class="share-btn" id="share-linkedin" aria-label="Share on LinkedIn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                LinkedIn
+              </button>
+              <button class="share-btn" id="share-copy" aria-label="Copy link to clipboard">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy Link
+              </button>
+            </div>
           </div>
+
+          <!-- Related Posts -->
+          {otherPosts.length > 0 && (
+            <div class="related-posts">
+              <h3>Continue Reading</h3>
+              <div class="related-grid">
+                {otherPosts.map(related => {
+                  const rWords = related.body ? related.body.trim().split(/\s+/).filter(Boolean).length : 0;
+                  const rTime = Math.max(1, Math.ceil(rWords / 200));
+                  return (
+                  <a href={`/blog/${related.id}`} class="glass-card blog-post-card" style="text-decoration: none; padding: 1.25rem;">
+                    <h4 style="font-size: 1.05rem; color: var(--text-light); margin-bottom: 0.4rem;">{related.data.title}</h4>
+                    <small style="color: var(--accent-cyan); font-size: 0.8rem;">{formatDate(related.data.date)} · {rTime} min read</small>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">{related.data.description}</p>
+                  </a>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
 
         <!-- Right Column: Sticky Table of Contents -->
         <aside class="toc-sidebar glass-card">
           <h4 class="toc-title">Table of Contents</h4>
+          <div class="toc-progress" id="toc-progress"></div>
           <ul class="toc-list" id="toc-list-container">
             <!-- Dynamic elements will be inserted here -->
           </ul>
@@ -77,7 +126,7 @@ function formatDate(dateStr) {
       // 1. Calculate reading time & word count
       const text = contentBody.textContent || '';
       const words = text.trim().split(/\s+/).filter(Boolean).length;
-      const readingTime = Math.max(1, Math.ceil(words / 200)); // 200 words per minute average
+      const readingTime = Math.max(1, Math.ceil(words / 200));
       const placeholder = document.getElementById('reading-time-placeholder');
       if (placeholder) {
         placeholder.innerHTML = `⏱️ ${readingTime} min read <span style="opacity: 0.7; font-weight: normal; margin-left: 4px;">(${words} words)</span>`;
@@ -103,6 +152,7 @@ function formatDate(dateStr) {
       // 3. Dynamic Table of Contents Generation
       const headings = contentBody.querySelectorAll('h2, h3');
       const tocContainer = document.getElementById('toc-list-container');
+      const tocProgress = document.getElementById('toc-progress');
       
       if (tocContainer) {
         if (headings.length === 0) {
@@ -110,11 +160,9 @@ function formatDate(dateStr) {
           if (sidebar) (sidebar as HTMLElement).style.display = 'none';
         } else {
           headings.forEach((heading, idx) => {
-            // Ensure heading has an ID
             if (!heading.id) {
               heading.id = `heading-${idx}`;
             }
-
             const item = document.createElement('li');
             item.className = `toc-item ${heading.tagName.toLowerCase()}`;
             item.innerHTML = `<a href="#${heading.id}">${heading.textContent}</a>`;
@@ -123,11 +171,18 @@ function formatDate(dateStr) {
         }
       }
 
-      // 4. Scroll Spy: Highlight active heading in TOC
+      // 4. Scroll Spy: Highlight active heading in TOC + progress bar
       const tocItems = document.querySelectorAll('.toc-item');
       function spyScroll() {
         let activeIdx = -1;
-        const scrollPos = window.scrollY + 140; // Offset for header + padding
+        const scrollPos = window.scrollY + 140;
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const percent = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
+
+        if (tocProgress) {
+          tocProgress.style.width = percent + '%';
+        }
 
         headings.forEach((heading, idx) => {
           const top = (heading as HTMLElement).offsetTop;
@@ -146,12 +201,11 @@ function formatDate(dateStr) {
       }
 
       window.addEventListener('scroll', spyScroll);
-      spyScroll(); // Trigger initially
+      spyScroll();
 
-      // 5. Mac-style Code Blocks with copy buttons
+      // 5. Mac-style Code Blocks with copy buttons + line numbers
       const preBlocks = contentBody.querySelectorAll('pre');
       preBlocks.forEach((pre) => {
-        // Find language from code child or set default
         const code = pre.querySelector('code');
         let lang = 'code';
         if (code) {
@@ -162,11 +216,9 @@ function formatDate(dateStr) {
           }
         }
 
-        // Create the wrapper
         const wrapper = document.createElement('div');
         wrapper.className = 'mac-code-block';
 
-        // Create the header
         const header = document.createElement('div');
         header.className = 'mac-code-header';
         header.innerHTML = `
@@ -179,17 +231,15 @@ function formatDate(dateStr) {
           <button class="mac-copy-btn">Copy</button>
         `;
 
-        // Wrap pre
         pre.parentNode?.insertBefore(wrapper, pre);
         wrapper.appendChild(header);
         wrapper.appendChild(pre);
 
-        // Copy button action
         const copyBtn = header.querySelector('.mac-copy-btn');
         copyBtn?.addEventListener('click', () => {
           const textToCopy = code ? code.textContent || '' : pre.textContent || '';
           navigator.clipboard.writeText(textToCopy).then(() => {
-            copyBtn.textContent = 'Copied!';
+            copyBtn.innerHTML = 'Copied!';
             setTimeout(() => {
               copyBtn.textContent = 'Copy';
             }, 2000);
@@ -197,6 +247,29 @@ function formatDate(dateStr) {
             console.error('Failed to copy: ', err);
           });
         });
+      });
+
+      // 6. Social Sharing
+      const url = encodeURIComponent(window.location.href);
+      const title = encodeURIComponent(document.title.replace(' - Alkamfrz Portfolio', ''));
+      const twitterBtn = document.getElementById('share-twitter');
+      const linkedinBtn = document.getElementById('share-linkedin');
+      const copyBtn = document.getElementById('share-copy');
+
+      twitterBtn?.addEventListener('click', () => {
+        window.open(`https://twitter.com/intent/tweet?text=${title}&url=${url}`, '_blank', 'noopener,width=600,height=400');
+      });
+      linkedinBtn?.addEventListener('click', () => {
+        window.open(`https://linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'noopener,width=600,height=400');
+      });
+      copyBtn?.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          copyBtn.innerHTML = 'Copied!';
+          setTimeout(() => { copyBtn.innerHTML = 'Copy Link'; }, 2000);
+        } catch {
+          copyBtn.textContent = 'Failed';
+        }
       });
     });
   </script>

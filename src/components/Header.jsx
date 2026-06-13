@@ -1,38 +1,71 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [pathname, setPathname] = useState('');
   const [darkMode, setDarkMode] = useState(true);
+  const [compact, setCompact] = useState(false);
+
+  const closeMenu = useCallback(() => {
+    setIsOpen(false);
+    const overlay = document.getElementById('nav-overlay');
+    if (overlay) overlay.classList.remove('show');
+  }, []);
 
   useEffect(() => {
     setPathname(window.location.pathname);
-    // Restore saved preference or follow system
     const saved = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const isDark = saved ? saved === 'dark' : prefersDark !== false;
     setDarkMode(isDark);
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
 
-    // Scroll progress handler
     const handleScroll = () => {
       const progressBar = document.getElementById('scroll-progress');
-      if (!progressBar) return;
-      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
-      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
-      progressBar.style.width = scrolled + '%';
+      if (progressBar) {
+        const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+        progressBar.style.width = scrolled + '%';
+      }
+      // Header shrink
+      const header = document.querySelector('.header');
+      if (header) {
+        if (window.scrollY > 80) {
+          header.classList.add('compact');
+        } else {
+          header.classList.remove('compact');
+        }
+      }
+    };
+
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && isOpen) closeMenu();
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen, closeMenu]);
 
   const toggleDarkMode = () => {
     const next = !darkMode;
     setDarkMode(next);
     document.documentElement.setAttribute('data-theme', next ? 'dark' : 'light');
     localStorage.setItem('theme', next ? 'dark' : 'light');
+  };
+
+  const toggleMenu = () => {
+    const next = !isOpen;
+    setIsOpen(next);
+    const overlay = document.getElementById('nav-overlay');
+    if (overlay) {
+      if (next) overlay.classList.add('show');
+      else overlay.classList.remove('show');
+    }
   };
 
   const getActiveClass = (path) => {
@@ -43,21 +76,19 @@ export default function Header() {
   };
 
   return (
-    <header className="header">
+    <header className={`header${compact ? ' compact' : ''}`}>
       <div className="nav-container">
         <a href="/" className="logo" id="logo-link">
           <span className="text-gradient">Alkamfrz</span>
         </a>
 
-        {/* Navigation Links */}
         <nav id="nav-links" className={`nav-links ${isOpen ? 'show' : ''}`} role="navigation" aria-label="Main navigation">
-          <a id="nav-home" href="/" className={getActiveClass('/')}>Home</a>
-          <a id="nav-projects" href="/projects" className={getActiveClass('/projects')}>Projects</a>
-          <a id="nav-blog" href="/blog" className={getActiveClass('/blog')}>Blog</a>
+          <a id="nav-home" href="/" className={getActiveClass('/')} aria-current={pathname === '/' ? 'page' : undefined} onClick={closeMenu}>Home</a>
+          <a id="nav-projects" href="/projects" className={getActiveClass('/projects')} aria-current={pathname.startsWith('/projects') ? 'page' : undefined} onClick={closeMenu}>Projects</a>
+          <a id="nav-blog" href="/blog" className={getActiveClass('/blog')} aria-current={pathname.startsWith('/blog') ? 'page' : undefined} onClick={closeMenu}>Blog</a>
         </nav>
 
         <div className="nav-actions">
-          {/* Dark Mode Toggle */}
           <button
             id="theme-toggle"
             className="theme-toggle"
@@ -80,11 +111,10 @@ export default function Header() {
             )}
           </button>
 
-          {/* Hamburger Menu Button */}
           <button
             id="hamburger"
             className={`hamburger ${isOpen ? 'open' : ''}`}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={toggleMenu}
             aria-label="Toggle navigation menu"
             aria-expanded={isOpen}
           >
@@ -94,7 +124,6 @@ export default function Header() {
           </button>
         </div>
       </div>
-      {/* Scroll Progress Bar */}
       <div className="scroll-progress-container">
         <div className="scroll-progress-bar" id="scroll-progress"></div>
       </div>

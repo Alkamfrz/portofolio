@@ -7,6 +7,8 @@ export const projects = [
     liveUrl: 'https://github.com/Alkamfrz',
     githubUrl: 'https://github.com/Alkamfrz',
     featured: true,
+    status: 'archived',
+    date: '2025',
   },
   {
     id: 2,
@@ -16,6 +18,8 @@ export const projects = [
     liveUrl: 'https://github.com/Alkamfrz',
     githubUrl: 'https://github.com/Alkamfrz',
     featured: true,
+    status: 'archived',
+    date: '2025',
   },
   {
     id: 3,
@@ -25,6 +29,8 @@ export const projects = [
     liveUrl: 'https://alkamfrz.my.id',
     githubUrl: 'https://github.com/alkamfrz/home-server-infrastructure',
     featured: true,
+    status: 'active',
+    date: '2024 - Present',
   },
   {
     id: 4,
@@ -34,6 +40,8 @@ export const projects = [
     liveUrl: 'https://grafana.alkamfrz.my.id',
     githubUrl: 'https://github.com/alkamfrz/monitoring-stack',
     featured: false,
+    status: 'active',
+    date: '2024 - Present',
   },
   {
     id: 5,
@@ -43,6 +51,8 @@ export const projects = [
     liveUrl: 'https://alkamfrz.my.id',
     githubUrl: 'https://github.com/alkamfrz/alkamfrz_portfolio',
     featured: false,
+    status: 'active',
+    date: '2025',
   },
 ];
 
