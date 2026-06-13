@@ -31,11 +31,13 @@ const { title } = Astro.props;
     <meta property="og:url" content={Astro.url.href} />
     <title>{title} - Alkamfrz Portfolio</title>
     <script>
-      (function() {
+      const applyTheme = () => {
         var theme = localStorage.getItem('theme');
         if (!theme) theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         document.documentElement.setAttribute('data-theme', theme);
-      })();
+      };
+      applyTheme();
+      document.addEventListener('astro:after-swap', applyTheme);
     </script>
     <!-- Self-hosted fonts: Inter & Outfit (inlined to eliminate render-blocking request) -->
     <style>@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url('/fonts/inter-400.woff2') format('woff2')}@font-face{font-family:'Inter';font-style:normal;font-weight:500;font-display:swap;src:url('/fonts/inter-500.woff2') format('woff2')}@font-face{font-family:'Inter';font-style:normal;font-weight:600;font-display:swap;src:url('/fonts/inter-600.woff2') format('woff2')}@font-face{font-family:'Inter';font-style:normal;font-weight:700;font-display:swap;src:url('/fonts/inter-700.woff2') format('woff2')}@font-face{font-family:'Outfit';font-style:normal;font-weight:500;font-display:swap;src:url('/fonts/outfit-500.woff2') format('woff2')}@font-face{font-family:'Outfit';font-style:normal;font-weight:600;font-display:swap;src:url('/fonts/outfit-600.woff2') format('woff2')}@font-face{font-family:'Outfit';font-style:normal;font-weight:700;font-display:swap;src:url('/fonts/outfit-700.woff2') format('woff2')}@font-face{font-family:'Outfit';font-style:normal;font-weight:800;font-display:swap;src:url('/fonts/outfit-800.woff2') format('woff2')}@font-face{font-family:'Outfit';font-style:normal;font-weight:900;font-display:swap;src:url('/fonts/outfit-900.woff2') format('woff2')}</style>

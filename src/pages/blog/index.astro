@@ -108,7 +108,7 @@ function formatDate(dateStr) {
   </script>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('astro:page-load', () => {
       const searchInput = document.getElementById('blog-search');
       const cards = document.querySelectorAll('.blog-post-card');
       if (!searchInput) return;

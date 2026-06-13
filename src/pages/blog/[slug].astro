@@ -149,7 +149,7 @@ const otherPosts = allPosts
 
   <!-- Client-side Reading Suite Script -->
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('astro:page-load', () => {
       const contentBody = document.getElementById('post-content-body');
       if (!contentBody) return;
 
