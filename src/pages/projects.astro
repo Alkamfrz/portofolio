@@ -80,7 +80,7 @@ const jsonLd = {
 
   <!-- Client-side filter script with URL params -->
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    function initProjectFilter() {
       const buttons = document.querySelectorAll('.filter-btn');
       const cards = document.querySelectorAll('.project-card');
 
@@ -101,7 +101,6 @@ const jsonLd = {
             card.style.display = 'none';
           }
         });
-        // Update URL without reload
         const url = new URL(window.location.href);
         if (filter === 'All') {
           url.searchParams.delete('tag');
@@ -111,14 +110,11 @@ const jsonLd = {
         window.history.replaceState({}, '', url.toString());
       }
 
-      // Restore filter from URL on load
       const urlParams = new URLSearchParams(window.location.search);
       const tagParam = urlParams.get('tag');
       if (tagParam) {
         const matchBtn = Array.from(buttons).find(b => b.getAttribute('data-filter') === tagParam);
-        if (matchBtn) {
-          applyFilter(tagParam);
-        }
+        if (matchBtn) applyFilter(tagParam);
       }
 
       buttons.forEach(btn => {
@@ -127,13 +123,15 @@ const jsonLd = {
         });
       });
 
-      // Handle browser back/forward
       window.addEventListener('popstate', () => {
         const params = new URLSearchParams(window.location.search);
         const tag = params.get('tag') || 'All';
         applyFilter(tag);
       });
-    });
+    }
+
+    initProjectFilter();
+    document.addEventListener('astro:after-swap', initProjectFilter);
   </script>
 </Layout>
 

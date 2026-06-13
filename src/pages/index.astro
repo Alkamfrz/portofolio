@@ -467,7 +467,7 @@ const categoryTitles = {
   </section>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    function initHomeInteractions() {
       // --- Homelab Topology Interactions ---
       const nodeDetails = {
         internet: {
@@ -606,7 +606,11 @@ const categoryTitles = {
           }
         });
       });
-    });
+    }
+
+    // Run on initial load and after view transitions swap
+    initHomeInteractions();
+    document.addEventListener('astro:after-swap', initHomeInteractions);
   </script>
 </Layout>
 
