@@ -42,6 +42,9 @@
   --leading-relaxed: 1.8;
   --font-mono: 'Courier New', Courier, 'Fira Code', monospace;
 
+  /* Dark-theme muted (for always-dark surfaces like header/footer) */
+  --text-muted-dark: #94a3b8;
+
   /* Page background / text (dark default) */
   --page-bg: var(--bg-dark);
   --page-text: var(--text-light);
@@ -274,7 +277,7 @@ a {
 .nav-link {
   font-size: 1rem;
   font-weight: 500;
-  color: var(--text-muted);
+  color: var(--text-muted-dark);
   position: relative;
   padding: 0.25rem 0;
 }
@@ -604,7 +607,6 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.15em;
   animation: bounceDown 2s ease-in-out infinite;
-  opacity: 0.6;
 }
 @keyframes bounceDown {
   0%, 100% { transform: translateX(-50%) translateY(0); }
