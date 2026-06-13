@@ -37,18 +37,6 @@ export const projects = [
   },
   {
     id: 4,
-    title: 'Monitoring Stack',
-    description: 'Comprehensive monitoring solution using Prometheus, Grafana, and Loki for full observability of home lab services and infrastructure health.',
-    techStack: ['Prometheus', 'Grafana', 'Loki', 'Docker Compose', 'Node Exporter'],
-    liveUrl: 'https://grafana.alkamfrz.my.id',
-    githubUrl: 'https://github.com/alkamfrz/monitoring-stack',
-    image: '/images/grafana-dashboard.jpg',
-    featured: false,
-    status: 'active',
-    date: '2024 - Present',
-  },
-  {
-    id: 5,
     title: 'Portfolio Website',
     description: 'Personal portfolio built with Astro and React, featuring glassmorphism design, Playwright E2E testing, and a Docker-based deployment pipeline.',
     techStack: ['Astro', 'React', 'Playwright', 'Docker', 'Nginx'],
