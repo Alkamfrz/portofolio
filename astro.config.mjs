@@ -9,4 +9,7 @@ export default defineConfig({
   output: 'static',
   integrations: [react(), sitemap()],
   prefetch: true,
+  build: {
+    inlineStylesheets: 'always',
+  },
 });
