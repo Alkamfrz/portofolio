@@ -20,8 +20,8 @@ export const projects = [
   {
     id: 3,
     title: 'Home Server Infrastructure',
-    description: 'Automated self-hosted home infrastructure using Docker, K3s, and Ansible. Features Traefik reverse proxy, automated SSL, and Gitea for self-hosted Git.',
-    techStack: ['Docker', 'K3s', 'Ansible', 'Traefik', 'Linux'],
+    description: 'Automated self-hosted home infrastructure utilizing Docker Compose on Proxmox VE. Features HAProxy reverse proxy, Let\'s Encrypt SSL automation, Technitium local DNS, and Cloudflare Tunnels for secure ingress.',
+    techStack: ['Docker Compose', 'Proxmox VE', 'HAProxy', 'Cloudflare Tunnel', 'Technitium DNS'],
     liveUrl: 'https://alkamfrz.my.id',
     githubUrl: 'https://github.com/alkamfrz/home-server-infrastructure',
     featured: true,
