@@ -14,6 +14,7 @@ const featuredProjects = projects.filter(p => p.featured).slice(0, 3);
 const allSkillItems = Object.values(skills).flat();
 const topSkillItems = Object.values(skills).slice(0, 2).flat();
 const hiddenSkillCount = allSkillItems.length - topSkillItems.length;
+const hiddenCategoryCount = Object.keys(skills).length - 2;
 
 function formatDate(dateStr) {
   const date = new Date(dateStr);
@@ -149,8 +150,10 @@ const categoryTitles = {
             );
           })}
         </div>
-        <button class="skills-toggle-btn" id="skills-toggle-btn" data-expanded="false" data-count={hiddenSkillCount}>
-          Show all {hiddenSkillCount} skills ▾
+      </div>
+      <div class="skills-toggle-wrapper">
+        <button class="skills-toggle-btn" id="skills-toggle-btn" data-expanded="false" data-count={hiddenCategoryCount}>
+          Show {hiddenCategoryCount} more categories ▾
         </button>
       </div>
     </div>
@@ -558,7 +561,7 @@ const categoryTitles = {
           const expanded = skillsToggle.getAttribute('data-expanded') === 'true';
           skillsToggle.setAttribute('data-expanded', String(!expanded));
           skillsMore.classList.toggle('expanded', !expanded);
-          skillsToggle.innerHTML = expanded ? `Show all ${skillsToggle.dataset.count || '24'} skills ▾` : 'Show less ▴';
+          skillsToggle.innerHTML = expanded ? `Show ${skillsToggle.dataset.count || '4'} more categories ▾` : 'Show less ▴';
         });
       }
 
@@ -1333,10 +1336,16 @@ const categoryTitles = {
     max-height: 0;
     transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: grid;
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
   }
   .skills-more.expanded {
     max-height: 2000px;
+  }
+  .skills-toggle-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
   }
   .skills-toggle-btn {
     display: inline-flex;
@@ -1352,8 +1361,6 @@ const categoryTitles = {
     cursor: pointer;
     transition: var(--transition-smooth);
     font-family: 'Outfit', sans-serif;
-    margin-top: 0.5rem;
-    justify-self: center;
   }
   .skills-toggle-btn:hover {
     background: rgba(34, 211, 238, 0.1);

@@ -589,10 +589,10 @@ const server = http.createServer((req, res) => {
 // Idle watchdog: if no HTTP request arrives for 60s, assume tests are done
 // and exit. This handles Windows where Playwright's child.kill('SIGTERM')
 // calls TerminateProcess() (which does not fire JS signal handlers).
-let idleTimer = setTimeout(() => process.exit(0), 60000);
+let idleTimer = setTimeout(() => process.exit(0), 120000);
 server.on('request', () => {
   clearTimeout(idleTimer);
-  idleTimer = setTimeout(() => process.exit(0), 60000);
+  idleTimer = setTimeout(() => process.exit(0), 120000);
 });
 
 server.listen(PORT, () => {
