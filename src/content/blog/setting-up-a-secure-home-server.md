@@ -1,56 +1,41 @@
 ---
-title: "Setting Up a Secure Home Server"
+title: "Setting Up a Secure Home Server with HAProxy & CrowdSec"
 date: "2026-06-01"
-description: "Learn how to deploy secure Docker setups locally, including Traefik reverse proxy, SSL certificates with Let's Encrypt, and proper network isolation."
+description: "Learn how to deploy a secure local homelab, including HAProxy reverse proxy, Let's Encrypt SSL automation, Cloudflare Tunnels, and CrowdSec intrusion prevention."
 ---
 
-# Setting Up a Secure Home Server
+# Setting Up a Secure Home Server with HAProxy & CrowdSec
 
-Running your own home server is incredibly rewarding — but only if it's done securely. In this guide, I'll walk through my personal setup using Docker, Traefik, and best practices I've learned over time.
+Running your own home server is incredibly rewarding — but only if it's done securely. In this guide, I'll walk through my personal setup using **Proxmox VE**, **Docker Compose**, **HAProxy**, **Cloudflare Tunnels**, and **CrowdSec**.
 
-## Prerequisites
+## Hypervisor & Virtualization
 
-Before we begin, you'll need:
+At the core of the homelab is **Proxmox VE** hosting dedicated VMs and LXC containers to segment responsibilities:
+- **`pve-tng` (10.1.99.2)**: Proxmox host.
+- **`haproxy-tng` (10.1.30.3)**: Dedicated LXC container for reverse proxy and SSL termination.
+- **`docker-tng` (10.1.30.5)**: Linux VM hosting all Docker Compose stacks.
+- **`NAS-TNG` (10.1.30.6)**: TrueNAS shared NFS storage mounted at `/mnt/nas`.
 
-- A machine running Ubuntu 22.04 or Debian 12
-- Docker and Docker Compose installed
-- A domain name pointing to your server's IP
+## Why HAProxy & Cloudflare Tunnels?
 
-## Why Traefik?
+Instead of opening WAN ports on the router and exposing the public IP, the server uses a **Cloudflare Tunnel** (`cfd-tng` at `10.1.30.2`) for public traffic. 
+All incoming web requests flow through the tunnel to **HAProxy**, which terminates SSL and manages routing to backend Docker containers.
 
-Traefik is a modern reverse proxy that integrates seamlessly with Docker. It automatically discovers containers and provisions SSL certificates via Let's Encrypt.
+For local mapping, a **Technitium DNS** server resolves `*.alkamfrz.my.id` domains internally to HAProxy, allowing transparent access inside the home network.
 
-```bash
-docker run -d \
-  --name traefik \
-  -p 80:80 \
-  -p 443:443 \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  traefik:v3.0
-```
+## Reconciling with Docker Compose
 
-## Network Isolation
+Rather than heavy orchestration engines, services are managed via modular **Docker Compose** stacks. Data persistence is bind-mounted directly to TrueNAS NFS shares (with SQLite-heavy apps hosted locally on SSD mounts to prevent NFS lock latency).
 
-One of the most important security practices is isolating your services into separate Docker networks. Internal services should **never** be directly exposed to the internet.
+To deploy new configurations and stacks from the admin workstation, a custom PowerShell orchestrator script (`deploy-configs.ps1`) automates SCP file transfer and parallel SSH composition.
 
-> Always follow the principle of least privilege when configuring network access between containers.
+## Intrusion Prevention with CrowdSec
 
-## Setting Up Fail2Ban
-
-Protect your server from brute-force attacks with Fail2Ban:
-
-```bash
-sudo apt install fail2ban
-sudo systemctl enable fail2ban
-sudo systemctl start fail2ban
-```
-
-Here are some key config options:
-
-- `maxretry = 5` — ban after 5 failed attempts
-- `findtime = 600` — within 10 minutes
-- `bantime = 3600` — ban for 1 hour
+Instead of basic log parsers, the proxy uses **CrowdSec** for advanced intrusion detection:
+1. HAProxy logs HTTP traffic via UDP to a local syslog relay.
+2. The relay appends metadata and forwards logs to the CrowdSec daemon on the Docker VM.
+3. If a threat/abuse is detected, CrowdSec tells the HAProxy Lua bouncer module to block the attacker's IP.
 
 ## Conclusion
 
-A secure home server is achievable with the right tools and a security-first mindset. Start small, iterate, and always keep your systems updated.
+A secure home server is achievable without opening WAN ports or overcomplicating configuration. Using Proxmox VE for virtualization, HAProxy for routing, and Cloudflare Tunnels for secure ingress creates a robust and private hosting environment.
