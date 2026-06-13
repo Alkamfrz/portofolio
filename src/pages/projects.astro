@@ -14,7 +14,7 @@ const jsonLd = {
     "position": index + 1,
     "name": project.title,
     "description": project.description,
-    "url": project.liveUrl,
+    "url": project.liveUrl || project.journalUrl || project.githubUrl || '',
     "keywords": project.techStack.join(", "),
     "author": { "@type": "Person", "name": "Alkam Fariz" }
   }))
@@ -66,7 +66,12 @@ const jsonLd = {
                 ))}
               </div>
               <div class="project-links">
-                <a href={project.githubUrl} class="github-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+                {project.githubUrl && (
+                  <a href={project.githubUrl} class="github-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+                )}
+                {project.journalUrl && (
+                  <a href={project.journalUrl} class="journal-link" target="_blank" rel="noopener noreferrer">Journal</a>
+                )}
                 {project.liveUrl && (
                   <a href={project.liveUrl} class="live-link" target="_blank" rel="noopener noreferrer">Live Demo</a>
                 )}
@@ -236,20 +241,12 @@ const jsonLd = {
     margin-top: 0.5rem;
     flex-wrap: wrap;
   }
-  .github-link {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: color 0.2s;
-  }
+  .github-link { color: var(--text-muted); font-size: 0.9rem; font-weight: 600; transition: color 0.2s; }
   .github-link:hover { color: var(--text-light); }
-  .live-link {
-    color: var(--accent-cyan);
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: color 0.2s;
-  }
+  .live-link { color: var(--accent-cyan); font-size: 0.9rem; font-weight: 600; transition: color 0.2s; }
   .live-link:hover { color: #a855f7; }
+  .journal-link { color: #f59e0b; font-size: 0.9rem; font-weight: 600; transition: color 0.2s; }
+  .journal-link:hover { color: #fbbf24; }
   .empty-state {
     text-align: center;
     color: var(--text-muted);
