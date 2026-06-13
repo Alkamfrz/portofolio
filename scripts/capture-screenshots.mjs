@@ -1,5 +1,5 @@
 import { chromium } from 'playwright';
-import { mkdirSync, existsSync } from 'fs';
+import { mkdirSync, existsSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -12,21 +12,21 @@ const projects = [
     id: 1,
     title: 'CFO-RetinaNet: Convolutional Feature Optimization',
     url: 'https://garuda.kemdiktisaintek.go.id/documents/detail/5253843',
-    file: 'cfo-retinanet.jpg',
+    file: 'cfo-retinanet.webp',
     ssl: false,
   },
   {
     id: 2,
     title: 'Brain Tumor Detection & Classification',
     url: 'https://ijicom.respati.ac.id/index.php/ijicom/article/view/80',
-    file: 'brain-tumor.jpg',
+    file: 'brain-tumor.webp',
     ssl: false,
   },
   {
     id: 3,
     title: 'Home Server Infrastructure',
     url: 'https://alkamfrz.my.id',
-    file: 'homelab-rack.jpg',
+    file: 'homelab-rack.webp',
     ssl: false,
   },
 ];
@@ -51,7 +51,31 @@ async function capture() {
       const page = await context.newPage();
       await page.goto(project.url, { waitUntil: 'networkidle', timeout: 30000 });
       await page.waitForTimeout(1500);
-      await page.screenshot({ path: outputPath, fullPage: false });
+      
+      // Capture a JPEG screenshot in memory
+      const jpegBuffer = await page.screenshot({ type: 'jpeg', quality: 90 });
+      
+      // Convert it to WebP inside the browser context using canvas
+      const webpDataUrl = await page.evaluate(async (jpegBase64) => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            resolve(canvas.toDataURL('image/webp', 0.85));
+          };
+          img.src = 'data:image/jpeg;base64,' + jpegBase64;
+        });
+      }, jpegBuffer.toString('base64'));
+
+      // Convert base64 data URL back to binary buffer and write
+      const base64Data = webpDataUrl.split(',')[1];
+      const webpBuffer = Buffer.from(base64Data, 'base64');
+      writeFileSync(outputPath, webpBuffer);
+      
       await page.close();
       console.log(`  OK: ${outputPath}`);
     } catch (err) {

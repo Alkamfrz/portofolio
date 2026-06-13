@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
 import { projects } from '../data/projects.js';
 
 const allProjects = projects;
@@ -41,11 +42,11 @@ const jsonLd = {
         <p id="no-projects" class="empty-state">No projects found</p>
       ) : (
         <div id="projects-grid" class="projects-grid">
-          {allProjects.map((project) => (
-            <article class="glass-card project-card" id={`project-${project.id}`} data-tags={project.techStack.join(',')}>
+          {allProjects.map((project, idx) => (
+            <article class={`glass-card project-card reveal reveal-delay-${(idx % 3) + 1}`} id={`project-${project.id}`} data-tags={project.techStack.join(',')}>
               <div class="project-image-wrapper">
                 {project.image ? (
-                  <img src={project.image} alt={project.title} class="project-image" loading="lazy" />
+                  <Image src={project.image} alt={project.title} class="project-image" width={400} height={225} format="webp" />
                 ) : (
                   <div class="project-image-placeholder" aria-hidden="true">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>

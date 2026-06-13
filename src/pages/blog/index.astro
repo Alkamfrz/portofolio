@@ -23,6 +23,8 @@ function formatDate(dateStr) {
         <input type="search" id="blog-search" class="blog-search-input" placeholder="Search posts by title..." aria-label="Search blog posts" />
       </div>
 
+      <p id="no-search-results" class="empty-state" style="display: none;">No matching posts found</p>
+
       {sortedPosts.length === 0 ? (
         <p id="no-posts" class="empty-state">No posts found</p>
       ) : (
@@ -108,23 +110,52 @@ function formatDate(dateStr) {
   </script>
 
   <script>
-    document.addEventListener('astro:page-load', () => {
+    function initBlogSearch() {
       const searchInput = document.getElementById('blog-search');
       const cards = document.querySelectorAll('.blog-post-card');
       if (!searchInput) return;
 
+      cards.forEach(card => {
+        const titleEl = card.querySelector('.post-title') || card.querySelector('h3');
+        if (titleEl && !card.getAttribute('data-original-title')) {
+          card.setAttribute('data-original-title', titleEl.textContent || '');
+        }
+      });
+
       searchInput.addEventListener('input', () => {
         const query = searchInput.value.toLowerCase().trim();
+        let visibleCount = 0;
+        
         cards.forEach(card => {
-          const title = card.getAttribute('data-title') || '';
-          if (!query || title.includes(query)) {
+          const originalTitle = card.getAttribute('data-original-title') || '';
+          const titleEl = card.querySelector('.post-title') || card.querySelector('h3');
+          
+          if (!query || originalTitle.toLowerCase().includes(query)) {
             card.style.display = 'flex';
+            visibleCount++;
+
+            if (titleEl) {
+              if (query) {
+                const regex = new RegExp(`(${query.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi');
+                titleEl.innerHTML = originalTitle.replace(regex, '<mark class="search-highlight">$1</mark>');
+              } else {
+                titleEl.textContent = originalTitle;
+              }
+            }
           } else {
             card.style.display = 'none';
           }
         });
+
+        const noSearch = document.getElementById('no-search-results');
+        if (noSearch) {
+          noSearch.style.display = (visibleCount === 0 && cards.length > 0) ? 'block' : 'none';
+        }
       });
-    });
+    }
+
+    initBlogSearch();
+    document.addEventListener('astro:page-load', initBlogSearch);
   </script>
 </Layout>
 

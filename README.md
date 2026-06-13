@@ -9,9 +9,15 @@ Personal developer portfolio built with [Astro](https://astro.build) + React, fe
 | `npm run dev`           | Start dev server at `localhost:4321`     |
 | `npm run build`         | Build production site to `./dist/`       |
 | `npm run preview`       | Preview production build locally         |
-| `npm run test`          | Run Playwright E2E tests (50 tests)      |
+| `npm run test`          | Run Playwright E2E tests (66 tests)      |
 | `npm run mock-server`   | Start mock API server on port 3000       |
 | `npm run audit`         | Run Lighthouse CI audit                  |
+
+> [!NOTE]
+> When running Playwright tests locally on Windows, the Webkit engine may occasionally hang due to driver environment issues. To execute tests only on stable browser targets, run:
+> ```bash
+> npx playwright test --project=chromium --project=firefox --project="Mobile Chrome"
+> ```
 
 ## Project Structure
 

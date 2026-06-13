@@ -203,6 +203,14 @@ test.describe('Tier 2: Boundary & Corner Cases (25 Tests)', () => {
       // Expect textual date format instead of ISO, e.g. "June 1, 2026"
       expect(dateText).toMatch(/^[A-Za-z]+ \d{1,2}, \d{4}$/);
     });
+
+    test('F4-T2-6: Empty search query displays search empty state label', async ({ page }) => {
+      await page.goto('/blog');
+      const searchInput = page.locator('#blog-search');
+      await searchInput.fill('non-existent-blog-title-query');
+      await expect(page.locator('#no-search-results')).toBeVisible();
+      await expect(page.locator('#no-search-results')).toHaveText('No matching posts found');
+    });
   });
 
   // ==========================================

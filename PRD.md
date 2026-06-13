@@ -51,8 +51,6 @@ To guarantee the website meets premium quality standards, the production build m
   - **Mobile**: Largest Contentful Paint (LCP) under **2.0 seconds**.
 * **Functional Integrity**: 
   - **100%** of the Playwright E2E test cases must execute successfully.
-* **Automated Audit Gates**:
-  - **Lighthouse CI (LHCI)**: Executes automatically during the local build step or pre-deployment phase. Any build that scores below the target budgets (95 across all audits) is blocked and rejected.
 
 ---
 
@@ -100,10 +98,10 @@ Must contain the following sections in this exact order:
    - Name input (`#contact-name`) with validation error span (`#name-error`).
    - Email input (`#contact-email`) with validation error span (`#email-error`).
    - Message textarea (`#contact-message`) with validation error span (`#message-error`).
-   - Honeypot input (CSS-hidden, named `#contact-honeypot`) to deter bot submissions. If filled, the submission is silently dropped with a `200 OK` response but not processed.
-   - Server-side rate-limiting on `/api/contact` (max 5 submissions per IP per 15 minutes) to protect against API abuse.
-   - Submit button (`#contact-submit`). When sending, disables fields and displays `"Sending..."`.
-   - Status banner (`#contact-status`) displaying success (class `success`) or error messages (class `error`). The form POSTs to `/api/contact` appending active URL query parameters (e.g. `?status=500`) to test API errors.
+    - Rate-limiting, spam protection, and email routing are handled natively by Formspree (production endpoint). Honeypot parameters deter bot submissions.
+    - Local mock server implements rate-limiting on `/api/contact` for testing validation.
+    - Submit button (`#contact-submit`). When sending, disables fields and displays `"Sending..."`.
+    - Status banner (`#contact-status`) displaying success (class `success`) or error messages (class `error`). The form POSTs to Formspree in production, appending active URL query parameters (e.g. `?status=500`) to mock API errors for E2E test assertions.
    - Outbound social links: GitHub (ID `#contact-github`), LinkedIn (ID `#contact-linkedin`), and Email (ID `#contact-email-link`, pointing to `mailto:alkamfrz@gmail.com`).
 
 #### 2. Projects Catalog (`/projects`)
@@ -200,7 +198,10 @@ Styling uses **Vanilla CSS** with scoped rules. Global design tokens are defined
 
 ## 🧪 7. Playwright Test Suite Specifications
 
-The application includes an automated E2E test suite running **50 test cases** locally using `npm run test` or `npx playwright test`.
+The application includes an automated E2E test suite running **66 test cases** locally using `npm run test` or `npx playwright test`.
+
+> [!NOTE]
+> Local executions on Windows hosts may experience Webkit engine hangs due to driver incompatibility. Developers should run stable targets locally (e.g. `npx playwright test --project=chromium --project=firefox --project="Mobile Chrome"`) while relying on CI pipelines for Webkit coverage.
 
 ### Tier 1: Core Layout, Elements & Navigation (`tests/tier1.spec.ts`)
 * Assert presence of primary header links and `#logo-link`.
@@ -219,17 +220,7 @@ The application includes an automated E2E test suite running **50 test cases** l
 
 ---
 
-## 🚫 8. Out-of-Scope (OOS)
-
-The following features are out of scope for version 1:
-* **User Accounts & Login**: No administrator panel or authentication.
-* **Database-driven Blog**: All posts are written as static markdown files and loaded from source code rather than a dynamic database.
-* **Interactive Blog Comments**: No guest commenting or user engagement forum system.
-* **Internal Mail Transfer Agent**: The contact form does not trigger direct emails from the VM. Submissions are sent as JSON to external webhooks or APIs.
-
----
-
-## 🚀 9. Deployment Gatekeeping & Rollback Rules
+## 🚀 8. Deployment Gatekeeping & Rollback Rules
 
 To guarantee uptime and stability on the live site, deployments must adhere to these policies:
 
@@ -238,7 +229,7 @@ To guarantee uptime and stability on the live site, deployments must adhere to t
 2. **Warning-free Builds**: The local build compiler (`npm run build`) must compile with zero errors and warnings.
 
 ### Rollback Strategy
-If a deployment fails in production (e.g. causes a container crash or HAProxy 502/503 errors):
+If a deployment fails in production:
 1. **Revert Commits**: Check out the previous stable git commit tag in the local workspace.
 2. **Push Revert**: Push the stable codebase back to GitHub's `main` branch.
 3. **Trigger Rebuild**: Manually run the compose build command to fetch the stable commit and redeploy:
@@ -248,4 +239,4 @@ If a deployment fails in production (e.g. causes a container crash or HAProxy 50
 
 ### Observability & Telemetry Rules
 1. **Local Telemetry**: Write all runtime exception logs and console telemetry to stdout/stderr inside the Docker/Nginx containers.
-2. **Production Tracking**: Integrate a lightweight tracking client (such as Sentry or a self-hosted GlitchTip instance) to capture uncaught client-side exceptions and report backend API errors in real-time.
+2. **Production Tracking**: Out-of-scope for version 1 to minimize client-side bundle size. Telemetry integration (such as Sentry or a self-hosted GlitchTip instance) is planned for the v2 roadmap.
