@@ -1,6 +1,8 @@
 # 🌌 Personal Developer Portfolio (alkamfrz_portfolio)
 ## Product Requirements Document (PRD) & Design Specification
 
+> **Last updated:** 2026-06-13 — UI/UX overhaul v2 (typography system, navigation improvements, homepage layout, projects filtering, blog reading suite, visual polish)
+
 This document serves as the absolute source of truth for the portfolio website's features, visual design system, accessibility rules, testing guidelines, and deployment gatekeeping criteria.
 
 ---
@@ -14,6 +16,8 @@ The goal of this project is to build an interactive, ultra-fast developer portfo
 2. **Speed & Lightweight Footprint**: Build using **Astro v6** to output highly optimized static HTML with zero unnecessary client-side JavaScript.
 3. **Immersive Dark Theme**: Apply a premium dark glassmorphism design system to reflect a modern, state-of-the-art developer brand.
 4. **100% Automated Verification**: Maintain a robust E2E test coverage using **Playwright** to prevent regressions.
+5. **Reading Comfort**: Typography scaling system, prose width constraints, font-size widget, and Mac-style code blocks ensure a premium reading experience on both desktop and mobile.
+6. **Visual Delight**: Scroll-triggered reveal animations, orbital background effects, glow-on-hover cards, and micro-interactions at every touchpoint.
 
 ---
 
@@ -56,8 +60,11 @@ To guarantee the website meets premium quality standards, the production build m
 
 ### R1. Dynamic Navigation Header
 * Renders a fixed navigation bar at the top of the viewport.
-* Dynamically detects the current URL path to append an `.active` styling class to the current navigation link.
+* Dynamically detects the current URL path to append an `.active` styling class to the current navigation link, with `aria-current="page"` for screen readers.
 * **Responsive Toggle**: Displays standard navigation links on desktop, and collapses into a responsive hamburger drawer on mobile viewports.
+* **Staggered Animation**: Mobile nav links fade in sequentially with `transition-delay` on open.
+* **Overlay**: A semi-transparent backdrop overlay (`#nav-overlay`) appears behind mobile menu, closes on escape key.
+* **Compact State**: On scroll past 80px, the header shrinks (reduced padding, smaller logo/font) via `.header.compact`.
 * **Primary Selector**: The main logo link must have ID `#logo-link`.
 
 ### R2. Pages Layouts
@@ -68,21 +75,28 @@ Must contain the following sections in this exact order:
    - Viewport height: `90vh` to `100vh`.
    - Heading uses a large, high-contrast dual-color linear gradient (class `text-gradient`).
    - Pure CSS background gradient orbs (no heavy image assets).
-   - CTA buttons: *"View Projects"* (routes to `/projects`) and *"Read Blog"* (routes to `/blog`).
-2. **About Section**:
-   - Short biography describing development background, virtualization/homelab experience, and core programming interests.
-3. **Skills Section (`#skills-section`)**:
-   - Renders categorized skill badges loaded from `src/data/skills.js`.
-   - Badges styled using the transparent `glass-card` look.
-4. **Projects Preview (`#projects-grid`)**:
-   - Displays up to 3 featured projects marked as `featured: true` in the data model.
-   - Project cards (class `project-card` and `glass-card`) must contain: Title (`h3`), Description (`p`), tech badges (class `tech-badge`), GitHub source link (class `github-link`), and Live Demo link (class `live-link`).
-   - Displays a redirection link pointing to the full `/projects` page.
-5. **Blog Preview (`#blog-preview-section`)**:
-   - Displays the 2 most recently published blog posts.
-   - Post cards (class `blog-post-card`) contain: Title (`h3`), Date (class `post-date` formatted as `"Month DD, YYYY"`), Description (`p`), and a *"Read More"* link (class `read-more`) pointing to `/blog/[slug]`.
-6. **Contact Section & Form (`#contact-form`)**:
-   - Dynamic React component (`ContactForm.jsx`) loaded with `client:load`.
+    - CTA buttons: *"View Projects"* (routes to `/projects`) and *"Read Blog"* (routes to `/blog`).
+    - Primary CTA has `.btn-pulse` for a subtle box-shadow animation.
+    - Scroll-down indicator (`.scroll-indicator`) at bottom with "Scroll" label and chevron.
+ 2. **About Section**:
+    - Short biography describing development background, virtualization/homelab experience, and core programming interests.
+    - Uses `.card-accent` class for a left cyan accent border.
+ 3. **Skills Section (`#skills-section`)**:
+    - Renders categorized skill badges loaded from `src/data/skills.js`.
+    - Badges styled using the transparent `glass-card` look.
+    - Skills have proficiency levels: `.skill-level-advanced` (cyan), `.skill-level-expert` (blue), `.skill-level-proficient` (purple) via color-coded backgrounds.
+ 4. **Projects Preview (`.featured-projects-wrapper`)**:
+    - Displays up to 3 featured projects marked as `featured: true` in the data model.
+    - First featured project is rendered as `.spotlight` (full-width with 2-column layout on desktop, gradient background border).
+    - Project cards (class `project-card` and `glass-card`) must contain: Title (`h3`), Description (`p`), tech badges (class `tech-badge`), GitHub source link (class `github-link`), and Live Demo link (class `live-link`).
+    - Project card header shows a `.tag-chip` "Featured" label on the spotlight card.
+    - Cards use `.reveal` classes with staggered delays for scroll-triggered entrance.
+    - Displays a redirection link pointing to the full `/projects` page.
+ 5. **Blog Preview (`#blog-preview-section`)**:
+    - Displays the 2 most recently published blog posts in a 2-column grid.
+    - Post cards (class `blog-post-card`) contain: Title (`h3`), Date (class `post-date` formatted as `"Month DD, YYYY"`), reading time (class `.post-reading-time`), Description (`p`), and a *"Read More"* link (class `read-more`) pointing to `/blog/[slug]`.
+ 6. **Contact Section & Form (`#contact-form`)**:
+    - Dynamic React component (`ContactForm.jsx`) loaded with `client:load`.
    - Name input (`#contact-name`) with validation error span (`#name-error`).
    - Email input (`#contact-email`) with validation error span (`#email-error`).
    - Message textarea (`#contact-message`) with validation error span (`#message-error`).
@@ -95,18 +109,28 @@ Must contain the following sections in this exact order:
 #### 2. Projects Catalog (`/projects`)
 * Renders the full array of projects from `src/data/projects.js` inside grid `#projects-grid`.
 * Cards follow the same specs as the Home page preview.
+* Each project card shows a colored `status-badge` (`.active` green, `.archived` yellow, `.dev` blue) and a date string.
+* **Filter Bar**: Tech-stack filter buttons (`.filter-btn`) at top. Clicking a filter hides/shows cards with a scale animation. Filter state is stored in URL search params (`?tag=Docker`) and restored on page load. Browser back/forward navigation preserves the selected filter via `popstate` event.
 * If no projects exist, displays an empty state container (`#no-projects` containing the exact text `No projects found`).
 * Document `<title>` must contain the word `"Projects"`.
 
 #### 3. Blog Catalog (`/blog`)
 * Displays all blog posts in a grid (`#blog-grid`) sorted by date (newest first).
-* Cards follow the same specs as the Home page preview.
+* Cards follow the same specs as the Home page preview, plus reading time (`.post-reading-time`) displayed next to the date.
+* **Search**: An input field (`#blog-search`) at the top of the page filters cards by title match in real-time.
 * If no posts exist, displays an empty state container (`#no-posts` containing the exact text `No posts found`).
 * Document `<title>` must contain the word `"Blog"`.
 
 #### 4. Blog Details Page (`/blog/[slug]`)
 * Renders the individual post title in an `h1` and the markdown content in a container with class `blog-post-detail`.
 * Configured using Astro Content Collections with a file glob loader in `src/content.config.ts`.
+* **Breadcrumbs**: Navigation bar showing `Home > Blog > Post Title`.
+* **Reading Stats**: Displays reading time (X min read) and word count calculated from the content body.
+* **Font-size Widget**: Floating A- / A / A+ buttons to dynamically scale the article text (`.text-sm`, `.text-md`, `.text-lg`).
+* **Sticky Table of Contents**: On screens >= 1200px, renders a side panel with auto-generated links from `h2`/`h3` headings. Active heading is highlighted via scroll spy. A progress bar (`.toc-progress`) fills from top to bottom as the user reads.
+* **Mac-style Code Blocks**: All `<pre>` blocks are wrapped with a header showing Mac dots, language label, and a "Copy" button. Multi-line blocks display at `0.92rem` with `tab-size: 2`.
+* **Social Sharing**: Share buttons for Twitter/X and LinkedIn via popup windows, plus a "Copy Link" button using the Clipboard API.
+* **Related Posts**: Two suggested posts (most recent excluding current) shown in a grid below the article.
 
 #### 5. 404 Fallback Page (`/404.html`)
 * Renders a not-found card (`#not-found-card`) displaying `404` and a return link (`#go-home-link`) back to `/`.
@@ -132,7 +156,22 @@ Styling uses **Vanilla CSS** with scoped rules. Global design tokens are defined
 
 ### Glassmorphism Styles (`.glass-card`, `.project-card`)
 * Background set to `var(--glass-bg)` with `backdrop-filter: blur(12px)` and `-webkit-backdrop-filter: blur(12px)`.
-* Hover state raises cards by `-4px` using `transform` transitions, glows the border with blue, and adds a drop-shadow.
+* Hover state raises cards by `-6px` using `transform` transitions, glows the border with blue, and adds a drop-shadow.
+* `.glow-hover` variant adds a cyan glow (`box-shadow: 0 0 30px rgba(34, 211, 238, 0.15)`) on hover.
+
+### Scroll-Reveal Animation System
+* Three reveal classes control entrance animations via Intersection Observer:
+  - `.reveal`: fades in + slides up 24px.
+  - `.reveal-left`: fades in + slides left 24px (used for timeline items).
+  - `.reveal-scale`: fades in + scales from 0.95.
+* Staggered delays: `.reveal-delay-1` through `.reveal-delay-5` at 0.1s increments.
+* All sections use `.section-hidden` / `.section-visible` for fade-in on scroll.
+* All animations respect `prefers-reduced-motion: reduce`.
+
+### Typography Scale
+* CSS variables define a minor-third scale: `--text-xs` (0.75rem) through `--text-5xl` (4.5rem).
+* Line-height variables: `--leading-tight` (1.15), `--leading-normal` (1.6), `--leading-relaxed` (1.8).
+* `.prose` utility class constrains long-form text to 720px with proper heading spacing and accent borders.
 
 ### Asset Optimization & Media Specs
 * **Image Formats**: All images must be served in WebP or AVIF next-gen formats.
