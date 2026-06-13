@@ -709,9 +709,8 @@ const categoryTitles = {
       }
     }
 
-    // Run on initial load and after view transitions swap
+    // Run on initial load
     initHomeInteractions();
-    document.addEventListener('astro:after-swap', initHomeInteractions);
   </script>
 </Layout>
 
