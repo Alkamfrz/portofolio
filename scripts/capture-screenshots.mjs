@@ -29,14 +29,6 @@ const projects = [
     file: 'homelab-rack.jpg',
     ssl: false,
   },
-    {
-      id: 4,
-      title: 'Monitoring Stack',
-      url: 'https://grafana.alkamfrz.my.id',
-      file: 'grafana-dashboard.jpg',
-      ssl: true,
-      note: 'SSL SNI mismatch: run this script inside your home network, or replace with a manual screenshot',
-    },
 ];
 
 async function capture() {
