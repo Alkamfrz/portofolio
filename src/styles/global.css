@@ -79,6 +79,10 @@
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
   --glass-hover-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.15);
 }
+[data-theme="light"] .hero-eyebrow,
+[data-theme="light"] .highlight-val {
+  color: #0e7490;
+}
 
 
 
