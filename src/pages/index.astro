@@ -16,9 +16,30 @@ function formatDate(dateStr) {
   const date = new Date(dateStr);
   return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
+
+const homeJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Alkamfrz Portfolio",
+  "url": "https://alkamfrz.my.id",
+  "author": {
+    "@type": "Person",
+    "name": "Muhammad Alkam Alfariz"
+  },
+  "description": "Muhammad Alkam Alfariz – Informatics Engineering graduate specializing in IT infrastructure, automation, and systems."
+};
+const categoryTitles = {
+  languages: 'Programming Languages',
+  databases: 'Database Management',
+  infrastructure: 'DevOps & Infrastructure',
+  observability: 'Observability & Monitoring',
+  systems: 'Operating Systems & Tools',
+  softskills: 'Soft Skills & Leadership'
+};
 ---
 
 <Layout title="Home">
+  <script type="application/ld+json">{JSON.stringify(homeJsonLd)}</script>
   <!-- =================== HERO =================== -->
   <section class="hero-section">
     <div class="hero-orb hero-orb-1"></div>
@@ -27,33 +48,156 @@ function formatDate(dateStr) {
     <div class="hero-content">
       <p class="hero-eyebrow">Hello, I'm</p>
       <h1 class="hero-title">
-        <span class="text-gradient">Alkam Fariz</span>
+        <span class="text-gradient">Muhammad Alkam Alfariz</span>
       </h1>
-      <p class="hero-subtitle">Developer &amp; Home Server Enthusiast</p>
+      <p class="hero-subtitle">Informatics Engineer | IT Infrastructure &amp; Automation</p>
       <p class="hero-description">
-        Building robust infrastructure, self-hosted services, and polished web applications — one commit at a time.
+        Versatile Informatics Engineering graduate from Universitas Mercu Buana specializing in IT infrastructure, network optimization, computer vision research, and AI-driven automation.
       </p>
       <div class="hero-ctas">
         <a href="/projects" class="btn btn-primary">View Projects</a>
         <a href="/blog" class="btn btn-secondary">Read Blog</a>
+        <a href="/CV_Muhammad_Alkam_Alfariz.pdf" class="btn btn-cv" download>
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: middle;">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download CV
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- =================== ABOUT =================== -->
+  <!-- =================== ABOUT & EXPERIENCE =================== -->
   <section class="section" id="about-section">
     <div class="section-container">
-      <h2 class="section-title text-gradient">About Me</h2>
+      <h2 class="section-title text-gradient">About &amp; Experience</h2>
       <div class="glass-card about-card" id="welcome-card">
         <p class="about-text">
-          I'm a passionate developer with a love for self-hosted infrastructure and open-source technology.
-          I run my own home server stack — a Kubernetes cluster, Docker containers, Traefik proxies, and a full
-          observability suite — all managed with Ansible and GitOps practices. When I'm not tuning my home lab,
-          I'm building web apps with modern frameworks like Astro and React, and writing E2E tests with Playwright.
+          I'm a versatile Informatics Engineering graduate from Universitas Mercu Buana (GPA 3.90/4.00) with proven expertise in IT infrastructure, system automation, and cross-platform integrations. I am proficient in scripting workflows using Python (BERT-NLP, computer vision) and PowerShell, managing relational databases, and configuring central monitoring platforms like ZoneMinder and Zabbix.
         </p>
         <p class="about-text">
-          My philosophy: own your data, automate everything, and never stop learning.
+          Beyond IT support, I run an advanced self-hosted homelab stack including K3s/Kubernetes, Docker, Traefik proxying, and Prometheus/Grafana/Loki observability suites. My engineering philosophy is built around data ownership, automating repetitive tasks, and robust system monitoring.
         </p>
+        
+        <div class="bio-highlights">
+          <div class="bio-highlight">
+            <span class="highlight-label">Degree</span>
+            <span class="highlight-val">B.Eng. Informatics</span>
+          </div>
+          <div class="bio-highlight">
+            <span class="highlight-label">GPA</span>
+            <span class="highlight-val">3.90 / 4.00</span>
+          </div>
+          <div class="bio-highlight">
+            <span class="highlight-label">Location</span>
+            <span class="highlight-val">Tangerang, ID</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Experience Timeline Grid -->
+      <div class="experience-container">
+        <div class="experience-column">
+          <h3 class="experience-heading"><span class="icon">💼</span> Work Experience</h3>
+          <div class="timeline">
+            <!-- Sinarmas Multifinance -->
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card">
+                <span class="timeline-date">May 2025 - Present</span>
+                <h4 class="timeline-role">IT Hardware Support Internship</h4>
+                <h5 class="timeline-company">Sinarmas Multifinance</h5>
+                <p class="timeline-desc">Managed workstations, DVR systems, and access management across multiple OS.</p>
+                <ul class="timeline-points">
+                  <li>Performed Windows 11, Linux openSUSE 15.6, and macOS Sequoia installations across 40+ workstations.</li>
+                  <li>Configured DVR systems with ZoneMinder, establishing centralized 24/7 monitoring for 15+ cameras.</li>
+                  <li>Managed Active Directory accounts and OpenVPN configurations for 200+ employees.</li>
+                </ul>
+              </div>
+            </div>
+            
+            <!-- EMTEK Group -->
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card">
+                <span class="timeline-date">Sep 2024 - Dec 2024</span>
+                <h4 class="timeline-role">IT Support Internship</h4>
+                <h5 class="timeline-company">EMTEK Group (RS EMC Alam Sutera)</h5>
+                <p class="timeline-desc">Optimized hospital network systems and automated compliance audits.</p>
+                <ul class="timeline-points">
+                  <li>Deployed 50+ IoT devices/APs, reducing network downtime via custom monitoring scripts.</li>
+                  <li>Automated audit logging with Python (fuzzy search &amp; NLP), saving 15 manual hours/week.</li>
+                  <li>Upgraded 30+ HDDs to SSDs and crimped 150+ Cat6 cables with 99% uptime.</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Halodoc -->
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card">
+                <span class="timeline-date">Feb 2024 - Jun 2024</span>
+                <h4 class="timeline-role">Tech IT Infrastructure Internship</h4>
+                <h5 class="timeline-company">Halodoc (PT Media Dokter Investama)</h5>
+                <p class="timeline-desc">Resolved hardware/software incidents and automated compliance purging.</p>
+                <ul class="timeline-points">
+                  <li>Resolved 15–20 weekly incidents, reducing resolution time from 2.5h to 1.6h (35% reduction).</li>
+                  <li>Integrated Zabbix-Jira to auto-generate tickets, ensuring 100% SLA compliance.</li>
+                  <li>Built PowerShell scripts to purge non-compliant files on reboot, saving 6 hours/week.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="experience-column">
+          <h3 class="experience-heading"><span class="icon">🎓</span> Education &amp; Org</h3>
+          <div class="timeline">
+            <!-- Universitas Mercu Buana -->
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card">
+                <span class="timeline-date">Aug 2021 - Aug 2025</span>
+                <h4 class="timeline-role">Bachelor of Informatics Engineering</h4>
+                <h5 class="timeline-company">Universitas Mercu Buana</h5>
+                <p class="timeline-desc">Graduated with a GPA of 3.90/4.00. Active in exhibitions and student association committee.</p>
+                <ul class="timeline-points">
+                  <li>Committee member of the event division for the Informatics Student Association (2021).</li>
+                  <li>Official host at the UMB Student Work Exhibition event (2022).</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- ASLAB Fasilkom UMB -->
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card">
+                <span class="timeline-date">Jan 2024 - Dec 2024</span>
+                <h4 class="timeline-role">Assistant Coordinator</h4>
+                <h5 class="timeline-company">ASLAB Fasilkom UMB</h5>
+                <p class="timeline-desc">Managed student assistants and labs, optimized lab hiring workflows.</p>
+                <ul class="timeline-points">
+                  <li>Managed 15–20 assistants across 5 computer labs via Notion scheduling.</li>
+                  <li>Revamped laboratory hiring using automated Python/network sim tests.</li>
+                  <li>Built KPI dashboard tracking metrics to cut recurring complaints by 25%.</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- SMKN 1 Tangerang -->
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card">
+                <span class="timeline-date">Jul 2018 - Jul 2021</span>
+                <h4 class="timeline-role">High School Diploma</h4>
+                <h5 class="timeline-company">SMKN 1 Tangerang</h5>
+                <p class="timeline-desc">Computer &amp; Network Engineering. Finalist in Network Infrastructure Competition.</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -65,7 +209,7 @@ function formatDate(dateStr) {
       <div class="skills-grid">
         {Object.entries(skills).map(([category, items]) => (
           <div class="glass-card skill-category">
-            <h3 class="skill-category-title">{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
+            <h3 class="skill-category-title">{categoryTitles[category] || category}</h3>
             <div class="skill-badges">
               {items.map(skill => (
                 <span class="skill-badge">{skill}</span>
@@ -93,8 +237,11 @@ function formatDate(dateStr) {
             </div>
             <div class="project-links">
               <a href={project.githubUrl} class="github-link" target="_blank" rel="noopener noreferrer">GitHub</a>
-              <a href={project.liveUrl} class="live-link" target="_blank" rel="noopener noreferrer">Live Demo</a>
+              {project.liveUrl && (
+                <a href={project.liveUrl} class="live-link" target="_blank" rel="noopener noreferrer">Live Demo</a>
+              )}
             </div>
+
           </div>
         ))}
       </div>
@@ -278,6 +425,17 @@ function formatDate(dateStr) {
     border-color: var(--accent-cyan);
     transform: translateY(-3px);
   }
+  .btn-cv {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    color: var(--text-light);
+    box-shadow: 0 4px 20px rgba(168, 85, 247, 0.25);
+  }
+  .btn-cv:hover {
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+    color: var(--text-light);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(168, 85, 247, 0.45);
+  }
 
   /* ---- Sections ---- */
   .section {
@@ -305,9 +463,135 @@ function formatDate(dateStr) {
     font-size: 1.05rem;
     line-height: 1.8;
     color: var(--text-muted);
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
   }
   .about-text:last-child { margin-bottom: 0; }
+
+  /* ---- Bio Highlights ---- */
+  .bio-highlights {
+    display: flex;
+    justify-content: space-around;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 1.5rem;
+  }
+  .bio-highlight {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .highlight-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+  }
+  .highlight-val {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+  }
+
+  /* ---- Experience & Timeline ---- */
+  .experience-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-top: 4rem;
+  }
+  @media (max-width: 991px) {
+    .experience-container {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
+  .experience-heading {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 0.75rem;
+  }
+  .experience-heading .icon {
+    font-size: 1.4rem;
+  }
+  .timeline {
+    position: relative;
+    border-left: 2px solid var(--glass-border);
+    padding-left: 1.75rem;
+    margin-left: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .timeline-item {
+    position: relative;
+  }
+  .timeline-dot {
+    position: absolute;
+    left: calc(-1.75rem - 6px - 1px);
+    top: 0.5rem;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+    border: 3px solid var(--bg-dark);
+    box-shadow: 0 0 10px var(--accent-cyan);
+    transition: var(--transition-smooth);
+  }
+  .timeline-item:hover .timeline-dot {
+    transform: scale(1.3);
+    box-shadow: 0 0 15px var(--accent-purple);
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  }
+  .timeline-content {
+    padding: 1.5rem;
+  }
+  .timeline-date {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .timeline-role {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  .timeline-company {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  .timeline-desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+  .timeline-points {
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .timeline-points li {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
 
   /* ---- Skills ---- */
   .skills-grid {

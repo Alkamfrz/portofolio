@@ -10,8 +10,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "playwright test"
+    "test": "playwright test",
+    "mock-server": "node mock-server.js",
+    "audit": "node scripts/audit-lighthouse.js"
   },
+
   "dependencies": {
     "@astrojs/react": "^5.0.7",
     "astro": "^6.4.4",

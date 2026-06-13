@@ -1,4 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
+
+// Lightweight toast helper (uses the #toast-container in Layout)
+function showToast(message, type = 'success', duration = 4000) {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.setAttribute('role', 'alert');
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add('dismissing');
+    toast.addEventListener('animationend', () => toast.remove(), { once: true });
+  }, duration);
+}
 
 export default function ContactForm() {
   const [name, setName] = useState('');
@@ -11,7 +26,7 @@ export default function ContactForm() {
   const [statusText, setStatusText] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
     // Reset errors
@@ -59,20 +74,25 @@ export default function ContactForm() {
       if (response.ok) {
         setStatus('success');
         setStatusText(data.message || 'Message sent successfully!');
+        showToast(data.message || 'Message sent successfully!', 'success');
         setName('');
         setEmail('');
         setMessage('');
       } else {
         setStatus('error');
         setStatusText(data.error || 'Something went wrong.');
+        showToast(data.error || 'Something went wrong.', 'error');
       }
     } catch (err) {
       setStatus('error');
       setStatusText('Network error. Please try again.');
+      showToast('Network error. Please try again.', 'error');
     } finally {
       setSubmitting(false);
     }
-  };
+  }, [name, email, message]);
+
+
 
   return (
     <div className="contact-form-wrapper">
@@ -87,7 +107,11 @@ export default function ContactForm() {
             onChange={(e) => setName(e.target.value)}
             placeholder="Your name"
             autoComplete="name"
+            aria-invalid={!!nameError}
+            aria-describedby="name-error"
+            style={nameError ? { borderColor: '#f87171' } : undefined}
           />
+          <input type="text" id="contact-honeypot" name="honeypot" style={{ display: 'none' }} tabIndex="-1" autoComplete="off" />
           <span className="error-msg" id="name-error">{nameError}</span>
         </div>
 
@@ -101,6 +125,9 @@ export default function ContactForm() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="your@email.com"
             autoComplete="email"
+            aria-invalid={!!emailError}
+            aria-describedby="email-error"
+            style={emailError ? { borderColor: '#f87171' } : undefined}
           />
           <span className="error-msg" id="email-error">{emailError}</span>
         </div>
@@ -114,6 +141,9 @@ export default function ContactForm() {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Your message..."
             rows={5}
+            aria-invalid={!!messageError}
+            aria-describedby="message-error"
+            style={messageError ? { borderColor: '#f87171' } : undefined}
           />
           <span className="error-msg" id="message-error">{messageError}</span>
         </div>
@@ -123,9 +153,18 @@ export default function ContactForm() {
           id="contact-submit"
           disabled={submitting}
           className="submit-btn"
+          aria-label={submitting ? 'Sending message, please wait' : 'Send message'}
         >
-          {submitting ? 'Sending...' : 'Send Message'}
+          {submitting ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ animation: 'spin 0.8s linear infinite' }}>
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              </svg>
+              Sending...
+            </span>
+          ) : 'Send Message'}
         </button>
+
 
         {status && (
           <div id="contact-status" className={status}>

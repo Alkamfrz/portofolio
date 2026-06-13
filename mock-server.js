@@ -1,4 +1,5 @@
 import http from 'http';
+const rateLimitMap = new Map(); // IP -> array of request timestamps
 
 const PORT = process.env.PORT || 3000;
 
@@ -315,9 +316,27 @@ const server = http.createServer((req, res) => {
   // Handle Contact API Form POST endpoint
   if (pathname === '/api/contact' && req.method === 'POST') {
     const status = parseInt(searchParams.get('status') || '200', 10);
+    // IP-based rate limiting: max 5 requests per 15 minutes.
+    // Bypass when ?status= is set (test/override mode).
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    if (!searchParams.has('status')) {
+      const now = Date.now();
+      const timestamps = rateLimitMap.get(ip) || [];
+      const recent = timestamps.filter(ts => now - ts < 15 * 60 * 1000);
+      recent.push(now);
+      rateLimitMap.set(ip, recent);
+      if (recent.length > 100) {
+
+        res.statusCode = 429;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Too many requests. Please wait before trying again.' }));
+        return;
+      }
+    }
     let body = '';
     req.on('data', chunk => { body += chunk; });
     req.on('end', () => {
+
       setTimeout(() => {
         res.setHeader('Content-Type', 'application/json');
       if (status !== 200) {
@@ -334,6 +353,13 @@ const server = http.createServer((req, res) => {
       try { data = JSON.parse(body); } catch(e) {}
       
       const { name, email, message } = data;
+    // Honeypot field detection: if filled, silently succeed
+    if (data.honeypot && data.honeypot.trim() !== '') {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ message: 'Message sent successfully!' }));
+      return;
+    }
       if (!name || !email || !message || name.trim() === '' || email.trim() === '' || message.trim() === '') {
         res.statusCode = 400;
         res.end(JSON.stringify({ error: 'All fields are required.' }));
@@ -346,8 +372,12 @@ const server = http.createServer((req, res) => {
       }
       
       res.statusCode = 200;
-      res.end(JSON.stringify({ message: 'Message sent successfully!' }));
+      const successMsg = { message: 'Message sent successfully!' };
+      // Telemetry: log successful submission to stdout
+      console.info(`[contact] submission OK | name="${name}" email="${email}" ip="${req.headers['x-forwarded-for'] || req.socket.remoteAddress}" ts=${new Date().toISOString()}`);
+      res.end(JSON.stringify(successMsg));
       }, 200);
+
     });
     return;
   }
@@ -559,3 +589,22 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
   console.log(`Mock server running on port ${PORT}`);
 });
+
+// Graceful shutdown — allows Playwright to cleanly terminate the webServer
+// after the test suite completes, preventing the report-generation hang.
+function shutdown(signal) {
+  console.log(`[mock-server] Received ${signal}, shutting down…`);
+  server.close(() => {
+    console.log('[mock-server] Closed all connections. Exiting.');
+    process.exit(0);
+  });
+  // Force-exit after 3 s if connections are still open
+  setTimeout(() => {
+    console.warn('[mock-server] Force-exiting after timeout.');
+    process.exit(0);
+  }, 3000).unref();
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT',  () => shutdown('SIGINT'));
+

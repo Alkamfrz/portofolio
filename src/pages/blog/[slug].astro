@@ -11,6 +11,15 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
+const blogJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": post.data.title,
+  "datePublished": post.data.date,
+  "author": { "@type": "Person", "name": "Alkam Fariz" },
+  "description": post.data.description,
+  "url": `https://alkamfariz.dev/blog/${post.id}`
+};
 const { Content } = await render(post);
 
 function formatDate(dateStr) {
@@ -20,6 +29,7 @@ function formatDate(dateStr) {
 ---
 
 <Layout title={post.data.title}>
+  <script type="application/ld+json">{JSON.stringify(blogJsonLd)}</script>
   <article class="section">
     <div class="section-container">
       <a href="/blog" class="back-link">&larr; Back to Blog</a>

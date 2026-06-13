@@ -1,8 +1,10 @@
 export const skills = {
-  languages: ['JavaScript', 'TypeScript', 'Python', 'Bash', 'YAML'],
-  frameworks: ['React', 'Astro', 'Node.js', 'Express', 'Next.js'],
-  devops: ['Docker', 'Kubernetes', 'Ansible', 'Nginx', 'Traefik', 'CI/CD'],
-  tools: ['Git', 'Playwright', 'VS Code', 'Prometheus', 'Grafana', 'Loki'],
+  languages: ['Python', 'JavaScript', 'TypeScript', 'C++', 'Java', 'PHP', 'Bash', 'PowerShell', 'SQL'],
+  databases: ['MySQL', 'PostgreSQL', 'Oracle Database', 'Firebase'],
+  infrastructure: ['Docker', 'Kubernetes (K3s)', 'Ansible', 'Traefik', 'Nginx', 'Active Directory', 'OpenVPN'],
+  observability: ['Zabbix', 'Prometheus', 'Grafana', 'Loki', 'Jira'],
+  systems: ['Linux (openSUSE, Ubuntu)', 'macOS Sequoia', 'Windows Server', 'ZoneMinder (CCTV)'],
+  softskills: ['Leadership', 'Critical Thinking', 'Problem Solving', 'Teamwork', 'Communication']
 };
 
 export default skills;

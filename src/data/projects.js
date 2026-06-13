@@ -1,6 +1,24 @@
 export const projects = [
   {
     id: 1,
+    title: 'CFO-RetinaNet: Convolutional Feature Optimization',
+    description: 'Convolutional Feature Optimization for Oil Palm Ripeness Assessment in Precision Agriculture, utilizing RetinaNet architectures for computer vision-based quality grading.',
+    techStack: ['Python', 'PyTorch', 'Computer Vision', 'RetinaNet', 'Deep Learning'],
+    liveUrl: 'https://github.com/Alkamfrz',
+    githubUrl: 'https://github.com/Alkamfrz',
+    featured: true,
+  },
+  {
+    id: 2,
+    title: 'Brain Tumor Detection & Classification',
+    description: 'Developed an end-to-end computer vision pipeline using fine-tuned CNN architectures (ResNet50 and EfficientNet) for automatic detection and classification of brain tumors from MRI brain scans.',
+    techStack: ['Python', 'TensorFlow', 'CNN', 'ResNet50', 'EfficientNet'],
+    liveUrl: 'https://github.com/Alkamfrz',
+    githubUrl: 'https://github.com/Alkamfrz',
+    featured: true,
+  },
+  {
+    id: 3,
     title: 'Home Server Infrastructure',
     description: 'Automated self-hosted home infrastructure using Docker, K3s, and Ansible. Features Traefik reverse proxy, automated SSL, and Gitea for self-hosted Git.',
     techStack: ['Docker', 'K3s', 'Ansible', 'Traefik', 'Linux'],
@@ -9,22 +27,22 @@ export const projects = [
     featured: true,
   },
   {
-    id: 2,
-    title: 'Portfolio Website',
-    description: 'Personal portfolio built with Astro and React, featuring glassmorphism design, Playwright E2E testing, and a Docker-based deployment pipeline.',
-    techStack: ['Astro', 'React', 'Playwright', 'Docker', 'Nginx'],
-    liveUrl: 'https://alkamfrz.my.id',
-    githubUrl: 'https://github.com/alkamfrz/alkamfrz_portfolio',
-    featured: true,
-  },
-  {
-    id: 3,
+    id: 4,
     title: 'Monitoring Stack',
     description: 'Comprehensive monitoring solution using Prometheus, Grafana, and Loki for full observability of home lab services and infrastructure health.',
     techStack: ['Prometheus', 'Grafana', 'Loki', 'Docker Compose', 'Node Exporter'],
     liveUrl: 'https://grafana.alkamfrz.my.id',
     githubUrl: 'https://github.com/alkamfrz/monitoring-stack',
-    featured: true,
+    featured: false,
+  },
+  {
+    id: 5,
+    title: 'Portfolio Website',
+    description: 'Personal portfolio built with Astro and React, featuring glassmorphism design, Playwright E2E testing, and a Docker-based deployment pipeline.',
+    techStack: ['Astro', 'React', 'Playwright', 'Docker', 'Nginx'],
+    liveUrl: 'https://alkamfrz.my.id',
+    githubUrl: 'https://github.com/alkamfrz/alkamfrz_portfolio',
+    featured: false,
   },
 ];
 
