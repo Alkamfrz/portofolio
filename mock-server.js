@@ -586,15 +586,16 @@ const server = http.createServer((req, res) => {
   }
 });
 
+// Idle watchdog: if no HTTP request arrives for 60s, assume tests are done
+// and exit. This handles Windows where Playwright's child.kill('SIGTERM')
+// calls TerminateProcess() (which does not fire JS signal handlers).
+let idleTimer = setTimeout(() => process.exit(0), 60000);
+server.on('request', () => {
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => process.exit(0), 60000);
+});
+
 server.listen(PORT, () => {
   console.log(`Mock server running on port ${PORT}`);
 });
-
-// Immediate shutdown — Playwright on Windows has trouble with graceful
-// server.close() because keep-alive browser connections prevent clean exit.
-// We just force-exit; the OS reclaims sockets immediately.
-process.on('SIGTERM',  () => process.exit(0));
-process.on('SIGINT',   () => process.exit(0));
-process.on('SIGHUP',   () => process.exit(0));
-process.on('SIGBREAK', () => process.exit(0));
 
