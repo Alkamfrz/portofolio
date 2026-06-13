@@ -28,7 +28,7 @@ tests/               # Playwright E2E specs (tier1, tier2)
 
 ## Deployment
 
-Built via Docker multi-stage (Node 22 → nginx alpine). Deployed to home server at `10.1.30.5` through Docker Compose, building directly from `github.com/Alkamfrz/portofolio.git#main`.
+Built via Docker multi-stage (Node 22 → nginx alpine). Deployed to home server (`docker-tng`) through Docker Compose, building directly from `github.com/Alkamfrz/portofolio.git#main`.
 
 ## Tech Stack
 

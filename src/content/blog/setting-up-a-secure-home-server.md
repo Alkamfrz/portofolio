@@ -11,14 +11,14 @@ Running your own home server is incredibly rewarding — but only if it's done s
 ## Hypervisor & Virtualization
 
 At the core of the homelab is **Proxmox VE** hosting dedicated VMs and LXC containers to segment responsibilities:
-- **`pve-tng` (10.1.99.2)**: Proxmox host.
-- **`haproxy-tng` (10.1.30.3)**: Dedicated LXC container for reverse proxy and SSL termination.
-- **`docker-tng` (10.1.30.5)**: Linux VM hosting all Docker Compose stacks.
-- **`NAS-TNG` (10.1.30.6)**: TrueNAS shared NFS storage mounted at `/mnt/nas`.
+- **`pve-tng`**: Proxmox host.
+- **`haproxy-tng`**: Dedicated LXC container for reverse proxy and SSL termination.
+- **`docker-tng`**: Linux VM hosting all Docker Compose stacks.
+- **`nas-tng`**: TrueNAS shared NFS storage mounted at `/mnt/nas`.
 
 ## Why HAProxy & Cloudflare Tunnels?
 
-Instead of opening WAN ports on the router and exposing the public IP, the server uses a **Cloudflare Tunnel** (`cfd-tng` at `10.1.30.2`) for public traffic. 
+Instead of opening WAN ports on the router and exposing the public IP, the server uses a **Cloudflare Tunnel** (`cfd-tng`) for public traffic. 
 All incoming web requests flow through the tunnel to **HAProxy**, which terminates SSL and manages routing to backend Docker containers.
 
 For local mapping, a **Technitium DNS** server resolves `*.alkamfrz.my.id` domains internally to HAProxy, allowing transparent access inside the home network.

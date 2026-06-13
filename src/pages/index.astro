@@ -357,12 +357,34 @@ const categoryTitles = {
                 </marker>
               </defs>
 
+              <!-- Zone backgrounds -->
+              <rect x="55" y="165" width="90" height="70" rx="10" class="zone-bg zone-wan" />
+              <rect x="175" y="155" width="210" height="90" rx="10" class="zone-bg zone-edge" />
+              <rect x="445" y="65" width="130" height="100" rx="10" class="zone-bg zone-virt" />
+              <rect x="460" y="230" width="120" height="100" rx="10" class="zone-bg zone-work" />
+              <rect x="625" y="230" width="110" height="100" rx="10" class="zone-bg zone-storage" />
+
+              <!-- Zone labels -->
+              <text x="100" y="178" class="zone-label">Internet</text>
+              <text x="280" y="168" class="zone-label">Edge Proxy</text>
+              <text x="510" y="78" class="zone-label">Virtualization</text>
+              <text x="520" y="243" class="zone-label">Workloads</text>
+              <text x="680" y="243" class="zone-label">Storage</text>
+
               <path d="M 100 200 L 220 200" class="conn-line flow-1" marker-end="url(#arrow)" />
               <path d="M 220 200 L 360 200" class="conn-line flow-2" marker-end="url(#arrow)" />
               <path d="M 360 200 L 520 120" class="conn-line flow-3" marker-end="url(#arrow)" />
               <path d="M 360 200 L 520 280" class="conn-line flow-4" marker-end="url(#arrow)" />
               <path d="M 520 280 L 680 280" class="conn-line flow-5" marker-end="url(#arrow)" />
               <path d="M 520 120 L 520 280" class="conn-line flow-6" style="stroke-dasharray: 4;" />
+
+              <!-- Flow labels -->
+              <text x="160" y="192" class="flow-label">HTTPS</text>
+              <text x="290" y="192" class="flow-label">Tunnel</text>
+              <text x="440" y="168" class="flow-label">HTTP/S</text>
+              <text x="440" y="246" class="flow-label">Mgmt</text>
+              <text x="600" y="272" class="flow-label">NFS</text>
+              <text x="528" y="204" class="flow-label">KVM</text>
 
               <g class="node-group" data-node="internet" style="cursor: pointer;">
                 <circle cx="100" cy="200" r="30" class="node-circle" />
@@ -381,21 +403,21 @@ const categoryTitles = {
                 <circle cx="360" cy="200" r="35" class="node-circle" />
                 <circle cx="382" cy="178" r="4" class="node-status-dot" />
                 <text x="360" y="196" text-anchor="middle" class="node-text">HAProxy</text>
-                <text x="360" y="212" text-anchor="middle" class="node-subtext">10.1.30.3</text>
+                <text x="360" y="212" text-anchor="middle" class="node-subtext">haproxy-tng</text>
               </g>
 
               <g class="node-group" data-node="proxmox" style="cursor: pointer;">
                 <rect x="465" y="75" width="110" height="90" rx="10" class="node-rect" />
                 <circle cx="558" cy="88" r="4" class="node-status-dot" />
                 <text x="520" y="115" text-anchor="middle" class="node-text">Proxmox VE</text>
-                <text x="520" y="135" text-anchor="middle" class="node-subtext">10.1.99.2</text>
+                <text x="520" y="135" text-anchor="middle" class="node-subtext">pve-tng</text>
               </g>
 
               <g class="node-group" data-node="docker" style="cursor: pointer;">
                 <circle cx="520" cy="280" r="40" class="node-circle" />
                 <circle cx="548" cy="254" r="4" class="node-status-dot" />
                 <text x="520" y="276" text-anchor="middle" class="node-text">Docker VM</text>
-                <text x="520" y="294" text-anchor="middle" class="node-subtext">10.1.30.5</text>
+                <text x="520" y="294" text-anchor="middle" class="node-subtext">docker-tng</text>
               </g>
 
               <g class="node-group" data-node="nas" style="cursor: pointer;">
@@ -403,19 +425,22 @@ const categoryTitles = {
                 <circle cx="710" cy="248" r="4" class="node-status-dot" />
                 <text x="680" y="272" text-anchor="middle" class="node-text">UGREEN</text>
                 <text x="680" y="292" text-anchor="middle" class="node-subtext">NAS</text>
-                <text x="680" y="312" text-anchor="middle" class="node-subtext">10.1.30.6</text>
+                <text x="680" y="312" text-anchor="middle" class="node-subtext">nas-tng</text>
               </g>
             </svg>
           </div>
 
           <div class="topology-details glass-card" id="node-details-panel" style="min-height: 220px;">
-            <h3 class="details-name" id="node-detail-name">Select a Node</h3>
-            <p class="details-ip" id="node-detail-ip">Hover or tap on the diagram nodes to inspect details</p>
-            <div class="details-divider"></div>
-            <p class="details-role" id="node-detail-role">Learn about the role of each device in this self-hosted homelab infrastructure.</p>
-            <div class="details-tags" id="node-detail-tags">
-              <span class="tech-badge">Interactive</span>
-              <span class="tech-badge">Network Map</span>
+            <div class="details-accent" id="node-detail-accent"></div>
+            <div class="details-body">
+              <h3 class="details-name" id="node-detail-name">Select a Node</h3>
+              <p class="details-ip" id="node-detail-ip">Hover or tap on the diagram nodes to inspect details</p>
+              <div class="details-divider"></div>
+              <p class="details-role" id="node-detail-role">Learn about the role of each device in this self-hosted homelab infrastructure.</p>
+              <div class="details-tags" id="node-detail-tags">
+                <span class="tech-badge">Interactive</span>
+                <span class="tech-badge">Network Map</span>
+              </div>
             </div>
           </div>
         </div>
@@ -471,37 +496,43 @@ const categoryTitles = {
           name: 'Public WAN / Internet',
           ip: 'Exposed Edge',
           role: 'Incoming HTTPS web user traffic targeted at alkamfrz.my.id. Traffic is fully secure, TLS-encrypted, and protected by Cloudflare Edge.',
-          tags: ['HTTPS', 'TLS 1.3', 'Zero WAN Ports Open']
+          tags: ['HTTPS', 'TLS 1.3', 'Zero WAN Ports Open'],
+          color: '#94a3b8'
         },
         cloudflare: {
           name: 'Cloudflare Tunnel (cfd-tng)',
-          ip: '10.1.30.2 (LXC)',
+          ip: 'cfd-tng (LXC)',
           role: 'Establishes a secure, outbound-only tunnel to Cloudflare Edge. Shields your public IP address completely and removes local port-forwarding requirements.',
-          tags: ['Zero-Trust', 'Cloudflare Tunnel', 'DNS Proxy']
+          tags: ['Zero-Trust', 'Cloudflare Tunnel', 'DNS Proxy'],
+          color: '#22d3ee'
         },
         haproxy: {
           name: 'HAProxy Reverse Proxy (haproxy-tng)',
-          ip: '10.1.30.3 (LXC)',
+          ip: 'haproxy-tng (LXC)',
           role: 'Acts as the central gateway controller. Handles Let\'s Encrypt SSL termination, matches subdomain requests, and ships logs to CrowdSec via syslog UDP.',
-          tags: ['Reverse Proxy', 'SSL Termination', 'syslog-relay', 'CrowdSec Bouncer']
+          tags: ['Reverse Proxy', 'SSL Termination', 'syslog-relay', 'CrowdSec Bouncer'],
+          color: '#22d3ee'
         },
         proxmox: {
           name: 'Proxmox VE Hypervisor (pve-tng)',
-          ip: '10.1.99.2 (Host)',
+          ip: 'pve-tng (Host)',
           role: 'Debian-based hypervisor managing physical bare-metal hardware. Runs VMs (like the Docker VM) and LXC containers (like HAProxy and DNS) under secure segmentation.',
-          tags: ['Hypervisor', 'KVM', 'LXC Containers']
+          tags: ['Hypervisor', 'KVM', 'LXC Containers'],
+          color: '#3b82f6'
         },
         docker: {
           name: 'Docker VM Host (docker-tng)',
-          ip: '10.1.30.5 (VM)',
+          ip: 'docker-tng (VM)',
           role: 'Virtual machine running 11 Docker Compose stacks managed via custom parallel deployment scripts. Runs Portainer EE, Authentik, Immich, Jellyfin, and CrowdSec.',
-          tags: ['Docker Compose', 'Portainer EE', 'Live Restore', 'VM Workloads']
+          tags: ['Docker Compose', 'Portainer EE', 'Live Restore', 'VM Workloads'],
+          color: '#a855f7'
         },
         nas: {
           name: 'UGREEN NAS (NAS-TNG)',
-          ip: '10.1.30.6 (NFS)',
+          ip: 'nas-tng (NFS)',
           role: 'ARM64 Debian 12 NAS appliance with 1.8TB RAID1 (LVM) providing central NFS storage for Docker volumes, Proxmox backups, and file archives. Exports /volume1/Docker, /volume1/Backups, and /volume1/Proxmox VE to the cluster.',
-          tags: ['UGREEN', 'Debian 12', 'NFS Share', 'RAID1 LVM', 'ARM64']
+          tags: ['UGREEN', 'Debian 12', 'NFS Share', 'RAID1 LVM', 'ARM64'],
+          color: '#22c55e'
         }
       };
 
@@ -510,6 +541,7 @@ const categoryTitles = {
       const ipEl = document.getElementById('node-detail-ip');
       const roleEl = document.getElementById('node-detail-role');
       const tagsEl = document.getElementById('node-detail-tags');
+      const accentEl = document.getElementById('node-detail-accent');
       const lines = {
         internet: ['.flow-1'],
         cloudflare: ['.flow-1', '.flow-2'],
@@ -527,6 +559,7 @@ const categoryTitles = {
         ipEl.textContent = info.ip;
         roleEl.textContent = info.role;
         tagsEl.innerHTML = info.tags.map(t => `<span class="tech-badge">${t}</span>`).join('');
+        accentEl.style.background = info.color;
 
         document.querySelectorAll('.conn-line').forEach(l => {
           l.classList.remove('active');
@@ -543,6 +576,18 @@ const categoryTitles = {
         });
       }
 
+      function resetNode() {
+        nameEl.textContent = 'Select a Node';
+        ipEl.textContent = 'Hover or tap on the diagram nodes to inspect details';
+        roleEl.textContent = 'Learn about the role of each device in this self-hosted homelab infrastructure.';
+        tagsEl.innerHTML = '<span class="tech-badge">Interactive</span><span class="tech-badge">Network Map</span>';
+        accentEl.style.background = 'var(--accent-cyan)';
+        document.querySelectorAll('.conn-line').forEach(l => {
+          l.classList.remove('active');
+          l.setAttribute('marker-end', 'url(#arrow)');
+        });
+      }
+
       nodeGroups.forEach(node => {
         node.addEventListener('mouseenter', () => {
           const nodeId = node.getAttribute('data-node');
@@ -555,6 +600,11 @@ const categoryTitles = {
           selectNode(nodeId);
         });
       });
+
+      const topologyWrapper = document.querySelector('.topology-wrapper');
+      if (topologyWrapper) {
+        topologyWrapper.addEventListener('mouseleave', resetNode);
+      }
 
       // --- Collapsible Skills ---
       const skillsToggle = document.getElementById('skills-toggle-btn');
@@ -1230,8 +1280,9 @@ const categoryTitles = {
     background: rgba(15, 23, 42, 0.4);
     border: 1px solid var(--glass-border);
     border-radius: 12px;
-    padding: 1rem;
-    overflow: hidden;
+    padding: 1.25rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .topology-svg {
     display: block;
@@ -1271,15 +1322,46 @@ const categoryTitles = {
   }
   .node-text {
     fill: var(--text-light);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     pointer-events: none;
   }
   .node-subtext {
     fill: var(--accent-cyan);
+    font-size: 10px;
+    font-weight: 600;
+    pointer-events: none;
+  }
+
+  .zone-bg {
+    fill: rgba(255, 255, 255, 0.02);
+    stroke: rgba(255, 255, 255, 0.06);
+    stroke-width: 1;
+    stroke-dasharray: 4, 4;
+    pointer-events: none;
+  }
+  .zone-wan { fill: rgba(148, 163, 184, 0.04); stroke: rgba(148, 163, 184, 0.1); }
+  .zone-edge { fill: rgba(34, 211, 238, 0.04); stroke: rgba(34, 211, 238, 0.08); }
+  .zone-virt { fill: rgba(59, 130, 246, 0.04); stroke: rgba(59, 130, 246, 0.08); }
+  .zone-work { fill: rgba(168, 85, 247, 0.04); stroke: rgba(168, 85, 247, 0.08); }
+  .zone-storage { fill: rgba(34, 197, 94, 0.04); stroke: rgba(34, 197, 94, 0.08); }
+  .zone-label {
+    fill: var(--text-muted);
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    pointer-events: none;
+    text-anchor: middle;
+    opacity: 0.6;
+  }
+  .flow-label {
+    fill: var(--text-muted);
     font-size: 9px;
     font-weight: 600;
     pointer-events: none;
+    text-anchor: middle;
+    opacity: 0.8;
   }
 
   .node-group:hover .node-circle,
@@ -1293,12 +1375,25 @@ const categoryTitles = {
   }
 
   .topology-details {
-    padding: 1.75rem;
+    padding: 0;
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     min-height: 220px;
+    overflow: hidden;
+  }
+  .details-accent {
+    height: 4px;
+    background: var(--accent-cyan);
+    transition: background 0.3s ease;
+    flex-shrink: 0;
+  }
+  .details-body {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
   }
   .details-name {
     font-size: 1.25rem;
