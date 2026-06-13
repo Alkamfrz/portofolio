@@ -368,7 +368,7 @@ const categoryTitles = {
               <text x="100" y="165" class="zone-label">Internet</text>
               <text x="290" y="165" class="zone-label">Edge Proxy</text>
               <text x="520" y="70" class="zone-label">Virtualization</text>
-              <text x="520" y="236" class="zone-label">Workloads</text>
+              <text x="495" y="236" class="zone-label">Workloads</text>
               <text x="680" y="233" class="zone-label">Storage</text>
 
               <path d="M 130 200 L 185 200" class="conn-line flow-1" marker-end="url(#arrow)" />
@@ -601,9 +601,9 @@ const categoryTitles = {
         });
       });
 
-      const topologyWrapper = document.querySelector('.topology-wrapper');
-      if (topologyWrapper) {
-        topologyWrapper.addEventListener('mouseleave', resetNode);
+      const topologySvg = document.querySelector('.topology-svg');
+      if (topologySvg) {
+        topologySvg.addEventListener('mouseleave', resetNode);
       }
 
       // --- Collapsible Skills ---
