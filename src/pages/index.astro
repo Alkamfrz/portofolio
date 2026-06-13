@@ -376,7 +376,7 @@ const categoryTitles = {
               <path d="M 391 184 L 465 148" class="conn-line flow-3" marker-end="url(#arrow)" />
               <path d="M 391 216 L 484 262" class="conn-line flow-4" marker-end="url(#arrow)" />
               <path d="M 560 280 L 635 280" class="conn-line flow-5" marker-end="url(#arrow)" />
-              <path d="M 520 165 L 520 220" class="conn-line flow-6" style="stroke-dasharray: 4;" marker-end="url(#arrow)" />
+              <path d="M 520 165 L 520 240" class="conn-line flow-6" style="stroke-dasharray: 4;" marker-end="url(#arrow)" />
 
               <!-- Flow labels -->
               <text x="160" y="192" class="flow-label">HTTPS</text>
@@ -588,22 +588,36 @@ const categoryTitles = {
         });
       }
 
+      let pinned = false;
+
       nodeGroups.forEach(node => {
         node.addEventListener('mouseenter', () => {
-          const nodeId = node.getAttribute('data-node');
-          selectNode(nodeId);
+          if (!pinned) {
+            const nodeId = node.getAttribute('data-node');
+            selectNode(nodeId);
+          }
+        });
+
+        node.addEventListener('mouseleave', () => {
+          if (!pinned) {
+            resetNode();
+          }
         });
 
         node.addEventListener('click', (e) => {
           e.preventDefault();
+          pinned = true;
           const nodeId = node.getAttribute('data-node');
           selectNode(nodeId);
         });
       });
 
-      const topologySvg = document.querySelector('.topology-svg');
-      if (topologySvg) {
-        topologySvg.addEventListener('mouseleave', resetNode);
+      const topologyDiagram = document.querySelector('.topology-diagram');
+      if (topologyDiagram) {
+        topologyDiagram.addEventListener('mouseleave', () => {
+          pinned = false;
+          resetNode();
+        });
       }
 
       // --- Collapsible Skills ---
