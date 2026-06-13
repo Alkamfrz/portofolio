@@ -47,7 +47,23 @@
   --page-text: var(--text-light);
 }
 
-/* Light theme overrides */
+/* Light theme via OS preference (fallback before JS runs) */
+@media (prefers-color-scheme: light) {
+  :root {
+    --page-bg: #f0f4f8;
+    --page-text: #1e293b;
+    --text-light: #1e293b;
+    --text-muted: #475569;
+    --glass-bg: rgba(255, 255, 255, 0.6);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-hover-bg: rgba(255, 255, 255, 0.8);
+    --glass-hover-border: rgba(0, 0, 0, 0.15);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    --glass-hover-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Light theme overrides (JS-applied, overrides preference) */
 [data-theme="light"] {
   --page-bg: #f0f4f8;
   --page-text: #1e293b;
@@ -214,14 +230,6 @@ a {
   box-shadow: var(--glass-shadow);
   border-radius: 16px;
   transition: var(--transition-smooth);
-}
-
-/* Micro-animations hover behavior */
-.glass-card:hover {
-  background: var(--glass-hover-bg);
-  border-color: var(--glass-hover-border);
-  box-shadow: var(--glass-hover-shadow);
-  transform: translateY(-4px);
 }
 
 /* Navigation CSS */
@@ -550,7 +558,7 @@ a {
   background: var(--glass-hover-bg);
   border-color: var(--glass-hover-border);
   box-shadow: var(--glass-hover-shadow);
-  transform: translateY(-6px);
+  transform: translateY(-4px);
 }
 .glass-card.glow-hover:hover {
   border-color: var(--accent-cyan);
@@ -747,20 +755,6 @@ a {
 }
 
 /* ---- Interactive Timeline Toggle ---- */
-.timeline-toggle-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 2.5rem;
-}
-.timeline-toggle-btn {
-  display: flex;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 9999px;
-  padding: 0.25rem;
-  position: relative;
-  gap: 0.25rem;
-}
 .timeline-tab {
   background: transparent;
   border: none;
@@ -1116,6 +1110,66 @@ a {
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.5rem;
   align-items: start;
+}
+
+/* ---- Project Images ---- */
+.project-image-wrapper {
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--glass-bg);
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.project-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.project-card:hover .project-image {
+  transform: scale(1.05);
+}
+.project-card.spotlight .project-image-wrapper {
+  grid-row: span 2;
+  aspect-ratio: 4 / 3;
+}
+
+/* ---- Homelab Node Status Indicators ---- */
+.node-status-dot {
+  fill: #22c55e;
+  animation: nodePulse 2s ease-in-out infinite;
+  transform-origin: center;
+}
+@keyframes nodePulse {
+  0%, 100% { opacity: 0.4; r: 4; }
+  50% { opacity: 1; r: 6; }
+}
+.node-group:hover .node-status-dot {
+  animation-duration: 0.8s;
+}
+
+/* ---- Featured Projects with Images ---- */
+.featured-projects-wrapper .project-card.spotlight .project-image-wrapper {
+  max-height: 250px;
+}
+
+/* ---- Project Image Placeholder ---- */
+.project-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--glass-bg) 0%, var(--surface) 100%);
+  color: var(--text-muted);
+  opacity: 0.5;
+  min-height: 120px;
+}
+.project-image-placeholder svg {
+  opacity: 0.6;
 }
 
 

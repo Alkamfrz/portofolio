@@ -29,14 +29,7 @@ export default function Header() {
         progressBar.style.width = scrolled + '%';
       }
       // Header shrink
-      const header = document.querySelector('.header');
-      if (header) {
-        if (window.scrollY > 80) {
-          header.classList.add('compact');
-        } else {
-          header.classList.remove('compact');
-        }
-      }
+      setCompact(window.scrollY > 80);
     };
 
     const handleEscape = (e) => {

@@ -9,7 +9,7 @@ export default defineConfig({
   reporter: 'list',
 
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://localhost:4321',
     trace: 'on-first-retry',
   },
   projects: [
@@ -35,8 +35,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'node mock-server.js',
-    url: 'http://localhost:3000',
+    command: 'npx astro preview --port 4321',
+    url: 'http://localhost:4321',
     reuseExistingServer: false,
     stdout: 'pipe',
     stderr: 'pipe',

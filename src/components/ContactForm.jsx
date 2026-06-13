@@ -59,14 +59,17 @@ export default function ContactForm() {
     setSubmitting(true);
 
     try {
-      const pageParams = new URLSearchParams(window.location.search);
-      const statusParam = pageParams.get('status') || '';
-      const apiUrl = statusParam ? `/api/contact?status=${statusParam}` : '/api/contact';
+      const apiUrl = '/api/contact';
 
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim(), email: email.trim(), message: message.trim() }),
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          message: message.trim(),
+          honeypot: document.getElementById('contact-honeypot')?.value || ''
+        }),
       });
 
       const data = await response.json();
@@ -167,7 +170,7 @@ export default function ContactForm() {
 
 
         {status && (
-          <div id="contact-status" className={status}>
+          <div id="contact-status" className={status} role="alert" aria-live="polite">
             {statusText}
           </div>
         )}
@@ -176,7 +179,7 @@ export default function ContactForm() {
         )}
       </form>
 
-      <div className="social-links-section">
+      <nav className="social-links-section" aria-label="Social links">
         <a
           id="contact-github"
           href="https://github.com/alkamfrz"
@@ -202,7 +205,7 @@ export default function ContactForm() {
         >
           <span>Email</span>
         </a>
-      </div>
+      </nav>
     </div>
   );
 }
