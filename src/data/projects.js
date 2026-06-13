@@ -6,7 +6,7 @@ export const projects = [
     techStack: ['Python', 'PyTorch', 'Computer Vision', 'RetinaNet', 'Deep Learning'],
     liveUrl: '',
     githubUrl: 'https://github.com/Alkamfrz/Retinanet-Oil-Palm-Bunch-Ripeness-Detection',
-    journalUrl: 'https://eprints.uad.ac.id/84763/1/9-CFO-RetinaNet%20Convolutional%20Feature%20Optimization%20for%20Oil%20Palm%20Ripeness%20Assessment%20in%20Precision%20Agriculture.pdf',
+    journalUrl: 'https://journal.uad.ac.id/index.php/JITEKI/article/view/30687',
     image: '/images/cfo-retinanet.jpg',
     featured: true,
     status: 'archived',
