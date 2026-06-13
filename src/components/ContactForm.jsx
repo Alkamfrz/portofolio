@@ -59,7 +59,7 @@ export default function ContactForm() {
     setSubmitting(true);
 
     try {
-      const apiUrl = '/api/contact';
+      const apiUrl = 'https://formspree.io/f/maqzldpg';
 
       const response = await fetch(apiUrl, {
         method: 'POST',
