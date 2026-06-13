@@ -30,7 +30,7 @@ const { title } = Astro.props;
     <meta property="og:type" content="website" />
     <meta property="og:url" content={Astro.url.href} />
     <title>{title} - Alkamfrz Portfolio</title>
-    <script>
+    <script is:inline>
       const applyTheme = () => {
         var theme = localStorage.getItem('theme');
         if (!theme) theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -120,33 +120,38 @@ const { title } = Astro.props;
           }, { threshold: 0, rootMargin: '-100px 0px -60% 0px' });
           spySections.forEach(s => spyObserver.observe(s));
         }
-      }
 
-      // ----- Back to Top (global, one-time) -----
-      (function() {
+        // ----- Back to Top Button Click Setup -----
         const backToTopBtn = document.getElementById('back-to-top');
         if (backToTopBtn) {
-          window.addEventListener('scroll', () => {
-            backToTopBtn.classList.toggle('visible', window.scrollY > 400);
-          });
-          backToTopBtn.addEventListener('click', () => {
+          backToTopBtn.onclick = () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
-          });
+          };
         }
+      }
 
-        // ----- Reading Progress Badge (blog only) -----
-        const progressBadge = document.getElementById('reading-progress-badge');
-        const readingContent = document.querySelector('.post-content');
-        if (progressBadge && readingContent) {
-          window.addEventListener('scroll', () => {
+      // ----- Global Scroll Event Handler (registered once to prevent duplicate window listeners) -----
+      if (!window.__hasScrollObserver) {
+        window.__hasScrollObserver = true;
+        window.addEventListener('scroll', () => {
+          // 1. Back to top visibility toggle
+          const backToTopBtn = document.getElementById('back-to-top');
+          if (backToTopBtn) {
+            backToTopBtn.classList.toggle('visible', window.scrollY > 400);
+          }
+
+          // 2. Reading progress badge (blog only)
+          const progressBadge = document.getElementById('reading-progress-badge');
+          const readingContent = document.querySelector('.post-content');
+          if (progressBadge && readingContent) {
             const scrollTop = window.scrollY;
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const percent = docHeight > 0 ? Math.round((scrollTop / docHeight) * 100) : 0;
             progressBadge.textContent = percent + '% read';
             progressBadge.classList.toggle('visible', scrollTop > 600 && percent < 98);
-          });
-        }
-      })();
+          }
+        });
+      }
 
       // Run on initial load and after view transitions swap new content
       initPageObservers();

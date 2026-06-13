@@ -84,8 +84,8 @@ export default function Header() {
 
         <nav id="nav-links" className={`nav-links ${isOpen ? 'show' : ''}`} role="navigation" aria-label="Main navigation">
           <a id="nav-home" href="/" className={getActiveClass('/')} aria-current={pathname === '/' ? 'page' : undefined} onClick={closeMenu}>Home</a>
-          <a id="nav-projects" href="/projects" className={getActiveClass('/projects')} aria-current={pathname.startsWith('/projects') ? 'page' : undefined} onClick={closeMenu}>Projects</a>
-          <a id="nav-blog" href="/blog" className={getActiveClass('/blog')} aria-current={pathname.startsWith('/blog') ? 'page' : undefined} onClick={closeMenu}>Blog</a>
+          <a id="nav-projects" href="/projects/" className={getActiveClass('/projects')} aria-current={pathname.startsWith('/projects') ? 'page' : undefined} onClick={closeMenu}>Projects</a>
+          <a id="nav-blog" href="/blog/" className={getActiveClass('/blog')} aria-current={pathname.startsWith('/blog') ? 'page' : undefined} onClick={closeMenu}>Blog</a>
         </nav>
 
         <div className="nav-actions">
