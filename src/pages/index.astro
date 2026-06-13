@@ -124,7 +124,7 @@ const categoryTitles = {
   <section id="skills" class="section" aria-labelledby="skills-heading">
     <div class="section-container">
       <h2 id="skills-heading" class="section-title text-gradient">Skills &amp; Technologies</h2>
-      <div class="skills-grid">
+      <div class="skills-grid" id="skills-grid">
         {Object.entries(skills).slice(0, 2).map(([category, items], catIdx) => {
           return (
           <div class={`glass-card skill-category reveal-left ${catIdx === 0 ? 'reveal-delay-1' : 'reveal-delay-2'}`} style="padding: 1.25rem;">
@@ -141,24 +141,22 @@ const categoryTitles = {
           </div>
           );
         })}
-        <div class="skills-more" id="skills-more">
-          {Object.entries(skills).slice(2).map(([category, items], catIdx) => {
-            return (
-            <div class={`glass-card skill-category reveal-left ${catIdx === 0 ? 'reveal-delay-3' : catIdx === 1 ? 'reveal-delay-4' : 'reveal-delay-5'}`} style="padding: 1.25rem;">
-              <h3 class="skill-category-title" style="font-size: 0.9rem; margin-bottom: 0.75rem;">{categoryTitles[category] || category}</h3>
-              <div class="skill-badges">
-                {items.map((skill, sIdx) => {
-                  const levels = ['advanced', 'expert', 'proficient', 'advanced'];
-                  const level = levels[sIdx % levels.length];
-                  return (
-                    <span class={`skill-badge skill-level-${level}`} style="font-size: 0.8rem; padding: 0.2rem 0.6rem;" title={level.charAt(0).toUpperCase() + level.slice(1)}>{skill}</span>
-                  );
-                })}
-              </div>
+        {Object.entries(skills).slice(2).map(([category, items], catIdx) => {
+          return (
+          <div class={`glass-card skill-category skill-hidden reveal-left ${catIdx === 0 ? 'reveal-delay-3' : catIdx === 1 ? 'reveal-delay-4' : 'reveal-delay-5'}`} style="padding: 1.25rem;">
+            <h3 class="skill-category-title" style="font-size: 0.9rem; margin-bottom: 0.75rem;">{categoryTitles[category] || category}</h3>
+            <div class="skill-badges">
+              {items.map((skill, sIdx) => {
+                const levels = ['advanced', 'expert', 'proficient', 'advanced'];
+                const level = levels[sIdx % levels.length];
+                return (
+                  <span class={`skill-badge skill-level-${level}`} style="font-size: 0.8rem; padding: 0.2rem 0.6rem;" title={level.charAt(0).toUpperCase() + level.slice(1)}>{skill}</span>
+                );
+              })}
             </div>
-            );
-          })}
-        </div>
+          </div>
+          );
+        })}
       </div>
       {hiddenCategoryCount > 0 && (
       <div class="skills-toggle-wrapper">
@@ -559,14 +557,19 @@ const categoryTitles = {
 
       // --- Collapsible Skills ---
       const skillsToggle = document.getElementById('skills-toggle-btn');
-      const skillsMore = document.getElementById('skills-more');
-      if (skillsToggle && skillsMore) {
+      const skillsGrid = document.getElementById('skills-grid');
+      if (skillsToggle && skillsGrid) {
         skillsToggle.addEventListener('click', () => {
           const expanded = skillsToggle.getAttribute('data-expanded') === 'true';
           skillsToggle.setAttribute('data-expanded', String(!expanded));
           skillsToggle.setAttribute('aria-expanded', String(!expanded));
-          skillsMore.classList.toggle('expanded', !expanded);
+          skillsGrid.classList.toggle('expanded', !expanded);
           skillsToggle.innerHTML = expanded ? `Show ${skillsToggle.dataset.count || '4'} more categories ▾` : 'Show less ▴';
+          if (!expanded) {
+            skillsGrid.querySelectorAll('.skill-hidden').forEach((el, i) => {
+              setTimeout(() => el.classList.add('visible'), i * 100);
+            });
+          }
         });
       }
 
@@ -875,13 +878,18 @@ const categoryTitles = {
 
   /* ---- Skills ---- */
   .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
-    align-items: start;
+    column-count: 2;
+    column-gap: 1.5rem;
   }
   .skill-category {
-    padding: 1.5rem;
+    break-inside: avoid;
+    margin-bottom: 1.5rem;
+  }
+  .skill-hidden {
+    display: none;
+  }
+  .skills-grid.expanded .skill-hidden {
+    display: block;
   }
   .skill-category-title {
     font-size: 1rem;
@@ -1318,18 +1326,6 @@ const categoryTitles = {
   /* ---- Timeline section spacer ---- */
 
   /* ---- Collapsible Skills ---- */
-  .skills-more {
-    overflow: hidden;
-    max-height: 0;
-    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
-    align-items: start;
-  }
-  .skills-more.expanded {
-    max-height: 2000px;
-  }
   .skills-toggle-wrapper {
     display: flex;
     justify-content: center;
