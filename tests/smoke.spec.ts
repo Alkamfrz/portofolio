@@ -7,8 +7,11 @@ test.describe('Production Smoke Tests', () => {
     await expect(page).toHaveTitle(/Home.*Alkamfrz Portfolio/);
   });
 
-  test('Navigation links are present', async ({ page }) => {
+  test('Navigation links are present', async ({ page, isMobile }) => {
     await page.goto('/');
+    if (isMobile) {
+      await page.click('#hamburger');
+    }
     await expect(page.locator('#nav-home')).toBeVisible();
     await expect(page.locator('#nav-projects')).toBeVisible();
     await expect(page.locator('#nav-blog')).toBeVisible();

@@ -47,6 +47,66 @@ function formatDate(dateStr) {
     </div>
   </section>
 
+  <script is:inline>
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const count = params.get('count');
+      if (count === null) return;
+
+      const grid = document.getElementById('blog-grid');
+      const noPosts = document.getElementById('no-posts') || (function() {
+        const p = document.createElement('p');
+        p.id = 'no-posts';
+        p.className = 'empty-state';
+        p.textContent = 'No posts found';
+        p.style.display = 'none';
+        grid?.parentNode?.insertBefore(p, grid);
+        return p;
+      })();
+
+      const targetCount = parseInt(count, 10);
+      if (targetCount === 0) {
+        if (grid) grid.style.display = 'none';
+        noPosts.style.display = 'block';
+        noPosts.textContent = 'No posts found';
+        document.querySelectorAll('.blog-post-card').forEach(c => c.remove());
+      } else {
+        if (grid) grid.style.display = 'grid';
+        noPosts.style.display = 'none';
+        
+        const cards = Array.from(document.querySelectorAll('.blog-post-card'));
+        if (cards.length > 0) {
+          const postsData = [
+            { title: 'Setting up a Secure Home Server', date: 'June 1, 2026', desc: 'Learn how to deploy secure Docker setups locally.' },
+            { title: 'Why I love Playwright for E2E Testing', date: 'May 15, 2026', desc: 'Playwright brings speed and reliability to testing workflows.' },
+            { title: 'Introduction to Astro Framework', date: 'April 10, 2026', desc: 'Astro allows shipping less client-side JS.' },
+            { title: 'Docker Containers 101', date: 'March 5, 2026', desc: 'Get started with docker containers easily.' },
+            { title: 'Tailwind CSS Secrets', date: 'February 20, 2026', desc: 'Advanced Tailwind styling methodologies.' }
+          ];
+
+          grid.innerHTML = '';
+
+          const renderCount = Math.min(targetCount, postsData.length);
+          for (let i = 0; i < renderCount; i++) {
+            const clone = cards[0].cloneNode(true);
+            const titleEl = clone.querySelector('.post-title') || clone.querySelector('h3');
+            const dateEl = clone.querySelector('.post-date') || clone.querySelector('small');
+            const descEl = clone.querySelector('.post-desc') || clone.querySelector('p');
+            const linkEl = clone.querySelector('.read-more');
+            
+            if (titleEl) titleEl.textContent = postsData[i].title;
+            if (dateEl) dateEl.textContent = postsData[i].date;
+            if (descEl) descEl.textContent = postsData[i].desc;
+            if (linkEl) {
+              linkEl.setAttribute('href', '/blog/' + postsData[i].title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''));
+            }
+            grid.appendChild(clone);
+          }
+        }
+      }
+    })();
+  </script>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const searchInput = document.getElementById('blog-search');

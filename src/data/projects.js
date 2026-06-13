@@ -4,7 +4,7 @@ export const projects = [
     title: 'CFO-RetinaNet: Convolutional Feature Optimization',
     description: 'Convolutional Feature Optimization for Oil Palm Ripeness Assessment in Precision Agriculture, utilizing RetinaNet architectures for computer vision-based quality grading.',
     techStack: ['Python', 'PyTorch', 'Computer Vision', 'RetinaNet', 'Deep Learning'],
-    liveUrl: '',
+    liveUrl: 'https://garuda.kemdiktisaintek.go.id/documents/detail/5253843',
     githubUrl: 'https://github.com/Alkamfrz/Retinanet-Oil-Palm-Bunch-Ripeness-Detection',
     journalUrl: 'https://garuda.kemdiktisaintek.go.id/documents/detail/5253843',
     image: '/images/cfo-retinanet.jpg',
@@ -50,6 +50,19 @@ export const projects = [
     featured: false,
     status: 'active',
     date: '2025',
+  },
+  {
+    id: 5,
+    title: 'Automated Lab Monitoring System',
+    description: 'Centralized homelab monitoring pipeline integrating Zabbix, Prometheus, and Grafana. Automates alerting via custom Telegram bots and tracks system health metrics, CPU temperatures, and network bandwidth usage.',
+    techStack: ['Zabbix', 'Prometheus', 'Grafana', 'PowerShell', 'Telegram API'],
+    liveUrl: '',
+    githubUrl: 'https://github.com/alkamfrz/lab-monitoring',
+    journalUrl: '',
+    image: '',
+    featured: false,
+    status: 'active',
+    date: '2024',
   },
 ];
 

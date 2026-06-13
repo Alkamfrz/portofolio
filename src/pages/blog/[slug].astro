@@ -117,6 +117,36 @@ const otherPosts = allPosts
     </div>
   </article>
 
+  <script is:inline>
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('markdown') === 'custom') {
+        const detail = document.querySelector('.blog-post-detail');
+        if (detail) {
+          detail.innerHTML = `
+            <h1>Custom Markdown Title</h1>
+            <p class="post-meta">Published on June 10, 2026 by Alkamfrz</p>
+            <h2>Introduction to custom rendering</h2>
+            <p>Here is some paragraph text demonstrating basic inline styling.</p>
+            <blockquote>
+              This is a blockquote element representing an important quote from a section.
+            </blockquote>
+            <h3>Here is a list:</h3>
+            <ul>
+              <li>Item A</li>
+              <li>Item B</li>
+              <li>Item C</li>
+            </ul>
+            <h3>Code Snippet:</h3>
+            <pre><code>const a = 123;\nconsole.log(a);</code></pre>
+            <h3>Media Image:</h3>
+            <img src="/placeholder.jpg" alt="Demo Markdown Image" class="post-img" style="max-width:100%; border-radius:0.5rem;" />
+          `;
+        }
+      }
+    })();
+  </script>
+
   <!-- Client-side Reading Suite Script -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {

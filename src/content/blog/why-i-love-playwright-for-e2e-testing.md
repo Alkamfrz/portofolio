@@ -4,8 +4,6 @@ date: "2026-05-15"
 description: "Playwright brings speed, reliability, and cross-browser support to end-to-end testing workflows. Here's why it's become my go-to tool."
 ---
 
-# Why I Love Playwright for E2E Testing
-
 End-to-end testing used to feel like a chore. Flaky tests, slow execution, browser compatibility headaches. Then I discovered Playwright — and everything changed.
 
 ## What Makes Playwright Special

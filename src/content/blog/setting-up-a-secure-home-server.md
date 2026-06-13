@@ -4,8 +4,6 @@ date: "2026-06-01"
 description: "Learn how to deploy a secure local homelab, including HAProxy reverse proxy, Let's Encrypt SSL automation, Cloudflare Tunnels, and CrowdSec intrusion prevention."
 ---
 
-# Setting Up a Secure Home Server with HAProxy & CrowdSec
-
 Running your own home server is incredibly rewarding — but only if it's done securely. In this guide, I'll walk through my personal setup using **Proxmox VE**, **Docker Compose**, **HAProxy**, **Cloudflare Tunnels**, and **CrowdSec**.
 
 ## Hypervisor & Virtualization

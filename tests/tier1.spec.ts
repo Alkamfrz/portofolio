@@ -80,9 +80,9 @@ test.describe('Tier 1: Feature Coverage (25 Tests)', () => {
 
     test('F2-T1-4: Footer contains external social links and email link', async ({ page }) => {
       await page.goto('/');
-      await expect(page.locator('#contact-github')).toHaveAttribute('href', 'https://github.com/alkamfrz');
-      await expect(page.locator('#contact-linkedin')).toHaveAttribute('href', 'https://linkedin.com/in/alkamfrz');
-      await expect(page.locator('footer #contact-email')).toHaveAttribute('href', 'mailto:alkamfrz@gmail.com');
+      await expect(page.locator('#footer-github')).toHaveAttribute('href', 'https://github.com/alkamfrz');
+      await expect(page.locator('#footer-linkedin')).toHaveAttribute('href', 'https://linkedin.com/in/alkamfrz');
+      await expect(page.locator('footer #footer-email')).toHaveAttribute('href', 'mailto:alkamfrz@gmail.com');
     });
 
     test('F2-T1-5: Current active page has visual active highlight', async ({ page }) => {

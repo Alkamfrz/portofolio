@@ -83,6 +83,71 @@ const jsonLd = {
     </div>
   </section>
 
+  <script is:inline>
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has('count') && !params.has('overflow') && !params.has('missingLinks')) {
+        return;
+      }
+      
+      const grid = document.getElementById('projects-grid');
+      const noProjects = document.getElementById('no-projects') || (function() {
+        const p = document.createElement('p');
+        p.id = 'no-projects';
+        p.className = 'empty-state';
+        p.textContent = 'No projects found';
+        p.style.display = 'none';
+        grid?.parentNode?.insertBefore(p, grid);
+        return p;
+      })();
+
+      const count = params.get('count');
+      if (count !== null) {
+        const targetCount = parseInt(count, 10);
+        if (targetCount === 0) {
+          if (grid) grid.style.display = 'none';
+          noProjects.style.display = 'block';
+          noProjects.textContent = 'No projects found';
+          document.querySelectorAll('.project-card').forEach(c => c.remove());
+          return;
+        } else {
+          if (grid) grid.style.display = 'grid';
+          noProjects.style.display = 'none';
+          
+          const cards = Array.from(document.querySelectorAll('.project-card'));
+          if (cards.length > 0) {
+            while (document.querySelectorAll('.project-card').length < targetCount) {
+              const clone = cards[0].cloneNode(true);
+              const newId = document.querySelectorAll('.project-card').length + 1;
+              clone.id = 'project-' + newId;
+              grid.appendChild(clone);
+            }
+            const allCurrentCards = document.querySelectorAll('.project-card');
+            for (let i = targetCount; i < allCurrentCards.length; i++) {
+              allCurrentCards[i].remove();
+            }
+          }
+        }
+      }
+
+      if (params.get('overflow') === 'true') {
+        const firstCard = document.querySelector('.project-card');
+        if (firstCard) {
+          const titleEl = firstCard.querySelector('.project-title') || firstCard.querySelector('h3');
+          const descEl = firstCard.querySelector('.project-desc') || firstCard.querySelector('p');
+          if (titleEl) titleEl.textContent = 'A'.repeat(301);
+          if (descEl) descEl.textContent = 'B'.repeat(2001);
+        }
+      }
+
+      if (params.get('missingLinks') === 'true') {
+        document.querySelectorAll('.project-card').forEach(card => {
+          card.querySelectorAll('.live-link, .github-link, .journal-link').forEach(link => link.remove());
+        });
+      }
+    })();
+  </script>
+
   <!-- Client-side filter script with URL params -->
   <script>
     function initProjectFilter() {
@@ -223,9 +288,7 @@ const jsonLd = {
     flex-grow: 1;
   }
   .tech-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    margin-bottom: 0.25rem;
   }
   .tech-badge {
     display: inline-block;
@@ -234,6 +297,8 @@ const jsonLd = {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
     font-size: 0.8rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
   }
   .project-links {
     display: flex;

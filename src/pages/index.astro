@@ -141,9 +141,12 @@ const categoryTitles = {
           </div>
           );
         })}
+      </div>
+
+      <template id="hidden-skills-template">
         {Object.entries(skills).slice(2).map(([category, items], catIdx) => {
           return (
-          <div class={`glass-card skill-category skill-hidden reveal-left ${catIdx === 0 ? 'reveal-delay-3' : catIdx === 1 ? 'reveal-delay-4' : 'reveal-delay-5'}`} style="padding: 1.25rem;">
+          <div class="glass-card skill-category reveal-left" style="padding: 1.25rem;">
             <h3 class="skill-category-title" style="font-size: 0.9rem; margin-bottom: 0.75rem;">{categoryTitles[category] || category}</h3>
             <div class="skill-badges">
               {items.map((skill, sIdx) => {
@@ -157,7 +160,8 @@ const categoryTitles = {
           </div>
           );
         })}
-      </div>
+      </template>
+
       {hiddenCategoryCount > 0 && (
       <div class="skills-toggle-wrapper">
         <button class="skills-toggle-btn" id="skills-toggle-btn" data-expanded="false" data-count={hiddenCategoryCount} aria-expanded="false">
@@ -173,118 +177,129 @@ const categoryTitles = {
     <div class="section-container">
       <h2 id="experience-heading" class="section-title text-gradient">Experience &amp; Education</h2>
 
+      <div class="timeline-tabs-wrapper" role="tablist" style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2.5rem;">
+        <button id="tab-work" class="timeline-tab active" role="tab" aria-selected="true" aria-controls="work-column">Work Experience</button>
+        <button id="tab-edu" class="timeline-tab" role="tab" aria-selected="false" aria-controls="edu-column">Education</button>
+      </div>
+
       <div class="experience-container" style="margin-top: 0;">
-        <div class="timeline">
-          <div class="timeline-item reveal-left reveal-delay-1">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content glass-card glow-hover">
-              <span class="timeline-badge badge-work">💼 Work</span>
-              <span class="timeline-date">May 2025 - Present</span>
-              <h3 class="timeline-role">IT Hardware Support Internship</h3>
-              <h4 class="timeline-company">Sinarmas Multifinance</h4>
-              <p class="timeline-desc">Managed workstations, DVR systems, and access management across multiple OS.</p>
-              <div class="timeline-details">
-                <ul class="timeline-points">
-                <li>Performed Windows 11, Linux openSUSE 15.6, and macOS Sequoia installations across 40+ workstations.</li>
-                <li>Configured DVR systems with ZoneMinder, establishing centralized 24/7 monitoring for 15+ cameras.</li>
-                <li>Managed Active Directory accounts and OpenVPN configurations for 200+ employees.</li>
-              </ul>
+        <!-- Work Experience Column -->
+        <div id="work-column" class="experience-column" role="tabpanel" aria-labelledby="tab-work">
+          <div class="timeline">
+            <div class="timeline-item reveal-left reveal-delay-1">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card glow-hover">
+                <span class="timeline-badge badge-work">💼 Work</span>
+                <span class="timeline-date">May 2025 - Present</span>
+                <h3 class="timeline-role">IT Hardware Support Internship</h3>
+                <h4 class="timeline-company">Sinarmas Multifinance</h4>
+                <p class="timeline-desc">Managed workstations, DVR systems, and access management across multiple OS.</p>
+                <div class="timeline-details">
+                  <ul class="timeline-points">
+                    <li>Performed Windows 11, Linux openSUSE 15.6, and macOS Sequoia installations across 40+ workstations.</li>
+                    <li>Configured DVR systems with ZoneMinder, establishing centralized 24/7 monitoring for 15+ cameras.</li>
+                    <li>Managed Active Directory accounts and OpenVPN configurations for 200+ employees.</li>
+                  </ul>
+                </div>
+                <button class="timeline-details-btn" aria-expanded="false">Show details ▾</button>
               </div>
-              <button class="timeline-details-btn" aria-expanded="false">Show details ▾</button>
+            </div>
+
+            <div class="timeline-item reveal-left reveal-delay-2">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card glow-hover">
+                <span class="timeline-badge badge-work">💼 Work</span>
+                <span class="timeline-date">Sep 2024 - Dec 2024</span>
+                <h3 class="timeline-role">IT Support Internship</h3>
+                <h4 class="timeline-company">EMTEK Group (RS EMC Alam Sutera)</h4>
+                <p class="timeline-desc">Optimized hospital network systems and automated compliance audits.</p>
+                <div class="timeline-details">
+                  <ul class="timeline-points">
+                    <li>Deployed 50+ IoT devices/APs, reducing network downtime via custom monitoring scripts.</li>
+                    <li>Automated audit logging with Python (fuzzy search &amp; NLP), saving 15 manual hours/week.</li>
+                    <li>Upgraded 30+ HDDs to SSDs and crimped 150+ Cat6 cables with 99% uptime.</li>
+                  </ul>
+                </div>
+                <button class="timeline-details-btn" aria-expanded="false">Show details ▾</button>
+              </div>
+            </div>
+
+            <div class="timeline-item reveal-left reveal-delay-3">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card glow-hover">
+                <span class="timeline-badge badge-work">💼 Work</span>
+                <span class="timeline-date">Feb 2024 - Jun 2024</span>
+                <h3 class="timeline-role">Tech IT Infrastructure Internship</h3>
+                <h4 class="timeline-company">Halodoc (PT Media Dokter Investama)</h4>
+                <p class="timeline-desc">Resolved hardware/software incidents and automated compliance purging.</p>
+                <div class="timeline-details">
+                  <ul class="timeline-points">
+                    <li>Resolved 15–20 weekly incidents, reducing resolution time from 2.5h to 1.6h (35% reduction).</li>
+                    <li>Integrated Zabbix-Jira to auto-generate tickets, ensuring 100% SLA compliance.</li>
+                    <li>Built PowerShell scripts to purge non-compliant files on reboot, saving 6 hours/week.</li>
+                  </ul>
+                </div>
+                <button class="timeline-details-btn" aria-expanded="false">Show details ▾</button>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div class="timeline-item reveal-left reveal-delay-2">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content glass-card glow-hover">
-              <span class="timeline-badge badge-work">💼 Work</span>
-              <span class="timeline-date">Sep 2024 - Dec 2024</span>
-              <h3 class="timeline-role">IT Support Internship</h3>
-              <h4 class="timeline-company">EMTEK Group (RS EMC Alam Sutera)</h4>
-              <p class="timeline-desc">Optimized hospital network systems and automated compliance audits.</p>
-              <div class="timeline-details">
-                <ul class="timeline-points">
-                <li>Deployed 50+ IoT devices/APs, reducing network downtime via custom monitoring scripts.</li>
-                <li>Automated audit logging with Python (fuzzy search &amp; NLP), saving 15 manual hours/week.</li>
-                <li>Upgraded 30+ HDDs to SSDs and crimped 150+ Cat6 cables with 99% uptime.</li>
-              </ul>
+        <!-- Education Column -->
+        <div id="edu-column" class="experience-column hidden" role="tabpanel" aria-labelledby="tab-edu">
+          <div class="timeline">
+            <div class="timeline-item reveal-left reveal-delay-1">
+              <div class="timeline-dot edu-dot"></div>
+              <div class="timeline-content glass-card glow-hover">
+                <span class="timeline-badge badge-edu">🎓 Education</span>
+                <span class="timeline-date">Aug 2021 - Aug 2025</span>
+                <h3 class="timeline-role">Bachelor of Informatics Engineering</h3>
+                <h4 class="timeline-company">Universitas Mercu Buana</h4>
+                <p class="timeline-desc">Graduated with a GPA of 3.90/4.00. Active in exhibitions and student association committee.</p>
+                <div class="timeline-details">
+                  <ul class="timeline-points">
+                    <li>Committee member of the event division for the Informatics Student Association (2021).</li>
+                    <li>Official host at the UMB Student Work Exhibition event (2022).</li>
+                  </ul>
+                </div>
+                <button class="timeline-details-btn" aria-expanded="false">Show details ▾</button>
               </div>
-              <button class="timeline-details-btn" aria-expanded="false">Show details ▾</button>
             </div>
-          </div>
 
-          <div class="timeline-item reveal-left reveal-delay-3">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content glass-card glow-hover">
-              <span class="timeline-badge badge-work">💼 Work</span>
-              <span class="timeline-date">Feb 2024 - Jun 2024</span>
-              <h3 class="timeline-role">Tech IT Infrastructure Internship</h3>
-              <h4 class="timeline-company">Halodoc (PT Media Dokter Investama)</h4>
-              <p class="timeline-desc">Resolved hardware/software incidents and automated compliance purging.</p>
-              <div class="timeline-details">
-                <ul class="timeline-points">
-                <li>Resolved 15–20 weekly incidents, reducing resolution time from 2.5h to 1.6h (35% reduction).</li>
-                <li>Integrated Zabbix-Jira to auto-generate tickets, ensuring 100% SLA compliance.</li>
-                <li>Built PowerShell scripts to purge non-compliant files on reboot, saving 6 hours/week.</li>
-              </ul>
+            <div class="timeline-item reveal-left reveal-delay-2">
+              <div class="timeline-dot edu-dot"></div>
+              <div class="timeline-content glass-card glow-hover">
+                <span class="timeline-badge badge-edu">🎓 Education</span>
+                <span class="timeline-date">Jan 2024 - Dec 2024</span>
+                <h3 class="timeline-role">Assistant Coordinator</h3>
+                <h4 class="timeline-company">ASLAB Fasilkom UMB</h4>
+                <p class="timeline-desc">Managed student assistants and labs, optimized lab hiring workflows.</p>
+                <div class="timeline-details">
+                  <ul class="timeline-points">
+                    <li>Managed 15–20 assistants across 5 computer labs via Notion scheduling.</li>
+                    <li>Revamped laboratory hiring using automated Python/network sim tests.</li>
+                    <li>Built KPI dashboard tracking metrics to cut recurring complaints by 25%.</li>
+                  </ul>
+                </div>
+                <button class="timeline-details-btn" aria-expanded="false">Show details ▾</button>
               </div>
-              <button class="timeline-details-btn" aria-expanded="false">Show details ▾</button>
             </div>
-          </div>
 
-          <div class="timeline-break">
-            <span>🎓 Education</span>
-          </div>
-
-          <div class="timeline-item reveal-left reveal-delay-4">
-            <div class="timeline-dot edu-dot"></div>
-            <div class="timeline-content glass-card glow-hover">
-              <span class="timeline-badge badge-edu">🎓 Education</span>
-              <span class="timeline-date">Aug 2021 - Aug 2025</span>
-              <h3 class="timeline-role">Bachelor of Informatics Engineering</h3>
-              <h4 class="timeline-company">Universitas Mercu Buana</h4>
-              <p class="timeline-desc">Graduated with a GPA of 3.90/4.00. Active in exhibitions and student association committee.</p>
-              <div class="timeline-details">
-                <ul class="timeline-points">
-                <li>Committee member of the event division for the Informatics Student Association (2021).</li>
-                <li>Official host at the UMB Student Work Exhibition event (2022).</li>
-              </ul>
+            <div class="timeline-item reveal-left reveal-delay-3">
+              <div class="timeline-dot edu-dot"></div>
+              <div class="timeline-content glass-card glow-hover">
+                <span class="timeline-badge badge-edu">🎓 Education</span>
+                <span class="timeline-date">Jul 2018 - Jul 2021</span>
+                <h3 class="timeline-role">High School Diploma</h3>
+                <h4 class="timeline-company">SMKN 1 Tangerang</h4>
+                <p class="timeline-desc">Computer &amp; Network Engineering. Finalist in Network Infrastructure Competition.</p>
               </div>
-              <button class="timeline-details-btn" aria-expanded="false">Show details ▾</button>
-            </div>
-          </div>
-
-          <div class="timeline-item reveal-left reveal-delay-5">
-            <div class="timeline-dot edu-dot"></div>
-            <div class="timeline-content glass-card glow-hover">
-              <span class="timeline-badge badge-edu">🎓 Education</span>
-              <span class="timeline-date">Jan 2024 - Dec 2024</span>
-              <h3 class="timeline-role">Assistant Coordinator</h3>
-              <h4 class="timeline-company">ASLAB Fasilkom UMB</h4>
-              <p class="timeline-desc">Managed student assistants and labs, optimized lab hiring workflows.</p>
-              <div class="timeline-details">
-                <ul class="timeline-points">
-                <li>Managed 15–20 assistants across 5 computer labs via Notion scheduling.</li>
-                <li>Revamped laboratory hiring using automated Python/network sim tests.</li>
-                <li>Built KPI dashboard tracking metrics to cut recurring complaints by 25%.</li>
-              </ul>
-              </div>
-              <button class="timeline-details-btn" aria-expanded="false">Show details ▾</button>
-            </div>
-          </div>
-
-          <div class="timeline-item reveal-left reveal-delay-6">
-            <div class="timeline-dot edu-dot"></div>
-            <div class="timeline-content glass-card glow-hover">
-              <span class="timeline-badge badge-edu">🎓 Education</span>
-              <span class="timeline-date">Jul 2018 - Jul 2021</span>
-              <h3 class="timeline-role">High School Diploma</h3>
-              <h4 class="timeline-company">SMKN 1 Tangerang</h4>
-              <p class="timeline-desc">Computer &amp; Network Engineering. Finalist in Network Infrastructure Competition.</p>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </section>
     </div>
   </section>
 
@@ -452,7 +467,7 @@ const categoryTitles = {
   <section id="blog" class="section" aria-labelledby="blog-heading">
     <div class="section-container">
       <h2 id="blog-heading" class="section-title text-gradient">Latest Posts</h2>
-      <div class="blog-grid">
+      <div class="blog-grid" id="blog-preview-section">
         {recentPosts.map((post, idx) => {
           const wordCount = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
           const readingTime = Math.max(1, Math.ceil(wordCount / 200));
@@ -479,11 +494,11 @@ const categoryTitles = {
   <section id="contact" class="section" aria-labelledby="contact-heading">
     <div class="section-container">
       <h2 id="contact-heading" class="section-title text-gradient">Get in Touch</h2>
-      <div class="glass-card contact-card">
+      <div class="glass-card contact-card" id="welcome-card">
         <p class="contact-intro">
           Have a project in mind or just want to say hi? Fill out the form below and I'll get back to you.
         </p>
-        <ContactForm client:visible />
+        <ContactForm client:load />
       </div>
     </div>
   </section>
@@ -623,17 +638,34 @@ const categoryTitles = {
       // --- Collapsible Skills ---
       const skillsToggle = document.getElementById('skills-toggle-btn');
       const skillsGrid = document.getElementById('skills-grid');
-      if (skillsToggle && skillsGrid) {
+      const hiddenTemplate = document.getElementById('hidden-skills-template');
+      if (skillsToggle && skillsGrid && hiddenTemplate) {
         skillsToggle.addEventListener('click', () => {
           const expanded = skillsToggle.getAttribute('data-expanded') === 'true';
           skillsToggle.setAttribute('data-expanded', String(!expanded));
           skillsToggle.setAttribute('aria-expanded', String(!expanded));
           skillsGrid.classList.toggle('expanded', !expanded);
-          skillsToggle.innerHTML = expanded ? `Show ${skillsToggle.dataset.count || '4'} more categories ▾` : 'Show less ▴';
+          
           if (!expanded) {
-            skillsGrid.querySelectorAll('.skill-hidden').forEach((el, i) => {
-              setTimeout(() => el.classList.add('visible'), i * 100);
+            const alreadyAppended = skillsGrid.querySelector('.skill-hidden-item');
+            if (!alreadyAppended) {
+              const clone = hiddenTemplate.content.cloneNode(true);
+              Array.from(clone.querySelectorAll('.skill-category')).forEach((el, i) => {
+                el.classList.add('skill-hidden-item');
+                skillsGrid.appendChild(el);
+                setTimeout(() => el.classList.add('visible'), i * 100);
+              });
+            } else {
+              skillsGrid.querySelectorAll('.skill-hidden-item').forEach(el => {
+                el.style.display = 'block';
+              });
+            }
+            skillsToggle.innerHTML = 'Show less ▴';
+          } else {
+            skillsGrid.querySelectorAll('.skill-hidden-item').forEach(el => {
+              el.style.display = 'none';
             });
+            skillsToggle.innerHTML = `Show ${skillsToggle.dataset.count || '4'} more categories ▾`;
           }
         });
       }
@@ -645,10 +677,36 @@ const categoryTitles = {
           if (details) {
             const expanded = details.classList.toggle('expanded');
             btn.setAttribute('aria-expanded', String(expanded));
-            btn.textContent = expanded ? 'Hide details ▴' : 'Show details ▾';
+            btn.textContent = expanded ? 'Hide details ▾' : 'Show details ▾';
           }
         });
       });
+
+      // --- Timeline Tab Switcher ---
+      const tabWork = document.getElementById('tab-work');
+      const tabEdu = document.getElementById('tab-edu');
+      const workColumn = document.getElementById('work-column');
+      const eduColumn = document.getElementById('edu-column');
+
+      if (tabWork && tabEdu && workColumn && eduColumn) {
+        const switchTab = (activeTab, inactiveTab, activeCol, inactiveCol) => {
+          activeTab.classList.add('active');
+          activeTab.setAttribute('aria-selected', 'true');
+          inactiveTab.classList.remove('active');
+          inactiveTab.setAttribute('aria-selected', 'false');
+          
+          activeCol.classList.remove('hidden');
+          inactiveCol.classList.add('hidden');
+        };
+
+        tabWork.addEventListener('click', () => {
+          switchTab(tabWork, tabEdu, workColumn, eduColumn);
+        });
+
+        tabEdu.addEventListener('click', () => {
+          switchTab(tabEdu, tabWork, eduColumn, workColumn);
+        });
+      }
     }
 
     // Run on initial load and after view transitions swap
@@ -1013,9 +1071,6 @@ const categoryTitles = {
     flex-grow: 1;
   }
   .tech-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
     margin-top: 0.25rem;
   }
   .tech-badge {
@@ -1025,6 +1080,8 @@ const categoryTitles = {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
     font-size: 0.8rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
   }
   .project-links {
     display: flex;
