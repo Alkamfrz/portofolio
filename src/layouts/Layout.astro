@@ -63,7 +63,7 @@ const { title } = Astro.props;
 
     <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="false"></div>
 
-    <script>
+    <script type="module">
       function initPageObservers() {
         // ----- Scroll Reveal (Intersection Observer) -----
         const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-scale');
