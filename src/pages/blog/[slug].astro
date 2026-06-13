@@ -149,7 +149,7 @@ const otherPosts = allPosts
 
   <!-- Client-side Reading Suite Script -->
   <script>
-    document.addEventListener('astro:page-load', () => {
+    function initBlogReadingSuite() {
       const contentBody = document.getElementById('post-content-body');
       if (!contentBody) return;
 
@@ -169,33 +169,38 @@ const otherPosts = allPosts
 
       function setFontSizeClass(className) {
         contentBody.className = `post-content ${className}`;
-        [btnSm, btnMd, btnLg].forEach(b => b?.classList.remove('active'));
-        if (className === 'text-sm') btnSm?.classList.add('active');
-        if (className === 'text-md') btnMd?.classList.add('active');
-        if (className === 'text-lg') btnLg?.classList.add('active');
+        [btnSm, btnMd, btnLg].forEach(b => b && b.classList.remove('active'));
+        if (className === 'text-sm' && btnSm) btnSm.classList.add('active');
+        if (className === 'text-md' && btnMd) btnMd.classList.add('active');
+        if (className === 'text-lg' && btnLg) btnLg.classList.add('active');
       }
 
-      btnSm?.addEventListener('click', () => setFontSizeClass('text-sm'));
-      btnMd?.addEventListener('click', () => setFontSizeClass('text-md'));
-      btnLg?.addEventListener('click', () => setFontSizeClass('text-lg'));
+      if (btnSm) btnSm.addEventListener('click', () => setFontSizeClass('text-sm'));
+      if (btnMd) btnMd.addEventListener('click', () => setFontSizeClass('text-md'));
+      if (btnLg) btnLg.addEventListener('click', () => setFontSizeClass('text-lg'));
 
       // 3. Dynamic Table of Contents Generation
       const headings = contentBody.querySelectorAll('h2, h3');
       const tocContainer = document.getElementById('toc-list-container');
       const tocProgress = document.getElementById('toc-progress');
-      
+
       if (tocContainer) {
         if (headings.length === 0) {
           const sidebar = document.querySelector('.toc-sidebar');
-          if (sidebar) (sidebar as HTMLElement).style.display = 'none';
+          if (sidebar) sidebar.style.display = 'none';
         } else {
-          headings.forEach((heading, idx) => {
+          // Clear any previously inserted items (in case of re-init)
+          tocContainer.innerHTML = '';
+          headings.forEach(function(heading, idx) {
             if (!heading.id) {
-              heading.id = `heading-${idx}`;
+              heading.id = 'heading-' + idx;
             }
             const item = document.createElement('li');
-            item.className = `toc-item ${heading.tagName.toLowerCase()}`;
-            item.innerHTML = `<a href="#${heading.id}">${heading.textContent}</a>`;
+            item.className = 'toc-item ' + heading.tagName.toLowerCase();
+            const link = document.createElement('a');
+            link.href = '#' + heading.id;
+            link.textContent = heading.textContent;
+            item.appendChild(link);
             tocContainer.appendChild(item);
           });
         }
@@ -214,36 +219,31 @@ const otherPosts = allPosts
           tocProgress.style.width = percent + '%';
         }
 
-        headings.forEach((heading, idx) => {
-          const top = (heading as HTMLElement).offsetTop;
-          if (scrollPos >= top) {
+        headings.forEach(function(heading, idx) {
+          if (scrollPos >= heading.offsetTop) {
             activeIdx = idx;
           }
         });
 
-        tocItems.forEach((item, idx) => {
-          if (idx === activeIdx) {
-            item.classList.add('active');
-          } else {
-            item.classList.remove('active');
-          }
+        tocItems.forEach(function(item, idx) {
+          item.classList.toggle('active', idx === activeIdx);
         });
       }
 
-      window.addEventListener('scroll', spyScroll);
+      window.addEventListener('scroll', spyScroll, { passive: true });
       spyScroll();
 
-      // 5. Mac-style Code Blocks with copy buttons + line numbers
+      // 5. Mac-style Code Blocks with copy buttons
       const preBlocks = contentBody.querySelectorAll('pre');
-      preBlocks.forEach((pre) => {
+      preBlocks.forEach(function(pre) {
+        // Avoid double-wrapping if already processed
+        if (pre.closest('.mac-code-block')) return;
+
         const code = pre.querySelector('code');
         let lang = 'code';
         if (code) {
-          const classes = Array.from(code.classList);
-          const langClass = classes.find(c => c.startsWith('language-'));
-          if (langClass) {
-            lang = langClass.replace('language-', '');
-          }
+          const langClass = Array.from(code.classList).find(c => c.startsWith('language-'));
+          if (langClass) lang = langClass.replace('language-', '');
         }
 
         const wrapper = document.createElement('div');
@@ -251,57 +251,73 @@ const otherPosts = allPosts
 
         const header = document.createElement('div');
         header.className = 'mac-code-header';
-        header.innerHTML = `
-          <div class="mac-dots">
-            <span class="mac-dot red"></span>
-            <span class="mac-dot yellow"></span>
-            <span class="mac-dot green"></span>
-          </div>
-          <span class="mac-lang">${lang}</span>
-          <button class="mac-copy-btn">Copy</button>
-        `;
 
-        pre.parentNode?.insertBefore(wrapper, pre);
-        wrapper.appendChild(header);
-        wrapper.appendChild(pre);
+        const dots = document.createElement('div');
+        dots.className = 'mac-dots';
+        ['red', 'yellow', 'green'].forEach(function(color) {
+          const dot = document.createElement('span');
+          dot.className = 'mac-dot ' + color;
+          dots.appendChild(dot);
+        });
 
-        const copyBtn = header.querySelector('.mac-copy-btn');
-        copyBtn?.addEventListener('click', () => {
-          const textToCopy = code ? code.textContent || '' : pre.textContent || '';
-          navigator.clipboard.writeText(textToCopy).then(() => {
-            copyBtn.innerHTML = 'Copied!';
-            setTimeout(() => {
-              copyBtn.textContent = 'Copy';
-            }, 2000);
-          }).catch(err => {
+        const langLabel = document.createElement('span');
+        langLabel.className = 'mac-lang';
+        langLabel.textContent = lang;
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'mac-copy-btn';
+        copyBtn.textContent = 'Copy';
+        copyBtn.addEventListener('click', function() {
+          const textToCopy = code ? (code.textContent || '') : (pre.textContent || '');
+          navigator.clipboard.writeText(textToCopy).then(function() {
+            copyBtn.textContent = 'Copied!';
+            setTimeout(function() { copyBtn.textContent = 'Copy'; }, 2000);
+          }).catch(function(err) {
             console.error('Failed to copy: ', err);
           });
         });
+
+        header.appendChild(dots);
+        header.appendChild(langLabel);
+        header.appendChild(copyBtn);
+
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(header);
+        wrapper.appendChild(pre);
       });
 
       // 6. Social Sharing
-      const url = encodeURIComponent(window.location.href);
-      const title = encodeURIComponent(document.title.replace(' - Alkamfrz Portfolio', ''));
+      const pageUrl = encodeURIComponent(window.location.href);
+      const pageTitle = encodeURIComponent(document.title.replace(' - Alkamfrz Portfolio', ''));
       const twitterBtn = document.getElementById('share-twitter');
       const linkedinBtn = document.getElementById('share-linkedin');
-      const copyBtn = document.getElementById('share-copy');
+      const shareCopyBtn = document.getElementById('share-copy');
 
-      twitterBtn?.addEventListener('click', () => {
-        window.open(`https://twitter.com/intent/tweet?text=${title}&url=${url}`, '_blank', 'noopener,width=600,height=400');
+      if (twitterBtn) twitterBtn.addEventListener('click', function() {
+        window.open('https://twitter.com/intent/tweet?text=' + pageTitle + '&url=' + pageUrl, '_blank', 'noopener,width=600,height=400');
       });
-      linkedinBtn?.addEventListener('click', () => {
-        window.open(`https://linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'noopener,width=600,height=400');
+      if (linkedinBtn) linkedinBtn.addEventListener('click', function() {
+        window.open('https://linkedin.com/sharing/share-offsite/?url=' + pageUrl, '_blank', 'noopener,width=600,height=400');
       });
-      copyBtn?.addEventListener('click', async () => {
+      if (shareCopyBtn) shareCopyBtn.addEventListener('click', async function() {
         try {
           await navigator.clipboard.writeText(window.location.href);
-          copyBtn.innerHTML = 'Copied!';
-          setTimeout(() => { copyBtn.innerHTML = 'Copy Link'; }, 2000);
+          shareCopyBtn.textContent = 'Copied!';
+          setTimeout(function() { shareCopyBtn.textContent = 'Copy Link'; }, 2000);
         } catch {
-          copyBtn.textContent = 'Failed';
+          shareCopyBtn.textContent = 'Failed';
         }
       });
-    });
+    }
+
+    // Run once DOM is ready — works with or without Astro ViewTransitions
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initBlogReadingSuite);
+    } else {
+      initBlogReadingSuite();
+    }
+    // Also re-run on Astro view-transition navigation if enabled in future
+    document.addEventListener('astro:page-load', initBlogReadingSuite);
   </script>
 </Layout>
 
