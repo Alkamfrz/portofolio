@@ -5,6 +5,8 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
+# Force fresh pull of updated static assets
+
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
