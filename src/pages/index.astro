@@ -42,9 +42,6 @@ const categoryTitles = {
   <script type="application/ld+json">{JSON.stringify(homeJsonLd)}</script>
   <!-- =================== HERO =================== -->
   <section class="hero-section">
-    <div class="hero-orb hero-orb-1"></div>
-    <div class="hero-orb hero-orb-2"></div>
-    <div class="hero-orb hero-orb-3"></div>
     <div class="hero-content">
       <p class="hero-eyebrow">Hello, I'm</p>
       <h1 class="hero-title">
@@ -96,6 +93,173 @@ const categoryTitles = {
           </div>
         </div>
       </div>
+
+      <!-- =================== HOMELAB TOPOLOGY =================== -->
+      <div class="glass-card topology-card" id="topology-section">
+        <h3 class="topology-title"><span class="icon">🕸️</span> Homelab Network Architecture</h3>
+        <p class="topology-intro">Hover over a node to trace the secure, zero-trust network data flow.</p>
+        
+        <div class="topology-wrapper">
+          <!-- SVG Diagram for connections -->
+          <div class="topology-diagram">
+            <svg viewBox="0 0 800 400" width="100%" height="100%" class="topology-svg">
+              <defs>
+                <linearGradient id="flow-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="var(--accent-cyan)" />
+                  <stop offset="100%" stop-color="var(--accent-purple)" />
+                </linearGradient>
+                <marker id="arrow" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--text-muted)" />
+                </marker>
+                <marker id="arrow-active" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent-cyan)" />
+                </marker>
+              </defs>
+
+              <!-- Connection Lines -->
+              <path d="M 100 200 L 220 200" class="conn-line flow-1" marker-end="url(#arrow)" />
+              <path d="M 220 200 L 360 200" class="conn-line flow-2" marker-end="url(#arrow)" />
+              <path d="M 360 200 L 520 120" class="conn-line flow-3" marker-end="url(#arrow)" />
+              <path d="M 360 200 L 520 280" class="conn-line flow-4" marker-end="url(#arrow)" />
+              <path d="M 520 280 L 680 280" class="conn-line flow-5" marker-end="url(#arrow)" />
+              <path d="M 520 120 L 520 280" class="conn-line flow-6" style="stroke-dasharray: 4;" />
+
+              <!-- Nodes as Interactive SVG Groups -->
+              <g class="node-group" data-node="internet">
+                <circle cx="100" cy="200" r="30" class="node-circle" />
+                <text x="100" y="204" text-anchor="middle" class="node-text">WAN</text>
+              </g>
+              
+              <g class="node-group" data-node="cloudflare">
+                <circle cx="220" cy="200" r="35" class="node-circle" />
+                <text x="220" y="196" text-anchor="middle" class="node-text">Cloudflare</text>
+                <text x="220" y="212" text-anchor="middle" class="node-subtext">Tunnel</text>
+              </g>
+
+              <g class="node-group" data-node="haproxy">
+                <circle cx="360" cy="200" r="35" class="node-circle" />
+                <text x="360" y="196" text-anchor="middle" class="node-text">HAProxy</text>
+                <text x="360" y="212" text-anchor="middle" class="node-subtext">10.1.30.3</text>
+              </g>
+
+              <g class="node-group" data-node="proxmox">
+                <rect x="465" y="75" width="110" height="90" rx="10" class="node-rect" />
+                <text x="520" y="115" text-anchor="middle" class="node-text">Proxmox VE</text>
+                <text x="520" y="135" text-anchor="middle" class="node-subtext">10.1.99.2</text>
+              </g>
+
+              <g class="node-group" data-node="docker">
+                <circle cx="520" cy="280" r="40" class="node-circle" />
+                <text x="520" y="276" text-anchor="middle" class="node-text">Docker VM</text>
+                <text x="520" y="294" text-anchor="middle" class="node-subtext">10.1.30.5</text>
+              </g>
+
+              <g class="node-group" data-node="nas">
+                <rect x="635" y="235" width="90" height="90" rx="10" class="node-rect" />
+                <text x="680" y="275" text-anchor="middle" class="node-text">TrueNAS</text>
+                <text x="680" y="295" text-anchor="middle" class="node-subtext">10.1.30.6</text>
+              </g>
+            </svg>
+          </div>
+
+          <!-- Node info display panel -->
+          <div class="topology-details glass-card" id="node-details-panel">
+            <h4 class="details-name" id="node-detail-name">Select a Node</h4>
+            <p class="details-ip" id="node-detail-ip">Hover over the diagram nodes to inspect details</p>
+            <div class="details-divider"></div>
+            <p class="details-role" id="node-detail-role">Learn about the role of each device in this self-hosted homelab infrastructure.</p>
+            <div class="details-tags" id="node-detail-tags">
+              <span class="tech-badge">Interactive</span>
+              <span class="tech-badge">Network Map</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Client-side topology script -->
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const nodeDetails = {
+            internet: {
+              name: 'Public WAN / Internet',
+              ip: 'Exposed Edge',
+              role: 'Incoming HTTPS web user traffic targeted at alkamfrz.my.id. Traffic is fully secure, TLS-encrypted, and protected by Cloudflare Edge.',
+              tags: ['HTTPS', 'TLS 1.3', 'Zero WAN Ports Open']
+            },
+            cloudflare: {
+              name: 'Cloudflare Tunnel (cfd-tng)',
+              ip: '10.1.30.2 (LXC)',
+              role: 'Establishes a secure, outbound-only tunnel to Cloudflare Edge. Shields your public IP address completely and removes local port-forwarding requirements.',
+              tags: ['Zero-Trust', 'Cloudflare Tunnel', 'DNS Proxy']
+            },
+            haproxy: {
+              name: 'HAProxy Reverse Proxy (haproxy-tng)',
+              ip: '10.1.30.3 (LXC)',
+              role: 'Acts as the central gateway controller. Handles Let\'s Encrypt SSL termination, matches subdomain requests, and ships logs to CrowdSec via syslog UDP.',
+              tags: ['Reverse Proxy', 'SSL Termination', 'syslog-relay', 'CrowdSec Bouncer']
+            },
+            proxmox: {
+              name: 'Proxmox VE Hypervisor (pve-tng)',
+              ip: '10.1.99.2 (Host)',
+              role: 'Debian-based hypervisor managing physical bare-metal hardware. Runs VMs (like the Docker VM) and LXC containers (like HAProxy and DNS) under secure segmentation.',
+              tags: ['Hypervisor', 'KVM', 'LXC Containers']
+            },
+            docker: {
+              name: 'Docker VM Host (docker-tng)',
+              ip: '10.1.30.5 (VM)',
+              role: 'Virtual machine running 11 Docker Compose stacks managed via custom parallel deployment scripts. Runs Portainer EE, Authentik, Immich, Jellyfin, and CrowdSec.',
+              tags: ['Docker Compose', 'Portainer EE', 'Live Restore', 'VM Workloads']
+            },
+            nas: {
+              name: 'TrueNAS Shared Storage (NAS-TNG)',
+              ip: '10.1.30.6 (NFS)',
+              role: 'Central NFS storage server providing persistent shared file systems for all container volumes. Uses local VM SSD cache overrides for low-latency SQLite databases.',
+              tags: ['TrueNAS', 'NFS Share', 'RAID Z1', 'Bind Mounts']
+            }
+          };
+
+          const nodeGroups = document.querySelectorAll('.node-group');
+          const nameEl = document.getElementById('node-detail-name');
+          const ipEl = document.getElementById('node-detail-ip');
+          const roleEl = document.getElementById('node-detail-role');
+          const tagsEl = document.getElementById('node-detail-tags');
+          const lines = {
+            internet: ['.flow-1'],
+            cloudflare: ['.flow-1', '.flow-2'],
+            haproxy: ['.flow-2', '.flow-3', '.flow-4'],
+            proxmox: ['.flow-3', '.flow-6'],
+            docker: ['.flow-4', '.flow-5', '.flow-6'],
+            nas: ['.flow-5']
+          };
+
+          nodeGroups.forEach(node => {
+            node.addEventListener('mouseenter', () => {
+              const nodeId = node.getAttribute('data-node');
+              const info = nodeDetails[nodeId];
+              if (!info) return;
+
+              nameEl.textContent = info.name;
+              ipEl.textContent = info.ip;
+              roleEl.textContent = info.role;
+              tagsEl.innerHTML = info.tags.map(t => `<span class="tech-badge">${t}</span>`).join('');
+
+              document.querySelectorAll('.conn-line').forEach(l => {
+                l.classList.remove('active');
+                l.setAttribute('marker-end', 'url(#arrow)');
+              });
+              
+              const activeLines = lines[nodeId] || [];
+              activeLines.forEach(selector => {
+                const line = document.querySelector(selector);
+                if (line) {
+                  line.classList.add('active');
+                  line.setAttribute('marker-end', 'url(#arrow-active)');
+                }
+              });
+            });
+          });
+        });
+      </script>
 
       <!-- Experience Timeline Grid -->
       <div class="experience-container">
@@ -296,53 +460,6 @@ const categoryTitles = {
     padding: 6rem 1.5rem;
     overflow: hidden;
     text-align: center;
-  }
-
-  .hero-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.35;
-    pointer-events: none;
-    animation: orbFloat 8s ease-in-out infinite;
-  }
-  .hero-orb-1 {
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, #22d3ee 0%, transparent 70%);
-    top: -100px;
-    left: -150px;
-    animation-delay: 0s;
-  }
-  .hero-orb-2 {
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, #a855f7 0%, transparent 70%);
-    bottom: -100px;
-    right: -100px;
-    animation-delay: 3s;
-  }
-  .hero-orb-3 {
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, #3b82f6 0%, transparent 70%);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    animation-delay: 1.5s;
-  }
-
-  @keyframes orbFloat {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-20px) scale(1.05); }
-  }
-  .hero-orb-3 {
-    animation: orbFloat3 8s ease-in-out infinite;
-    animation-delay: 1.5s;
-  }
-  @keyframes orbFloat3 {
-    0%, 100% { transform: translate(-50%, -50%) scale(1); }
-    50% { transform: translate(-50%, calc(-50% - 20px)) scale(1.05); }
   }
 
   .hero-content {
@@ -839,5 +956,138 @@ const categoryTitles = {
   main.container {
     max-width: 1200px;
     margin: 0 auto;
+  }
+
+  /* ---- Topology Diagram ---- */
+  .topology-card {
+    padding: 2.5rem;
+    max-width: 1000px;
+    margin: 3rem auto 0;
+  }
+  .topology-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .topology-intro {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+  }
+  .topology-wrapper {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 2rem;
+    align-items: center;
+  }
+  @media (max-width: 850px) {
+    .topology-wrapper {
+      grid-template-columns: 1fr;
+    }
+  }
+  .topology-diagram {
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1rem;
+    overflow: hidden;
+  }
+  .topology-svg {
+    display: block;
+    height: auto;
+  }
+  .conn-line {
+    stroke: var(--glass-border);
+    stroke-width: 2.5;
+    fill: none;
+    transition: var(--transition-smooth);
+  }
+  .conn-line.active {
+    stroke: var(--accent-cyan);
+    filter: drop-shadow(0 0 4px var(--accent-cyan));
+    stroke-dasharray: 4;
+    animation: dash 1s linear infinite;
+  }
+  @keyframes dash {
+    to {
+      stroke-dashoffset: -20;
+    }
+  }
+  
+  .node-circle {
+    fill: var(--glass-bg);
+    stroke: var(--glass-border);
+    stroke-width: 2;
+    transition: var(--transition-smooth);
+    cursor: pointer;
+  }
+  .node-rect {
+    fill: var(--glass-bg);
+    stroke: var(--glass-border);
+    stroke-width: 2;
+    transition: var(--transition-smooth);
+    cursor: pointer;
+  }
+  .node-text {
+    fill: var(--text-light);
+    font-size: 11px;
+    font-weight: 700;
+    pointer-events: none;
+  }
+  .node-subtext {
+    fill: var(--accent-cyan);
+    font-size: 9px;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  
+  .node-group:hover .node-circle,
+  .node-group:hover .node-rect {
+    stroke: var(--accent-cyan);
+    fill: rgba(34, 211, 238, 0.1);
+    filter: drop-shadow(0 0 6px var(--accent-cyan));
+  }
+  .node-group:hover .node-text {
+    fill: var(--text-light);
+  }
+  
+  .topology-details {
+    padding: 1.75rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 220px;
+  }
+  .details-name {
+    font-size: 1.25rem;
+    color: var(--text-light);
+    margin-bottom: 0.25rem;
+  }
+  .details-ip {
+    font-size: 0.85rem;
+    color: var(--accent-cyan);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+  .details-divider {
+    height: 1px;
+    background: var(--glass-border);
+    margin-bottom: 0.75rem;
+  }
+  .details-role {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    flex-grow: 1;
+  }
+  .details-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 </style>
