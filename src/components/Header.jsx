@@ -36,11 +36,18 @@ export default function Header() {
       if (e.key === 'Escape' && isOpen) closeMenu();
     };
 
+    const handleNavigation = () => {
+      setPathname(window.location.pathname);
+      closeMenu();
+    };
+
     window.addEventListener('scroll', handleScroll);
     document.addEventListener('keydown', handleEscape);
+    document.addEventListener('astro:after-navigation', handleNavigation);
     return () => {
       window.removeEventListener('scroll', handleScroll);
       document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('astro:after-navigation', handleNavigation);
     };
   }, [isOpen, closeMenu]);
 

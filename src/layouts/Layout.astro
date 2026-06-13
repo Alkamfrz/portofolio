@@ -42,12 +42,12 @@ const { title } = Astro.props;
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to content</a>
-    <div class="bg-orb bg-orb-1"></div>
-    <div class="bg-orb bg-orb-2"></div>
-    <div class="bg-orb bg-orb-3"></div>
-    <Header client:idle />
+    <div class="bg-orb bg-orb-1" transition:persist></div>
+    <div class="bg-orb bg-orb-2" transition:persist></div>
+    <div class="bg-orb bg-orb-3" transition:persist></div>
+    <Header client:idle transition:persist />
     <div class="nav-overlay" id="nav-overlay"></div>
-    <main id="main-content" class="container">
+    <main id="main-content" class="container" transition:animate="fade">
       <slot />
     </main>
     <Footer />
