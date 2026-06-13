@@ -1,3 +1,7 @@
+@view-transition {
+  navigation: auto;
+}
+
 /* Color variables & Utility systems */
 :root {
   /* Dark theme base color */
