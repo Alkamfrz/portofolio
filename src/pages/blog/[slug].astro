@@ -31,17 +31,175 @@ function formatDate(dateStr) {
 <Layout title={post.data.title}>
   <script type="application/ld+json">{JSON.stringify(blogJsonLd)}</script>
   <article class="section">
-    <div class="section-container">
+    <div class="section-container" style="max-width: 1200px;">
       <a href="/blog" class="back-link">&larr; Back to Blog</a>
-      <div class="glass-card blog-post-detail">
-        <h1 class="post-title">{post.data.title}</h1>
-        <p class="post-meta">Published on {formatDate(post.data.date)}</p>
-        <div class="post-content">
-          <Content />
+      
+      <div class="blog-layout-wrapper">
+        <!-- Main Column: Article Content -->
+        <div style="max-width: 720px; width: 100%;">
+          <!-- Font Size Widget -->
+          <div class="font-size-widget">
+            <button class="font-size-btn" id="fs-sm" title="Small text">A-</button>
+            <button class="font-size-btn active" id="fs-md" title="Medium text">A</button>
+            <button class="font-size-btn" id="fs-lg" title="Large text">A+</button>
+          </div>
+
+          <div class="glass-card blog-post-detail">
+            <h1 class="post-title">{post.data.title}</h1>
+            <div class="post-meta">
+              <span>Published on {formatDate(post.data.date)}</span>
+              <span style="margin: 0 8px; color: var(--glass-border);">•</span>
+              <span id="reading-time-placeholder">Calculating read time...</span>
+            </div>
+            <div class="post-content text-md" id="post-content-body">
+              <Content />
+            </div>
+          </div>
         </div>
+
+        <!-- Right Column: Sticky Table of Contents -->
+        <aside class="toc-sidebar glass-card">
+          <h4 class="toc-title">Table of Contents</h4>
+          <ul class="toc-list" id="toc-list-container">
+            <!-- Dynamic elements will be inserted here -->
+          </ul>
+        </aside>
       </div>
     </div>
   </article>
+
+  <!-- Client-side Reading Suite Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const contentBody = document.getElementById('post-content-body');
+      if (!contentBody) return;
+
+      // 1. Calculate reading time & word count
+      const text = contentBody.textContent || '';
+      const words = text.trim().split(/\s+/).filter(Boolean).length;
+      const readingTime = Math.max(1, Math.ceil(words / 200)); // 200 words per minute average
+      const placeholder = document.getElementById('reading-time-placeholder');
+      if (placeholder) {
+        placeholder.innerHTML = `⏱️ ${readingTime} min read <span style="opacity: 0.7; font-weight: normal; margin-left: 4px;">(${words} words)</span>`;
+      }
+
+      // 2. Font Size Widget Controls
+      const btnSm = document.getElementById('fs-sm');
+      const btnMd = document.getElementById('fs-md');
+      const btnLg = document.getElementById('fs-lg');
+
+      function setFontSizeClass(className) {
+        contentBody.className = `post-content ${className}`;
+        [btnSm, btnMd, btnLg].forEach(b => b?.classList.remove('active'));
+        if (className === 'text-sm') btnSm?.classList.add('active');
+        if (className === 'text-md') btnMd?.classList.add('active');
+        if (className === 'text-lg') btnLg?.classList.add('active');
+      }
+
+      btnSm?.addEventListener('click', () => setFontSizeClass('text-sm'));
+      btnMd?.addEventListener('click', () => setFontSizeClass('text-md'));
+      btnLg?.addEventListener('click', () => setFontSizeClass('text-lg'));
+
+      // 3. Dynamic Table of Contents Generation
+      const headings = contentBody.querySelectorAll('h2, h3');
+      const tocContainer = document.getElementById('toc-list-container');
+      
+      if (tocContainer) {
+        if (headings.length === 0) {
+          const sidebar = document.querySelector('.toc-sidebar');
+          if (sidebar) (sidebar as HTMLElement).style.display = 'none';
+        } else {
+          headings.forEach((heading, idx) => {
+            // Ensure heading has an ID
+            if (!heading.id) {
+              heading.id = `heading-${idx}`;
+            }
+
+            const item = document.createElement('li');
+            item.className = `toc-item ${heading.tagName.toLowerCase()}`;
+            item.innerHTML = `<a href="#${heading.id}">${heading.textContent}</a>`;
+            tocContainer.appendChild(item);
+          });
+        }
+      }
+
+      // 4. Scroll Spy: Highlight active heading in TOC
+      const tocItems = document.querySelectorAll('.toc-item');
+      function spyScroll() {
+        let activeIdx = -1;
+        const scrollPos = window.scrollY + 140; // Offset for header + padding
+
+        headings.forEach((heading, idx) => {
+          const top = (heading as HTMLElement).offsetTop;
+          if (scrollPos >= top) {
+            activeIdx = idx;
+          }
+        });
+
+        tocItems.forEach((item, idx) => {
+          if (idx === activeIdx) {
+            item.classList.add('active');
+          } else {
+            item.classList.remove('active');
+          }
+        });
+      }
+
+      window.addEventListener('scroll', spyScroll);
+      spyScroll(); // Trigger initially
+
+      // 5. Mac-style Code Blocks with copy buttons
+      const preBlocks = contentBody.querySelectorAll('pre');
+      preBlocks.forEach((pre) => {
+        // Find language from code child or set default
+        const code = pre.querySelector('code');
+        let lang = 'code';
+        if (code) {
+          const classes = Array.from(code.classList);
+          const langClass = classes.find(c => c.startsWith('language-'));
+          if (langClass) {
+            lang = langClass.replace('language-', '');
+          }
+        }
+
+        // Create the wrapper
+        const wrapper = document.createElement('div');
+        wrapper.className = 'mac-code-block';
+
+        // Create the header
+        const header = document.createElement('div');
+        header.className = 'mac-code-header';
+        header.innerHTML = `
+          <div class="mac-dots">
+            <span class="mac-dot red"></span>
+            <span class="mac-dot yellow"></span>
+            <span class="mac-dot green"></span>
+          </div>
+          <span class="mac-lang">${lang}</span>
+          <button class="mac-copy-btn">Copy</button>
+        `;
+
+        // Wrap pre
+        pre.parentNode?.insertBefore(wrapper, pre);
+        wrapper.appendChild(header);
+        wrapper.appendChild(pre);
+
+        // Copy button action
+        const copyBtn = header.querySelector('.mac-copy-btn');
+        copyBtn?.addEventListener('click', () => {
+          const textToCopy = code ? code.textContent || '' : pre.textContent || '';
+          navigator.clipboard.writeText(textToCopy).then(() => {
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => {
+              copyBtn.textContent = 'Copy';
+            }, 2000);
+          }).catch(err => {
+            console.error('Failed to copy: ', err);
+          });
+        });
+      });
+    });
+  </script>
 </Layout>
 
 <style>

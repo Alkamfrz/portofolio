@@ -13,6 +13,19 @@ export default function Header() {
     const isDark = saved ? saved === 'dark' : prefersDark !== false;
     setDarkMode(isDark);
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+
+    // Scroll progress handler
+    const handleScroll = () => {
+      const progressBar = document.getElementById('scroll-progress');
+      if (!progressBar) return;
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+      progressBar.style.width = scrolled + '%';
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const toggleDarkMode = () => {
@@ -80,6 +93,10 @@ export default function Header() {
             </span>
           </button>
         </div>
+      </div>
+      {/* Scroll Progress Bar */}
+      <div className="scroll-progress-container">
+        <div className="scroll-progress-bar" id="scroll-progress"></div>
       </div>
     </header>
   );

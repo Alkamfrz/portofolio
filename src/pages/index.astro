@@ -66,38 +66,59 @@ const categoryTitles = {
     </div>
   </section>
 
-  <!-- =================== ABOUT & EXPERIENCE =================== -->
-  <section class="section" id="about-section">
+  <!-- =================== ABOUT & SKILLS =================== -->
+  <section class="section" id="about-skills-section">
     <div class="section-container">
-      <h2 class="section-title text-gradient">About &amp; Experience</h2>
-      <div class="glass-card about-card" id="welcome-card">
-        <p class="about-text">
-          I'm a versatile Informatics Engineering graduate from Universitas Mercu Buana (GPA 3.90/4.00) with proven expertise in IT infrastructure, system automation, and cross-platform integrations. I am proficient in scripting workflows using Python (BERT-NLP, computer vision) and PowerShell, managing relational databases, and configuring central monitoring platforms like ZoneMinder and Zabbix.
-        </p>
-        <p class="about-text">
-          Beyond IT support, I run an advanced self-hosted homelab stack including Proxmox VE virtualization, Docker Compose, HAProxy routing, Cloudflare Tunnels, and Prometheus/Grafana/Loki/Zabbix observability suites. My engineering philosophy is built around data ownership, automating repetitive tasks, and robust system monitoring.
-        </p>
-        
-        <div class="bio-highlights">
-          <div class="bio-highlight">
-            <span class="highlight-label">Degree</span>
-            <span class="highlight-val">B.Eng. Informatics</span>
-          </div>
-          <div class="bio-highlight">
-            <span class="highlight-label">GPA</span>
-            <span class="highlight-val">3.90 / 4.00</span>
-          </div>
-          <div class="bio-highlight">
-            <span class="highlight-label">Location</span>
-            <span class="highlight-val">Tangerang, ID</span>
+      <h2 class="section-title text-gradient">About &amp; Skills</h2>
+      <div class="about-skills-wrapper">
+        <!-- Left: About Card -->
+        <div class="glass-card about-card" id="welcome-card" style="margin: 0; max-width: none;">
+          <p class="about-text">
+            I'm a versatile Informatics Engineering graduate from Universitas Mercu Buana (GPA 3.90/4.00) with proven expertise in IT infrastructure, system automation, and cross-platform integrations. I am proficient in scripting workflows using Python (BERT-NLP, computer vision) and PowerShell, managing relational databases, and configuring central monitoring platforms like ZoneMinder and Zabbix.
+          </p>
+          <p class="about-text">
+            Beyond IT support, I run an advanced self-hosted homelab stack including Proxmox VE virtualization, Docker Compose, HAProxy routing, Cloudflare Tunnels, and Prometheus/Grafana/Loki/Zabbix observability suites. My engineering philosophy is built around data ownership, automating repetitive tasks, and robust system monitoring.
+          </p>
+          
+          <div class="bio-highlights">
+            <div class="bio-highlight">
+              <span class="highlight-label">Degree</span>
+              <span class="highlight-val">B.Eng. Informatics</span>
+            </div>
+            <div class="bio-highlight">
+              <span class="highlight-label">GPA</span>
+              <span class="highlight-val">3.90 / 4.00</span>
+            </div>
+            <div class="bio-highlight">
+              <span class="highlight-label">Location</span>
+              <span class="highlight-val">Tangerang, ID</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- =================== HOMELAB TOPOLOGY =================== -->
-      <div class="glass-card topology-card" id="topology-section">
-        <h3 class="topology-title"><span class="icon">🕸️</span> Homelab Network Architecture</h3>
-        <p class="topology-intro">Hover over a node to trace the secure, zero-trust network data flow.</p>
+        <!-- Right: Categorized Skills -->
+        <div class="skills-grid" style="grid-template-columns: 1fr; gap: 1rem;">
+          {Object.entries(skills).map(([category, items]) => (
+            <div class="glass-card skill-category" style="padding: 1.25rem;">
+              <h3 class="skill-category-title" style="font-size: 0.9rem; margin-bottom: 0.75rem;">{categoryTitles[category] || category}</h3>
+              <div class="skill-badges">
+                {items.map(skill => (
+                  <span class="skill-badge" style="font-size: 0.8rem; padding: 0.2rem 0.6rem;">{skill}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== HOMELAB TOPOLOGY =================== -->
+  <section class="section" id="topology-section">
+    <div class="section-container">
+      <h2 class="section-title text-gradient">Homelab Architecture</h2>
+      <div class="glass-card topology-card" style="margin: 0; max-width: none;">
+        <p class="topology-intro">Hover or tap on a node to trace the secure, zero-trust network data flow.</p>
         
         <div class="topology-wrapper">
           <!-- SVG Diagram for connections -->
@@ -125,36 +146,36 @@ const categoryTitles = {
               <path d="M 520 120 L 520 280" class="conn-line flow-6" style="stroke-dasharray: 4;" />
 
               <!-- Nodes as Interactive SVG Groups -->
-              <g class="node-group" data-node="internet">
+              <g class="node-group" data-node="internet" style="cursor: pointer;">
                 <circle cx="100" cy="200" r="30" class="node-circle" />
                 <text x="100" y="204" text-anchor="middle" class="node-text">WAN</text>
               </g>
               
-              <g class="node-group" data-node="cloudflare">
+              <g class="node-group" data-node="cloudflare" style="cursor: pointer;">
                 <circle cx="220" cy="200" r="35" class="node-circle" />
                 <text x="220" y="196" text-anchor="middle" class="node-text">Cloudflare</text>
                 <text x="220" y="212" text-anchor="middle" class="node-subtext">Tunnel</text>
               </g>
 
-              <g class="node-group" data-node="haproxy">
+              <g class="node-group" data-node="haproxy" style="cursor: pointer;">
                 <circle cx="360" cy="200" r="35" class="node-circle" />
                 <text x="360" y="196" text-anchor="middle" class="node-text">HAProxy</text>
                 <text x="360" y="212" text-anchor="middle" class="node-subtext">10.1.30.3</text>
               </g>
 
-              <g class="node-group" data-node="proxmox">
+              <g class="node-group" data-node="proxmox" style="cursor: pointer;">
                 <rect x="465" y="75" width="110" height="90" rx="10" class="node-rect" />
                 <text x="520" y="115" text-anchor="middle" class="node-text">Proxmox VE</text>
                 <text x="520" y="135" text-anchor="middle" class="node-subtext">10.1.99.2</text>
               </g>
 
-              <g class="node-group" data-node="docker">
+              <g class="node-group" data-node="docker" style="cursor: pointer;">
                 <circle cx="520" cy="280" r="40" class="node-circle" />
                 <text x="520" y="276" text-anchor="middle" class="node-text">Docker VM</text>
                 <text x="520" y="294" text-anchor="middle" class="node-subtext">10.1.30.5</text>
               </g>
 
-              <g class="node-group" data-node="nas">
+              <g class="node-group" data-node="nas" style="cursor: pointer;">
                 <rect x="635" y="235" width="90" height="90" rx="10" class="node-rect" />
                 <text x="680" y="275" text-anchor="middle" class="node-text">TrueNAS</text>
                 <text x="680" y="295" text-anchor="middle" class="node-subtext">10.1.30.6</text>
@@ -163,9 +184,9 @@ const categoryTitles = {
           </div>
 
           <!-- Node info display panel -->
-          <div class="topology-details glass-card" id="node-details-panel">
+          <div class="topology-details glass-card" id="node-details-panel" style="min-height: 220px;">
             <h4 class="details-name" id="node-detail-name">Select a Node</h4>
-            <p class="details-ip" id="node-detail-ip">Hover over the diagram nodes to inspect details</p>
+            <p class="details-ip" id="node-detail-ip">Hover or tap on the diagram nodes to inspect details</p>
             <div class="details-divider"></div>
             <p class="details-role" id="node-detail-role">Learn about the role of each device in this self-hosted homelab infrastructure.</p>
             <div class="details-tags" id="node-detail-tags">
@@ -175,96 +196,29 @@ const categoryTitles = {
           </div>
         </div>
       </div>
+    </div>
+  </section>
 
-      <!-- Client-side topology script -->
-      <script>
-        document.addEventListener('DOMContentLoaded', () => {
-          const nodeDetails = {
-            internet: {
-              name: 'Public WAN / Internet',
-              ip: 'Exposed Edge',
-              role: 'Incoming HTTPS web user traffic targeted at alkamfrz.my.id. Traffic is fully secure, TLS-encrypted, and protected by Cloudflare Edge.',
-              tags: ['HTTPS', 'TLS 1.3', 'Zero WAN Ports Open']
-            },
-            cloudflare: {
-              name: 'Cloudflare Tunnel (cfd-tng)',
-              ip: '10.1.30.2 (LXC)',
-              role: 'Establishes a secure, outbound-only tunnel to Cloudflare Edge. Shields your public IP address completely and removes local port-forwarding requirements.',
-              tags: ['Zero-Trust', 'Cloudflare Tunnel', 'DNS Proxy']
-            },
-            haproxy: {
-              name: 'HAProxy Reverse Proxy (haproxy-tng)',
-              ip: '10.1.30.3 (LXC)',
-              role: 'Acts as the central gateway controller. Handles Let\'s Encrypt SSL termination, matches subdomain requests, and ships logs to CrowdSec via syslog UDP.',
-              tags: ['Reverse Proxy', 'SSL Termination', 'syslog-relay', 'CrowdSec Bouncer']
-            },
-            proxmox: {
-              name: 'Proxmox VE Hypervisor (pve-tng)',
-              ip: '10.1.99.2 (Host)',
-              role: 'Debian-based hypervisor managing physical bare-metal hardware. Runs VMs (like the Docker VM) and LXC containers (like HAProxy and DNS) under secure segmentation.',
-              tags: ['Hypervisor', 'KVM', 'LXC Containers']
-            },
-            docker: {
-              name: 'Docker VM Host (docker-tng)',
-              ip: '10.1.30.5 (VM)',
-              role: 'Virtual machine running 11 Docker Compose stacks managed via custom parallel deployment scripts. Runs Portainer EE, Authentik, Immich, Jellyfin, and CrowdSec.',
-              tags: ['Docker Compose', 'Portainer EE', 'Live Restore', 'VM Workloads']
-            },
-            nas: {
-              name: 'TrueNAS Shared Storage (NAS-TNG)',
-              ip: '10.1.30.6 (NFS)',
-              role: 'Central NFS storage server providing persistent shared file systems for all container volumes. Uses local VM SSD cache overrides for low-latency SQLite databases.',
-              tags: ['TrueNAS', 'NFS Share', 'RAID Z1', 'Bind Mounts']
-            }
-          };
+  <!-- =================== EXPERIENCE & EDUCATION =================== -->
+  <section class="section" id="experience-section">
+    <div class="section-container">
+      <h2 class="section-title text-gradient">Experience &amp; Education</h2>
+      
+      <!-- Timeline Switch Tabs -->
+      <div class="timeline-toggle-wrapper">
+        <div class="timeline-toggle-btn">
+          <button class="timeline-tab active" id="tab-work" data-target="work-column">
+            💼 Work Experience
+          </button>
+          <button class="timeline-tab" id="tab-edu" data-target="edu-column">
+            🎓 Education &amp; Org
+          </button>
+        </div>
+      </div>
 
-          const nodeGroups = document.querySelectorAll('.node-group');
-          const nameEl = document.getElementById('node-detail-name');
-          const ipEl = document.getElementById('node-detail-ip');
-          const roleEl = document.getElementById('node-detail-role');
-          const tagsEl = document.getElementById('node-detail-tags');
-          const lines = {
-            internet: ['.flow-1'],
-            cloudflare: ['.flow-1', '.flow-2'],
-            haproxy: ['.flow-2', '.flow-3', '.flow-4'],
-            proxmox: ['.flow-3', '.flow-6'],
-            docker: ['.flow-4', '.flow-5', '.flow-6'],
-            nas: ['.flow-5']
-          };
-
-          nodeGroups.forEach(node => {
-            node.addEventListener('mouseenter', () => {
-              const nodeId = node.getAttribute('data-node');
-              const info = nodeDetails[nodeId];
-              if (!info) return;
-
-              nameEl.textContent = info.name;
-              ipEl.textContent = info.ip;
-              roleEl.textContent = info.role;
-              tagsEl.innerHTML = info.tags.map(t => `<span class="tech-badge">${t}</span>`).join('');
-
-              document.querySelectorAll('.conn-line').forEach(l => {
-                l.classList.remove('active');
-                l.setAttribute('marker-end', 'url(#arrow)');
-              });
-              
-              const activeLines = lines[nodeId] || [];
-              activeLines.forEach(selector => {
-                const line = document.querySelector(selector);
-                if (line) {
-                  line.classList.add('active');
-                  line.setAttribute('marker-end', 'url(#arrow-active)');
-                }
-              });
-            });
-          });
-        });
-      </script>
-
-      <!-- Experience Timeline Grid -->
-      <div class="experience-container">
-        <div class="experience-column">
-          <h3 class="experience-heading"><span class="icon">💼</span> Work Experience</h3>
+      <div class="experience-container" style="grid-template-columns: 1fr; margin-top: 0;">
+        <!-- Work Experience Column -->
+        <div class="experience-column" id="work-column">
           <div class="timeline">
             <!-- Sinarmas Multifinance -->
             <div class="timeline-item">
@@ -316,8 +270,8 @@ const categoryTitles = {
           </div>
         </div>
 
-        <div class="experience-column">
-          <h3 class="experience-heading"><span class="icon">🎓</span> Education &amp; Org</h3>
+        <!-- Education & Org Column -->
+        <div class="experience-column hidden" id="edu-column">
           <div class="timeline">
             <!-- Universitas Mercu Buana -->
             <div class="timeline-item">
@@ -366,24 +320,125 @@ const categoryTitles = {
     </div>
   </section>
 
-  <!-- =================== SKILLS =================== -->
-  <section class="section" id="skills-section">
-    <div class="section-container">
-      <h2 class="section-title text-gradient">Skills</h2>
-      <div class="skills-grid">
-        {Object.entries(skills).map(([category, items]) => (
-          <div class="glass-card skill-category">
-            <h3 class="skill-category-title">{categoryTitles[category] || category}</h3>
-            <div class="skill-badges">
-              {items.map(skill => (
-                <span class="skill-badge">{skill}</span>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
+  <!-- Client-side script for Topology & Timeline toggles -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // --- Homelab Topology Interactions ---
+      const nodeDetails = {
+        internet: {
+          name: 'Public WAN / Internet',
+          ip: 'Exposed Edge',
+          role: 'Incoming HTTPS web user traffic targeted at alkamfrz.my.id. Traffic is fully secure, TLS-encrypted, and protected by Cloudflare Edge.',
+          tags: ['HTTPS', 'TLS 1.3', 'Zero WAN Ports Open']
+        },
+        cloudflare: {
+          name: 'Cloudflare Tunnel (cfd-tng)',
+          ip: '10.1.30.2 (LXC)',
+          role: 'Establishes a secure, outbound-only tunnel to Cloudflare Edge. Shields your public IP address completely and removes local port-forwarding requirements.',
+          tags: ['Zero-Trust', 'Cloudflare Tunnel', 'DNS Proxy']
+        },
+        haproxy: {
+          name: 'HAProxy Reverse Proxy (haproxy-tng)',
+          ip: '10.1.30.3 (LXC)',
+          role: 'Acts as the central gateway controller. Handles Let\'s Encrypt SSL termination, matches subdomain requests, and ships logs to CrowdSec via syslog UDP.',
+          tags: ['Reverse Proxy', 'SSL Termination', 'syslog-relay', 'CrowdSec Bouncer']
+        },
+        proxmox: {
+          name: 'Proxmox VE Hypervisor (pve-tng)',
+          ip: '10.1.99.2 (Host)',
+          role: 'Debian-based hypervisor managing physical bare-metal hardware. Runs VMs (like the Docker VM) and LXC containers (like HAProxy and DNS) under secure segmentation.',
+          tags: ['Hypervisor', 'KVM', 'LXC Containers']
+        },
+        docker: {
+          name: 'Docker VM Host (docker-tng)',
+          ip: '10.1.30.5 (VM)',
+          role: 'Virtual machine running 11 Docker Compose stacks managed via custom parallel deployment scripts. Runs Portainer EE, Authentik, Immich, Jellyfin, and CrowdSec.',
+          tags: ['Docker Compose', 'Portainer EE', 'Live Restore', 'VM Workloads']
+        },
+        nas: {
+          name: 'TrueNAS Shared Storage (NAS-TNG)',
+          ip: '10.1.30.6 (NFS)',
+          role: 'Central NFS storage server providing persistent shared file systems for all container volumes. Uses local VM SSD cache overrides for low-latency SQLite databases.',
+          tags: ['TrueNAS', 'NFS Share', 'RAID Z1', 'Bind Mounts']
+        }
+      };
+
+      const nodeGroups = document.querySelectorAll('.node-group');
+      const nameEl = document.getElementById('node-detail-name');
+      const ipEl = document.getElementById('node-detail-ip');
+      const roleEl = document.getElementById('node-detail-role');
+      const tagsEl = document.getElementById('node-detail-tags');
+      const lines = {
+        internet: ['.flow-1'],
+        cloudflare: ['.flow-1', '.flow-2'],
+        haproxy: ['.flow-2', '.flow-3', '.flow-4'],
+        proxmox: ['.flow-3', '.flow-6'],
+        docker: ['.flow-4', '.flow-5', '.flow-6'],
+        nas: ['.flow-5']
+      };
+
+      function selectNode(nodeId) {
+        const info = nodeDetails[nodeId];
+        if (!info) return;
+
+        nameEl.textContent = info.name;
+        ipEl.textContent = info.ip;
+        roleEl.textContent = info.role;
+        tagsEl.innerHTML = info.tags.map(t => `<span class="tech-badge">${t}</span>`).join('');
+
+        document.querySelectorAll('.conn-line').forEach(l => {
+          l.classList.remove('active');
+          l.setAttribute('marker-end', 'url(#arrow)');
+        });
+        
+        const activeLines = lines[nodeId] || [];
+        activeLines.forEach(selector => {
+          const line = document.querySelector(selector);
+          if (line) {
+            line.classList.add('active');
+            line.setAttribute('marker-end', 'url(#arrow-active)');
+          }
+        });
+      }
+
+      nodeGroups.forEach(node => {
+        // Hover (Desktop)
+        node.addEventListener('mouseenter', () => {
+          const nodeId = node.getAttribute('data-node');
+          selectNode(nodeId);
+        });
+
+        // Click/Touch (Mobile & Desktop)
+        node.addEventListener('click', (e) => {
+          e.preventDefault();
+          const nodeId = node.getAttribute('data-node');
+          selectNode(nodeId);
+        });
+      });
+
+      // --- Interactive Timeline Switcher ---
+      const tabWork = document.getElementById('tab-work');
+      const tabEdu = document.getElementById('tab-edu');
+      const colWork = document.getElementById('work-column');
+      const colEdu = document.getElementById('edu-column');
+
+      if (tabWork && tabEdu && colWork && colEdu) {
+        tabWork.addEventListener('click', () => {
+          tabEdu.classList.remove('active');
+          tabWork.classList.add('active');
+          colEdu.classList.add('hidden');
+          colWork.classList.remove('hidden');
+        });
+
+        tabEdu.addEventListener('click', () => {
+          tabWork.classList.remove('active');
+          tabEdu.classList.add('active');
+          colWork.classList.add('hidden');
+          colEdu.classList.remove('hidden');
+        });
+      }
+    });
+  </script>
 
   <!-- =================== PROJECTS PREVIEW =================== -->
   <section class="section" id="projects-preview-section">
