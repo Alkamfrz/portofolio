@@ -401,8 +401,9 @@ const categoryTitles = {
               <g class="node-group" data-node="nas" style="cursor: pointer;">
                 <rect x="635" y="235" width="90" height="90" rx="10" class="node-rect" />
                 <circle cx="710" cy="248" r="4" class="node-status-dot" />
-                <text x="680" y="275" text-anchor="middle" class="node-text">TrueNAS</text>
-                <text x="680" y="295" text-anchor="middle" class="node-subtext">10.1.30.6</text>
+                <text x="680" y="272" text-anchor="middle" class="node-text">UGREEN</text>
+                <text x="680" y="292" text-anchor="middle" class="node-subtext">NAS</text>
+                <text x="680" y="312" text-anchor="middle" class="node-subtext">10.1.30.6</text>
               </g>
             </svg>
           </div>
@@ -497,10 +498,10 @@ const categoryTitles = {
           tags: ['Docker Compose', 'Portainer EE', 'Live Restore', 'VM Workloads']
         },
         nas: {
-          name: 'TrueNAS Shared Storage (NAS-TNG)',
+          name: 'UGREEN NAS (NAS-TNG)',
           ip: '10.1.30.6 (NFS)',
-          role: 'Central NFS storage server providing persistent shared file systems for all container volumes. Uses local VM SSD cache overrides for low-latency SQLite databases.',
-          tags: ['TrueNAS', 'NFS Share', 'RAID Z1', 'Bind Mounts']
+          role: 'ARM64 Debian 12 NAS appliance with 1.8TB RAID1 (LVM) providing central NFS storage for Docker volumes, Proxmox backups, and file archives. Exports /volume1/Docker, /volume1/Backups, and /volume1/Proxmox VE to the cluster.',
+          tags: ['UGREEN', 'Debian 12', 'NFS Share', 'RAID1 LVM', 'ARM64']
         }
       };
 
