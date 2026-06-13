@@ -11,7 +11,7 @@ const projects = [
   {
     id: 1,
     title: 'CFO-RetinaNet: Convolutional Feature Optimization',
-    url: 'https://paperity.org/p/365908143/cfo-retinanet-convolutional-feature-optimization-for-oil-palm-ripeness-assessment-in',
+    url: 'https://eprints.uad.ac.id/84763/1/9-CFO-RetinaNet%20Convolutional%20Feature%20Optimization%20for%20Oil%20Palm%20Ripeness%20Assessment%20in%20Precision%20Agriculture.pdf',
     file: 'cfo-retinanet.jpg',
     ssl: false,
   },
