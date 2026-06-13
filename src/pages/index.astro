@@ -234,6 +234,10 @@ const categoryTitles = {
             </div>
           </div>
 
+          <div class="timeline-break">
+            <span>🎓 Education</span>
+          </div>
+
           <div class="timeline-item reveal-left reveal-delay-4">
             <div class="timeline-dot edu-dot"></div>
             <div class="timeline-content glass-card glow-hover">
@@ -780,6 +784,24 @@ const categoryTitles = {
     background: rgba(251, 191, 36, 0.15);
     color: #fbbf24;
     border: 1px solid rgba(251, 191, 36, 0.3);
+  }
+  .timeline-break {
+    display: flex;
+    justify-content: center;
+    padding: 1.5rem 0;
+    margin-left: -1.75rem;
+    padding-left: 1.75rem;
+  }
+  .timeline-break span {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    background: var(--bg-dark);
+    padding: 0.3rem 1rem;
+    border-radius: 9999px;
+    border: 1px solid var(--glass-border);
   }
   .timeline-dot.edu-dot {
     background: linear-gradient(135deg, #fbbf24, #f59e0b);
