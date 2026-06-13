@@ -11,7 +11,7 @@ const projects = [
   {
     id: 1,
     title: 'CFO-RetinaNet: Convolutional Feature Optimization',
-    url: 'https://journal.uad.ac.id/index.php/JITEKI/article/view/30687',
+    url: 'https://garuda.kemdiktisaintek.go.id/documents/detail/5253843',
     file: 'cfo-retinanet.jpg',
     ssl: false,
   },
