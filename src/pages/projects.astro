@@ -4,6 +4,8 @@ import { projects } from '../data/projects.js';
 
 const allProjects = projects;
 
+const uniqueTags = ['All', ...new Set(allProjects.flatMap(project => project.techStack))];
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "ItemList",
@@ -26,12 +28,21 @@ const jsonLd = {
       <h1 class="section-title text-gradient">My Projects</h1>
       <p class="section-subtitle">A showcase of things I've built and maintained.</p>
 
+      <!-- Filter Bar -->
+      <div class="filter-container">
+        {uniqueTags.map(tag => (
+          <button class={`filter-btn ${tag === 'All' ? 'active' : ''}`} data-filter={tag}>
+            {tag}
+          </button>
+        ))}
+      </div>
+
       {allProjects.length === 0 ? (
         <p id="no-projects" class="empty-state">No projects found</p>
       ) : (
         <div id="projects-grid" class="projects-grid">
           {allProjects.map((project) => (
-            <div class="glass-card project-card" id={`project-${project.id}`}>
+            <div class="glass-card project-card" id={`project-${project.id}`} data-tags={project.techStack.join(',')}>
               <h3 class="project-title">{project.title}</h3>
               <p class="project-desc">{project.description}</p>
               <div class="tech-badges">
@@ -51,6 +62,43 @@ const jsonLd = {
       )}
     </div>
   </section>
+
+  <!-- Client-side filter script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const buttons = document.querySelectorAll('.filter-btn');
+      const cards = document.querySelectorAll('.project-card');
+
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Toggle active class
+          buttons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const filter = btn.getAttribute('data-filter');
+
+          cards.forEach(card => {
+            const tags = card.getAttribute('data-tags')?.split(',') || [];
+            const isMatch = filter === 'All' || tags.includes(filter);
+            
+            if (isMatch) {
+              (card as HTMLElement).style.display = 'flex';
+              card.animate([
+                { opacity: 0, transform: 'scale(0.96)' },
+                { opacity: 1, transform: 'scale(1)' }
+              ], {
+                duration: 250,
+                easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                fill: 'forwards'
+              });
+            } else {
+              (card as HTMLElement).style.display = 'none';
+            }
+          });
+        });
+      });
+    });
+  </script>
 </Layout>
 
 <style>
@@ -69,8 +117,44 @@ const jsonLd = {
   .section-subtitle {
     text-align: center;
     color: var(--text-muted);
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     font-size: 1.1rem;
+  }
+  .filter-container {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .filter-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-muted);
+    padding: 0.45rem 1.15rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .filter-btn:hover {
+    background: var(--glass-hover-bg);
+    border-color: var(--accent-cyan);
+    color: var(--text-light);
+    transform: translateY(-2px);
+  }
+  .filter-btn.active {
+    background: var(--gradient-primary);
+    color: #0f172a;
+    border-color: transparent;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(34, 211, 238, 0.3);
   }
   .projects-grid {
     display: grid;
