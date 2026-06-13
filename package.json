@@ -12,7 +12,8 @@
     "astro": "astro",
     "test": "playwright test",
     "mock-server": "node mock-server.js",
-    "audit": "node scripts/audit-lighthouse.js"
+    "audit": "node scripts/audit-lighthouse.js",
+    "capture": "node scripts/capture-screenshots.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.7",
