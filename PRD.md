@@ -243,7 +243,7 @@ If a deployment fails in production (e.g. causes a container crash or HAProxy 50
 2. **Push Revert**: Push the stable codebase back to GitHub's `main` branch.
 3. **Trigger Rebuild**: Manually run the compose build command to fetch the stable commit and redeploy:
    ```bash
-   ssh root@docker-tng "cd /root/stacks/Portfolio && docker compose --env-file stack.env up -d --build"
+   ssh root@10.1.30.5 "cd /root/stacks/Portfolio && docker compose --env-file stack.env up -d --build"
    ```
 
 ### Observability & Telemetry Rules
