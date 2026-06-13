@@ -590,21 +590,11 @@ server.listen(PORT, () => {
   console.log(`Mock server running on port ${PORT}`);
 });
 
-// Graceful shutdown — allows Playwright to cleanly terminate the webServer
-// after the test suite completes, preventing the report-generation hang.
-function shutdown(signal) {
-  console.log(`[mock-server] Received ${signal}, shutting down…`);
-  server.close(() => {
-    console.log('[mock-server] Closed all connections. Exiting.');
-    process.exit(0);
-  });
-  // Force-exit after 3 s if connections are still open
-  setTimeout(() => {
-    console.warn('[mock-server] Force-exiting after timeout.');
-    process.exit(0);
-  }, 3000).unref();
-}
-
-process.on('SIGTERM', () => shutdown('SIGTERM'));
-process.on('SIGINT',  () => shutdown('SIGINT'));
+// Immediate shutdown — Playwright on Windows has trouble with graceful
+// server.close() because keep-alive browser connections prevent clean exit.
+// We just force-exit; the OS reclaims sockets immediately.
+process.on('SIGTERM',  () => process.exit(0));
+process.on('SIGINT',   () => process.exit(0));
+process.on('SIGHUP',   () => process.exit(0));
+process.on('SIGBREAK', () => process.exit(0));
 

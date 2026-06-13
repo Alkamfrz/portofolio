@@ -2,11 +2,11 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: [['list'], ['json', { outputFile: 'test-results/results.json' }]],
+  workers: 1,
+  reporter: 'list',
 
   use: {
     baseURL: 'http://localhost:3000',
@@ -35,7 +35,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: '"C:\\Program Files\\nodejs\\node.exe" mock-server.js',
+    command: 'node mock-server.js',
     url: 'http://localhost:3000',
     reuseExistingServer: false,
     stdout: 'pipe',

@@ -29,3 +29,7 @@ pnpm-debug.log*
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Development artifacts
+.agents/
+/ORIGINAL_REQUEST.md
