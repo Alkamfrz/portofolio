@@ -458,12 +458,12 @@ const categoryTitles = {
         <p class="contact-intro">
           Have a project in mind or just want to say hi? Fill out the form below and I'll get back to you.
         </p>
-        <ContactForm client:load />
+        <ContactForm client:visible />
       </div>
     </div>
   </section>
 
-  <script>
+  <script type="module">
     function initHomeInteractions() {
       // --- Homelab Topology Interactions ---
       const nodeDetails = {
