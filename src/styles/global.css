@@ -1469,25 +1469,25 @@ a {
   margin-top: 2rem;
 }
 
-/* ---- Contact Form :global() React component styles ---- */
-:global(.contact-form-wrapper) {
+/* ---- Contact Form (React component styles) ---- */
+.contact-form-wrapper {
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
-:global(.form-group) {
+.form-group {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
   margin-bottom: 1rem;
 }
-:global(.form-group label) {
+.form-group label {
   color: var(--text-muted);
   font-size: 0.9rem;
   font-weight: 600;
 }
-:global(.form-group input),
-:global(.form-group textarea) {
+.form-group input,
+.form-group textarea {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   color: var(--text-light);
@@ -1498,21 +1498,21 @@ a {
   font-family: inherit;
   backdrop-filter: blur(8px);
 }
-:global(.form-group input::placeholder),
-:global(.form-group textarea::placeholder) {
+.form-group input::placeholder,
+.form-group textarea::placeholder {
   color: var(--text-muted);
 }
-:global(.form-group input:focus),
-:global(.form-group textarea:focus) {
+.form-group input:focus,
+.form-group textarea:focus {
   outline: none;
   border-color: var(--accent-cyan);
 }
-:global(.error-msg) {
+.error-msg {
   color: #f87171;
   font-size: 0.82rem;
   min-height: 1.25rem;
 }
-:global(.submit-btn) {
+.submit-btn {
   background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
   color: #0f172a;
   border: none;
@@ -1523,35 +1523,35 @@ a {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-:global(.submit-btn:hover:not(:disabled)) {
+.submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(34, 211, 238, 0.4);
 }
-:global(.submit-btn:disabled) {
+.submit-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
-:global(#contact-status) {
+#contact-status {
   margin-top: 1rem;
   padding: 0.75rem 1rem;
   border-radius: 8px;
 }
-:global(#contact-status.success) {
+#contact-status.success {
   background: rgba(34, 197, 94, 0.15);
   border: 1px solid rgba(34, 197, 94, 0.4);
   color: #4ade80;
 }
-:global(#contact-status.error) {
+#contact-status.error {
   background: rgba(239, 68, 68, 0.15);
   border: 1px solid rgba(239, 68, 68, 0.4);
   color: #f87171;
 }
-:global(.social-links-section) {
+.social-links-section {
   display: flex;
   gap: 1.5rem;
   flex-wrap: wrap;
 }
-:global(.social-link) {
+.social-link {
   color: var(--text-muted);
   font-weight: 600;
   font-size: 0.95rem;
@@ -1561,7 +1561,7 @@ a {
   transition: all 0.2s ease;
   background: rgba(255, 255, 255, 0.03);
 }
-:global(.social-link:hover) {
+.social-link:hover {
   color: var(--accent-cyan);
   border-color: var(--accent-cyan);
 }
@@ -1597,7 +1597,7 @@ html[data-theme="light"] .journal-link:hover {
 }
 
 /* ---- Topology details global btn styles ---- */
-:global(.btn-detail-action) {
+.btn-detail-action {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
@@ -1608,21 +1608,21 @@ html[data-theme="light"] .journal-link:hover {
   text-decoration: none;
   transition: all 0.3s ease;
 }
-:global(.btn-detail-action-primary) {
+.btn-detail-action-primary {
   background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
   color: #0f172a !important;
   box-shadow: 0 4px 12px rgba(34, 211, 238, 0.25);
 }
-:global(.btn-detail-action-primary:hover) {
+.btn-detail-action-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(34, 211, 238, 0.45);
 }
-:global(.btn-detail-action-secondary) {
+.btn-detail-action-secondary {
   background: rgba(168, 85, 247, 0.08);
   color: var(--accent-purple) !important;
   border: 1px solid rgba(168, 85, 247, 0.3);
 }
-:global(.btn-detail-action-secondary:hover) {
+.btn-detail-action-secondary:hover {
   background: rgba(168, 85, 247, 0.18);
   border-color: var(--accent-purple);
   color: var(--text-light) !important;
@@ -1665,5 +1665,6 @@ html[data-theme="dark"] .astro-code span {
   background: rgba(8, 145, 178, 0.15);
   color: #0e7490 !important;
 }
+
 
 
