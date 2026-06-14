@@ -65,7 +65,7 @@ const { title } = Astro.props;
     <script type="module">
       function initPageObservers() {
         // ----- Scroll Reveal (Intersection Observer) -----
-        const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-scale');
+        const revealElements = document.querySelectorAll('.reveal:not(.visible), .reveal-left:not(.visible), .reveal-scale:not(.visible)');
         if (revealElements.length > 0) {
           const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -79,7 +79,7 @@ const { title } = Astro.props;
         }
 
         // ----- Section Observer (sections fade in) -----
-        const sections = document.querySelectorAll('.section');
+        const sections = document.querySelectorAll('.section:not(.section-visible):not(.section-hidden)');
         if (sections.length > 0) {
           const sectionObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -88,9 +88,8 @@ const { title } = Astro.props;
                 sectionObserver.unobserve(entry.target);
               }
             });
-          }, { threshold: 0.05 });
+          }, { threshold: 0 });
           sections.forEach(s => {
-            s.classList.remove('section-visible');
             s.classList.add('section-hidden');
             sectionObserver.observe(s);
           });
@@ -151,7 +150,13 @@ const { title } = Astro.props;
       }
 
       // Run on initial load
-      initPageObservers();
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initPageObservers);
+      } else {
+        initPageObservers();
+      }
+      // Re-run on Astro view transition navigation
+      document.addEventListener('astro:page-load', initPageObservers);
     </script>
   </body>
 </html>
