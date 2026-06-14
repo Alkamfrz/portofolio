@@ -36,12 +36,11 @@ const { title } = Astro.props;
     <meta property="og:url" content={Astro.url.href} />
     <title>{title} - Alkamfrz Portfolio</title>
     <script is:inline>
-      const applyTheme = () => {
-        var theme = localStorage.getItem('theme');
-        if (!theme) theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', theme);
-      };
-      applyTheme();
+      var theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      document.addEventListener('astro:before-swap', function () {
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+      });
     </script>
     <!-- Typography: self-hosted from /public/fonts/, preloaded above for zero CLS -->
   </head>
