@@ -95,6 +95,9 @@
 [data-theme="light"] .highlight-val {
   color: #0e7490;
 }
+[data-theme="light"] .bg-orb {
+  opacity: 0.12;
+}
 
 
 
@@ -1287,7 +1290,7 @@ html[data-theme="dark"] .astro-code span {
 }
 [data-theme="light"] .search-highlight {
   background: rgba(8, 145, 178, 0.15);
-  color: var(--accent-cyan);
+  color: #0e7490 !important;
 }
 
 

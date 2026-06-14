@@ -34,12 +34,23 @@ const homeJsonLd = {
     },
     {
       "@type": "Person",
+      "@id": "https://alkamfrz.my.id/#person",
       "name": "Muhammad Alkam Alfariz",
       "givenName": "Muhammad Alkam",
       "familyName": "Alfariz",
       "alumniOf": "Universitas Mercu Buana",
       "url": "https://alkamfrz.my.id",
       "sameAs": ["https://github.com/alkamfrz", "https://linkedin.com/in/alkamfrz"]
+    },
+    {
+      "@type": "ProfilePage",
+      "@id": "https://alkamfrz.my.id/#profilepage",
+      "url": "https://alkamfrz.my.id",
+      "name": "Muhammad Alkam Alfariz Personal Profile",
+      "description": "Personal profile page and career resume of Muhammad Alkam Alfariz, Informatics Engineer.",
+      "mainEntity": {
+        "@id": "https://alkamfrz.my.id/#person"
+      }
     }
   ]
 };
