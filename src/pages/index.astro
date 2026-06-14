@@ -583,6 +583,10 @@ const categoryTitles = {
         }
 
         function animate() {
+          // If canvas is no longer in DOM (user navigated away), terminate loop to save CPU and memory
+          if (!document.body.contains(canvas)) {
+            return;
+          }
           ctx.clearRect(0, 0, width, height);
 
           for (let i = 0; i < particles.length; i++) {
@@ -904,7 +908,13 @@ const categoryTitles = {
     }
 
     // Run on initial load
-    initHomeInteractions();
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initHomeInteractions);
+    } else {
+      initHomeInteractions();
+    }
+    // Re-run on Astro view transition navigation
+    document.addEventListener('astro:page-load', initHomeInteractions);
   </script>
 </Layout>
 
