@@ -1929,34 +1929,32 @@ const categoryTitles = {
     gap: 0.5rem;
     margin-top: 1rem;
   }
-  .btn-detail-action {
+  .details-actions :global(.btn-detail-action) {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
     padding: 0.4rem 0.8rem;
     border-radius: 6px;
     font-size: 0.8rem;
-    font-weight: 600;
+    font-weight: 700;
     text-decoration: none;
     transition: all 0.3s ease;
   }
-  .btn-detail-action-primary {
+  .details-actions :global(.btn-detail-action-primary) {
     background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
     color: #0f172a !important;
     box-shadow: 0 4px 12px rgba(34, 211, 238, 0.25);
-    font-weight: 700;
   }
-  .btn-detail-action-primary:hover {
+  .details-actions :global(.btn-detail-action-primary:hover) {
     transform: translateY(-2px);
     box-shadow: 0 6px 18px rgba(34, 211, 238, 0.45);
   }
-  .btn-detail-action-secondary {
+  .details-actions :global(.btn-detail-action-secondary) {
     background: rgba(168, 85, 247, 0.08);
     color: var(--accent-purple) !important;
     border: 1px solid rgba(168, 85, 247, 0.3);
-    font-weight: 700;
   }
-  .btn-detail-action-secondary:hover {
+  .details-actions :global(.btn-detail-action-secondary:hover) {
     background: rgba(168, 85, 247, 0.18);
     border-color: var(--accent-purple);
     color: var(--text-light) !important;
