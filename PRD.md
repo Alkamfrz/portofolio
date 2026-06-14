@@ -83,17 +83,27 @@ Must contain the following sections in this exact order:
     - Renders categorized skill badges loaded from `src/data/skills.js`.
     - Badges styled using the transparent `glass-card` look.
     - Skills have proficiency levels: `.skill-level-advanced` (cyan), `.skill-level-expert` (blue), `.skill-level-proficient` (purple) via color-coded backgrounds.
- 4. **Projects Preview (`.featured-projects-wrapper`)**:
+ 4. **Experience Section (`#experience`)**:
+    - Timeline switcher with two tabs: *"Work Experience"* (`#tab-work`) and *"Education"* (`#tab-edu`) to toggle visibility of lists.
+    - Individual cards show date, role/degree, and brief description, with an expandable *"Show details"* button (`.timeline-details-btn`) that toggles the display of comprehensive bullet points.
+    - Experience cards feature distinct color-coded badges and border hover glows based on category (work vs education).
+ 5. **Projects Preview (`.featured-projects-wrapper`)**:
     - Displays up to 3 featured projects marked as `featured: true` in the data model.
     - First featured project is rendered as `.spotlight` (full-width with 2-column layout on desktop, gradient background border).
     - Project cards (class `project-card` and `glass-card`) must contain: Title (`h3`), Description (`p`), tech badges (class `tech-badge`), GitHub source link (class `github-link`), and Live Demo link (class `live-link`).
     - Project card header shows a `.tag-chip` "Featured" label on the spotlight card.
     - Cards use `.reveal` classes with staggered delays for scroll-triggered entrance.
     - Displays a redirection link pointing to the full `/projects` page.
- 5. **Blog Preview (`#blog-preview-section`)**:
+ 6. **Homelab Architecture (`#homelab`)**:
+    - Interactive SVG topology diagram tracing the secure data flow (WAN, Cloudflare Tunnel, HAProxy, Proxmox VE, Docker VM, UGREEN NAS).
+    - Hovering over a node displays a floating tooltip with node name and IP segment.
+    - Clicking a node pins it as the active selection, updates the details panel (`#node-details-panel`), and highlights relevant network connections.
+    - Close button `(×)` (`#details-close-btn`), re-clicking the active node, or clicking empty diagram space deselects the node.
+    - Selected nodes display dynamic action buttons in the details panel (e.g., *"Read Setup Guide"*, *"GitHub Repo"*), styled dynamically via `:global()` selectors to bypass Astro CSS scoping limits.
+ 7. **Blog Preview (`#blog-preview-section`)**:
     - Displays the 2 most recently published blog posts in a 2-column grid.
     - Post cards (class `blog-post-card`) contain: Title (`h3`), Date (class `post-date` formatted as `"Month DD, YYYY"`), reading time (class `.post-reading-time`), Description (`p`), and a *"Read More"* link (class `read-more`) pointing to `/blog/[slug]`.
- 6. **Contact Section & Form (`#contact-form`)**:
+ 8. **Contact Section & Form (`#contact-form`)**:
     - Dynamic React component (`ContactForm.jsx`) loaded with `client:load`.
    - Name input (`#contact-name`) with validation error span (`#name-error`).
    - Email input (`#contact-email`) with validation error span (`#email-error`).
