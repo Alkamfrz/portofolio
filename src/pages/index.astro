@@ -462,9 +462,10 @@ const categoryTitles = {
 
           <div class="topology-details glass-card" id="node-details-panel" style="min-height: 220px;">
             <div class="details-accent" id="node-detail-accent"></div>
-            <div class="details-body">
+            <div class="details-body" style="position: relative;">
+              <button id="details-close-btn" class="details-close-btn" aria-label="Close details" style="display: none;">&times;</button>
               <h3 class="details-name" id="node-detail-name">Select a Node</h3>
-              <p class="details-ip" id="node-detail-ip">Hover or tap on the diagram nodes to inspect details</p>
+              <p class="details-ip" id="node-detail-ip">Click on the diagram nodes to inspect details</p>
               <div class="details-divider"></div>
               <p class="details-role" id="node-detail-role">Learn about the role of each device in this self-hosted homelab infrastructure.</p>
               <div class="details-tags" id="node-detail-tags">
@@ -741,6 +742,10 @@ const categoryTitles = {
       const tagsEl = document.getElementById('node-detail-tags');
       const accentEl = document.getElementById('node-detail-accent');
       const actionsEl = document.getElementById('node-detail-actions');
+      const closeBtn = document.getElementById('details-close-btn');
+
+      let selectedNodeId = null;
+
       const lines = {
         internet: ['.flow-1'],
         cloudflare: ['.flow-1', '.flow-2'],
@@ -751,6 +756,7 @@ const categoryTitles = {
       };
 
       function selectNode(nodeId) {
+        selectedNodeId = nodeId;
         const info = nodeDetails[nodeId];
         if (!info) return;
 
@@ -759,6 +765,10 @@ const categoryTitles = {
         roleEl.textContent = info.role;
         tagsEl.innerHTML = info.tags.map(t => `<span class="tech-badge">${t}</span>`).join('');
         accentEl.style.background = info.color;
+
+        if (closeBtn) {
+          closeBtn.style.display = 'block';
+        }
 
         const links = info.links || [];
         if (links.length > 0 && actionsEl) {
@@ -785,25 +795,42 @@ const categoryTitles = {
             line.setAttribute('marker-end', 'url(#arrow-active)');
           }
         });
+
+        nodeGroups.forEach(group => {
+          if (group.getAttribute('data-node') === nodeId) {
+            group.classList.add('selected');
+          } else {
+            group.classList.remove('selected');
+          }
+        });
       }
 
-      function resetNode() {
+      function deselectNode() {
+        selectedNodeId = null;
         nameEl.textContent = 'Select a Node';
-        ipEl.textContent = 'Hover or tap on the diagram nodes to inspect details';
+        ipEl.textContent = 'Click on the diagram nodes to inspect details';
         roleEl.textContent = 'Learn about the role of each device in this self-hosted homelab infrastructure.';
         tagsEl.innerHTML = '<span class="tech-badge">Interactive</span><span class="tech-badge">Network Map</span>';
         accentEl.style.background = 'var(--accent-cyan)';
+
+        if (closeBtn) {
+          closeBtn.style.display = 'none';
+        }
+
         if (actionsEl) {
           actionsEl.innerHTML = '';
           actionsEl.style.display = 'none';
         }
+
         document.querySelectorAll('.conn-line').forEach(l => {
           l.classList.remove('active');
           l.setAttribute('marker-end', 'url(#arrow)');
         });
-      }
 
-      let pinned = false;
+        nodeGroups.forEach(group => {
+          group.classList.remove('selected');
+        });
+      }
 
       function showTooltip(nodeId, nodeElement) {
         const info = nodeDetails[nodeId];
@@ -841,34 +868,37 @@ const categoryTitles = {
       nodeGroups.forEach(node => {
         node.addEventListener('mouseenter', (e) => {
           const nodeId = node.getAttribute('data-node');
-          if (!pinned) {
-            selectNode(nodeId);
-          }
           showTooltip(nodeId, e.currentTarget);
         });
 
         node.addEventListener('mouseleave', () => {
-          if (!pinned) {
-            resetNode();
-          }
           hideTooltip();
         });
 
         node.addEventListener('click', (e) => {
           e.preventDefault();
-          pinned = true;
           const nodeId = node.getAttribute('data-node');
-          selectNode(nodeId);
-          showTooltip(nodeId, e.currentTarget);
+          if (selectedNodeId === nodeId) {
+            deselectNode();
+          } else {
+            selectNode(nodeId);
+          }
         });
       });
 
-      const topologyWrapper = document.querySelector('.topology-wrapper');
-      if (topologyWrapper) {
-        topologyWrapper.addEventListener('mouseleave', () => {
-          pinned = false;
-          resetNode();
-          hideTooltip();
+      const svg = document.querySelector('.topology-svg');
+      if (svg) {
+        svg.addEventListener('click', (e) => {
+          if (!e.target.closest('.node-group')) {
+            deselectNode();
+          }
+        });
+      }
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          deselectNode();
         });
       }
 
@@ -1777,7 +1807,15 @@ const categoryTitles = {
     fill: rgba(34, 211, 238, 0.1);
     filter: drop-shadow(0 0 6px var(--accent-cyan));
   }
-  .node-group:hover .node-text {
+  .node-group.selected .node-circle,
+  .node-group.selected .node-rect {
+    stroke: var(--accent-cyan);
+    fill: rgba(34, 211, 238, 0.15);
+    filter: drop-shadow(0 0 8px var(--accent-cyan));
+    stroke-width: 3px;
+  }
+  .node-group:hover .node-text,
+  .node-group.selected .node-text {
     fill: var(--text-light);
   }
 
@@ -1824,6 +1862,25 @@ const categoryTitles = {
     flex-direction: column;
     min-height: 220px;
     overflow: hidden;
+  }
+  .details-close-btn {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0.25rem;
+    transition: all 0.2s ease;
+    z-index: 10;
+  }
+  .details-close-btn:hover {
+    color: var(--text-light);
+    transform: scale(1.1);
   }
   .details-accent {
     height: 4px;

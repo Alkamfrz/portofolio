@@ -147,7 +147,7 @@ test.describe('Production Smoke Tests', () => {
   test('Topology diagram is interactive', async ({ page }) => {
     await page.goto('/');
     const node = page.locator('.node-group').first();
-    await node.hover();
+    await node.click();
     await expect(page.locator('#node-detail-name')).not.toContainText('Select a Node');
   });
 });
