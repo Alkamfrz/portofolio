@@ -9,7 +9,9 @@ export default defineConfig({
   site: 'https://alkamfrz.my.id',
   output: 'static',
   integrations: [react(), sitemap(), astroMacCodeBlocks()],
-  prefetch: true,
+  prefetch: {
+    defaultStrategy: 'viewport',
+  },
   build: {
     inlineStylesheets: 'always',
   },
