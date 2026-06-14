@@ -863,9 +863,9 @@ const categoryTitles = {
         });
       });
 
-      const topologyDiagram = document.querySelector('.topology-diagram');
-      if (topologyDiagram) {
-        topologyDiagram.addEventListener('mouseleave', () => {
+      const topologyWrapper = document.querySelector('.topology-wrapper');
+      if (topologyWrapper) {
+        topologyWrapper.addEventListener('mouseleave', () => {
           pinned = false;
           resetNode();
           hideTooltip();
