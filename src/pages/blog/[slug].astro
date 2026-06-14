@@ -22,6 +22,10 @@ const blogJsonLd = {
 };
 const { Content } = await render(post);
 
+// Calculate reading time & word count on the server/build side
+const words = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
+const readingTime = Math.max(1, Math.ceil(words / 200));
+
 function formatDate(dateStr) {
   const date = new Date(dateStr);
   return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -60,7 +64,7 @@ const otherPosts = allPosts
             <div class="post-meta">
               <span>Published on {formatDate(post.data.date)}</span>
               <span style="margin: 0 8px; color: var(--glass-border);">•</span>
-              <span id="reading-time-placeholder">Calculating read time...</span>
+              <span id="reading-time-placeholder">⏱️ {readingTime} min read <span style="opacity: 0.7; font-weight: normal; margin-left: 4px;">({words} words)</span></span>
             </div>
             <div class="post-content text-md" id="post-content-body">
               <Content />
@@ -153,14 +157,7 @@ const otherPosts = allPosts
       const contentBody = document.getElementById('post-content-body');
       if (!contentBody) return;
 
-      // 1. Calculate reading time & word count
-      const text = contentBody.textContent || '';
-      const words = text.trim().split(/\s+/).filter(Boolean).length;
-      const readingTime = Math.max(1, Math.ceil(words / 200));
-      const placeholder = document.getElementById('reading-time-placeholder');
-      if (placeholder) {
-        placeholder.innerHTML = `⏱️ ${readingTime} min read <span style="opacity: 0.7; font-weight: normal; margin-left: 4px;">(${words} words)</span>`;
-      }
+      // 1. Calculate reading time & word count (Moved to server/build side to avoid layout shift)
 
       // 2. Font Size Widget Controls
       const btnSm = document.getElementById('fs-sm');
@@ -210,7 +207,6 @@ const otherPosts = allPosts
       const tocItems = document.querySelectorAll('.toc-item');
       function spyScroll() {
         let activeIdx = -1;
-        const scrollPos = window.scrollY + 140;
         const scrollTop = window.scrollY;
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
         const percent = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
@@ -220,7 +216,9 @@ const otherPosts = allPosts
         }
 
         headings.forEach(function(heading, idx) {
-          if (scrollPos >= heading.offsetTop) {
+          const rect = heading.getBoundingClientRect();
+          // 140px is our threshold from viewport top
+          if (rect.top <= 140) {
             activeIdx = idx;
           }
         });
@@ -356,8 +354,6 @@ const otherPosts = allPosts
   }
   .post-content {
     color: var(--text-muted);
-    line-height: 1.8;
-    font-size: 1rem;
   }
   :global(.post-content h1),
   :global(.post-content h2),
@@ -366,6 +362,7 @@ const otherPosts = allPosts
     color: var(--text-light);
     margin-top: 2rem;
     margin-bottom: 0.75rem;
+    scroll-margin-top: 100px;
   }
   :global(.post-content p) {
     margin-bottom: 1rem;
