@@ -27,38 +27,38 @@ Internet
 Cloudflare Edge
    │ (outbound tunnel, mTLS)
    ▼
-[ cfd-tng LXC — 10.1.30.2 ]
+[ cf-tunnel LXC — 10.0.30.2 ]
    cloudflared daemon
    │
    ▼ (internal HTTP to HAProxy)
-[ haproxy-tng LXC — 10.1.30.3 ]
+[ haproxy-edge LXC — 10.0.30.3 ]
    HAProxy 2.8 — SSL termination, routing
    │             │
    │             ▼
-   │     [ docker-tng VM — 10.1.30.5 ]
+   │     [ docker-host VM — 10.0.30.5 ]
    │       Portainer EE → all app stacks
    │       Authentik, Immich, Jellyfin,
    │       ArrSuite, Homepage, Portfolio…
    │
    ▼
-[ NAS-TNG — 10.1.30.6 ]   (Ugreen DH2300 / Debian 12)
-  NFS: /volume1/Docker mounted at /mnt/nas on docker-tng
+[ nas-storage — 10.0.30.6 ]   (Ugreen DH2300 / Debian 12)
+  NFS: /volume1/Docker mounted at /mnt/nas on docker-host
   NFS: /volume1/Backups, /volume1/Proxmox VE
 ```
 
 ### Network Topology — MikroTik RB450Gx4
 
-The entire homelab runs behind a **MikroTik RB450Gx4** (`RT-TNG`) with five VLANs providing strong isolation between trust zones:
+The entire homelab runs behind a **MikroTik RB450Gx4** (`router-edge`) with five VLANs providing strong isolation between trust zones:
 
 | VLAN | Name | Subnet | Purpose |
 |---|---|---|---|
-| 10 | `USER` | `10.1.10.0/24` | Trusted PCs and workstations |
-| 20 | `IOT` | `10.1.20.0/24` | Smart home devices, strictly isolated |
-| 30 | `SERVER` | `10.1.30.0/24` | All homelab servers |
-| 40 | `GUEST` | `10.1.40.0/24` | Guest devices, isolated |
-| 99 | `MGMT` | `10.1.99.0/24` | Proxmox management, Tailscale VPN |
+| 10 | `USER` | `10.0.10.0/24` | Trusted PCs and workstations |
+| 20 | `IOT` | `10.0.20.0/24` | Smart home devices, strictly isolated |
+| 30 | `SERVER` | `10.0.30.0/24` | All homelab servers |
+| 40 | `GUEST` | `10.0.40.0/24` | Guest devices, isolated |
+| 99 | `MGMT` | `10.0.99.0/24` | Proxmox management, Tailscale VPN |
 
-Inter-VLAN firewall rules block lateral movement by default. The `SERVER` VLAN (`10.1.30.0/24`) is where all the action happens and is never directly reachable from `IOT` or `GUEST`.
+Inter-VLAN firewall rules block lateral movement by default. The `SERVER` VLAN (`10.0.30.0/24`) is where all the action happens and is never directly reachable from `IOT` or `GUEST`.
 
 ### Proxmox VE Node Inventory
 
@@ -66,11 +66,11 @@ All containers and VMs run on a single Proxmox VE host with these LXCs and VMs:
 
 | CT/VM ID | Hostname | Type | IP | Role |
 |---|---|---|---|---|
-| 100 | `cfd-tng` | LXC | `10.1.30.2` | Cloudflare Tunnel daemon |
-| 101 | `haproxy-tng` | LXC | `10.1.30.3` | HAProxy reverse proxy + SSL |
-| 102 | `technitium-tng` | LXC | `10.1.30.4` | Technitium DNS + ad-blocker |
-| 103 | `tailscale-tng` | LXC | `10.1.99.3` | Tailscale mesh VPN (remote admin) |
-| 104 | `docker-tng` | VM | `10.1.30.5` | Docker Engine + Portainer EE LTS |
+| 100 | `cf-tunnel` | LXC | `10.0.30.2` | Cloudflare Tunnel daemon |
+| 101 | `haproxy-edge` | LXC | `10.0.30.3` | HAProxy reverse proxy + SSL |
+| 102 | `dns-server` | LXC | `10.0.30.4` | Technitium DNS + ad-blocker |
+| 103 | `vpn-node` | LXC | `10.0.99.3` | Tailscale mesh VPN (remote admin) |
+| 104 | `docker-host` | VM | `10.0.30.5` | Docker Engine + Portainer EE LTS |
 
 ---
 
@@ -101,24 +101,24 @@ pveam update
 pveam download local debian-12-standard_12.7-1_amd64.tar.zst
 ```
 
-Create the HAProxy LXC (`haproxy-tng`):
+Create the HAProxy LXC (`haproxy-edge`):
 
 ```bash
 pct create 101 local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst \
-  --hostname haproxy-tng \
+  --hostname haproxy-edge \
   --cores 2 \
   --memory 512 \
   --rootfs local-lvm:8 \
-  --net0 name=eth0,bridge=vmbr0,tag=30,ip=10.1.30.3/24,gw=10.1.30.1 \
+  --net0 name=eth0,bridge=vmbr0,tag=30,ip=10.0.30.3/24,gw=10.0.30.1 \
   --unprivileged 1 \
   --features nesting=1 \
   --onboot 1 \
   --start 1
 ```
 
-Note the `tag=30` — this places the LXC on VLAN 30 (`SERVER`). Repeat similarly for `cfd-tng` (`tag=30`, IP `10.1.30.2`) and `technitium-tng` (`tag=30`, IP `10.1.30.4`). The `tailscale-tng` LXC goes on VLAN 99 (`MGMT`).
+Note the `tag=30` — this places the LXC on VLAN 30 (`SERVER`). Repeat similarly for `cf-tunnel` (`tag=30`, IP `10.0.30.2`) and `dns-server` (`tag=30`, IP `10.0.30.4`). The `vpn-node` LXC goes on VLAN 99 (`MGMT`).
 
-For `docker-tng`, create a full VM (VMs handle Docker's network namespaces much better than LXCs):
+For `docker-host`, create a full VM (VMs handle Docker's network namespaces much better than LXCs):
 
 ```bash
 # From Proxmox UI: create VM with Debian 12 ISO
@@ -130,11 +130,11 @@ For `docker-tng`, create a full VM (VMs handle Docker's network namespaces much 
 
 | Node | vCPU | RAM | Disk |
 |---|---|---|---|
-| `haproxy-tng` | 2 | 512 MB | 8 GB |
-| `cfd-tng` | 1 | 256 MB | 4 GB |
-| `technitium-tng` | 1 | 256 MB | 4 GB |
-| `tailscale-tng` | 1 | 128 MB | 4 GB |
-| `docker-tng` (VM) | 4 | 8 GB | 50 GB |
+| `haproxy-edge` | 2 | 512 MB | 8 GB |
+| `cf-tunnel` | 1 | 256 MB | 4 GB |
+| `dns-server` | 1 | 256 MB | 4 GB |
+| `vpn-node` | 1 | 128 MB | 4 GB |
+| `docker-host` (VM) | 4 | 8 GB | 50 GB |
 
 ---
 
@@ -143,7 +143,7 @@ For `docker-tng`, create a full VM (VMs handle Docker's network namespaces much 
 ### Install HAProxy 2.8 LTS
 
 ```bash
-# On haproxy-tng
+# On haproxy-edge
 apt update && apt install -y curl gnupg
 
 curl -fsSL https://haproxy.debian.net/bernat.debian.org.gpg | \
@@ -286,7 +286,7 @@ frontend fe_https
     acl host_immich       hdr(host) -i immich.alkamfrz.my.id
     acl host_jellyfin     hdr(host) -i media.alkamfrz.my.id
     acl host_seerr        hdr(host) -i request.alkamfrz.my.id
-    acl host_pve          hdr(host) -i pve-tng.alkamfrz.my.id
+    acl host_pve          hdr(host) -i pve-node.alkamfrz.my.id
 
     # ── Routing ─────────────────────────────────────────────────────────────
     use_backend be_portfolio   if host_root
@@ -303,39 +303,39 @@ frontend fe_https
 # ─── Backends ─────────────────────────────────────────────────────────────────
 backend be_portfolio
     option httpchk GET /
-    server docker-tng 10.1.30.5:8085 check inter 10s
+    server docker-host 10.0.30.5:8085 check inter 10s
 
 backend be_homepage
     option httpchk GET /
-    server docker-tng 10.1.30.5:8082 check inter 10s
+    server docker-host 10.0.30.5:8082 check inter 10s
 
 backend be_authentik
     # Authentik uses Uvicorn (ASGI) — use TCP health check, not HTTP
     option tcp-check
-    server docker-tng 10.1.30.5:9000 check inter 10s
+    server docker-host 10.0.30.5:9000 check inter 10s
 
 backend be_portainer
     option httpchk GET /api/status
-    server docker-tng 10.1.30.5:9443 check inter 10s ssl verify none
+    server docker-host 10.0.30.5:9443 check inter 10s ssl verify none
 
 backend be_immich
     # Long timeout for video uploads
     timeout server 300s
     option httpchk GET /api/server-info/ping
-    server docker-tng 10.1.30.5:2283 check inter 15s
+    server docker-host 10.0.30.5:2283 check inter 15s
 
 backend be_jellyfin
     option httpchk GET /health
-    server docker-tng 10.1.30.5:8096 check inter 15s
+    server docker-host 10.0.30.5:8096 check inter 15s
 
 backend be_seerr
     option httpchk GET /api/v1/status
-    server docker-tng 10.1.30.5:5055 check inter 10s
+    server docker-host 10.0.30.5:5055 check inter 10s
 
 backend be_pve
     # Proxmox uses its own self-signed cert internally
     option tcp-check
-    server pve-host 10.1.99.2:8006 check inter 30s ssl verify none
+    server pve-host 10.0.99.2:8006 check inter 30s ssl verify none
 
 backend be_default
     errorfile 503 /etc/haproxy/errors/503.http
@@ -354,12 +354,12 @@ systemctl enable --now haproxy
 
 ### Why Cloudflare Tunnel?
 
-`cloudflared` opens a persistent, outbound-only TLS connection from `cfd-tng` to Cloudflare's edge. Cloudflare terminates the public HTTPS session, applies any Zero Trust policies you configure, then forwards traffic through the tunnel to HAProxy at `10.1.30.3`. Your MikroTik router never needs a single port-forward rule.
+`cloudflared` opens a persistent, outbound-only TLS connection from `cf-tunnel` to Cloudflare's edge. Cloudflare terminates the public HTTPS session, applies any Zero Trust policies you configure, then forwards traffic through the tunnel to HAProxy at `10.0.30.3`. Your MikroTik router never needs a single port-forward rule.
 
-### Install `cloudflared` on `cfd-tng`
+### Install `cloudflared` on `cf-tunnel`
 
 ```bash
-# On cfd-tng (10.1.30.2)
+# On cf-tunnel (10.0.30.2)
 curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg \
   | gpg --dearmor > /usr/share/keyrings/cloudflare-main.gpg
 
@@ -375,7 +375,7 @@ cloudflared --version
 
 ```bash
 cloudflared tunnel login          # opens browser — authorize your zone
-cloudflared tunnel create cfd-tng # creates ~/.cloudflared/<UUID>.json
+cloudflared tunnel create cf-tunnel # creates ~/.cloudflared/<UUID>.json
 ```
 
 Note the UUID printed. Create the tunnel config:
@@ -390,12 +390,12 @@ credentials-file: /root/.cloudflared/<YOUR-TUNNEL-UUID>.json
 ingress:
   # All traffic hits HAProxy for routing decisions
   - hostname: "*.alkamfrz.my.id"
-    service: https://10.1.30.3:443
+    service: https://10.0.30.3:443
     originRequest:
       noTLSVerify: true   # HAProxy cert is internal; Cloudflare handles public TLS
 
   - hostname: "alkamfrz.my.id"
-    service: https://10.1.30.3:443
+    service: https://10.0.30.3:443
     originRequest:
       noTLSVerify: true
 
@@ -407,8 +407,8 @@ EOF
 ### Create DNS CNAME Records
 
 ```bash
-cloudflared tunnel route dns cfd-tng "*.alkamfrz.my.id"
-cloudflared tunnel route dns cfd-tng "alkamfrz.my.id"
+cloudflared tunnel route dns cf-tunnel "*.alkamfrz.my.id"
+cloudflared tunnel route dns cf-tunnel "alkamfrz.my.id"
 ```
 
 This creates `CNAME` records pointing to `<UUID>.cfargotunnel.com` — Cloudflare handles the rest.
@@ -427,21 +427,21 @@ journalctl -u cloudflared -f   # watch for "Connection established" messages
 
 ### The Problem with Public DNS Alone
 
-The public `*.alkamfrz.my.id` DNS records point to Cloudflare's anycast IPs (via CNAME to the tunnel). When a client on my LAN (`10.1.10.x`) requests `immich.alkamfrz.my.id`, I want it to resolve to `10.1.30.3` (HAProxy) directly — not go out to Cloudflare and back. This reduces latency, keeps media traffic off the WAN, and avoids Cloudflare's bandwidth limits for self-hosted media.
+The public `*.alkamfrz.my.id` DNS records point to Cloudflare's anycast IPs (via CNAME to the tunnel). When a client on my LAN (`10.0.10.x`) requests `immich.alkamfrz.my.id`, I want it to resolve to `10.0.30.3` (HAProxy) directly — not go out to Cloudflare and back. This reduces latency, keeps media traffic off the WAN, and avoids Cloudflare's bandwidth limits for self-hosted media.
 
-**Technitium DNS** (`technitium-tng` at `10.1.30.4`) runs as an authoritative resolver for `alkamfrz.my.id` internally, plus doubles as an ad-blocking DNS-over-HTTPS resolver for the whole LAN.
+**Technitium DNS** (`dns-server` at `10.0.30.4`) runs as an authoritative resolver for `alkamfrz.my.id` internally, plus doubles as an ad-blocking DNS-over-HTTPS resolver for the whole LAN.
 
 ### Install Technitium
 
 ```bash
-# On technitium-tng LXC (Debian 12)
+# On dns-server LXC (Debian 12)
 apt update && apt install -y curl libicu72
 
 # Technitium provides a one-line installer
 curl -fsSL https://download.technitium.com/dns/install.sh | bash
 ```
 
-Access the web UI at `http://10.1.30.4:5380`.
+Access the web UI at `http://10.0.30.4:5380`.
 
 ### Create the Internal Zone
 
@@ -450,37 +450,37 @@ Access the web UI at `http://10.1.30.4:5380`.
 
 | Name | Type | Value |
 |---|---|---|
-| `@` | A | `10.1.30.3` |
-| `*` | A | `10.1.30.3` |
-| `pve-tng` | A | `10.1.99.2` |
+| `@` | A | `10.0.30.3` |
+| `*` | A | `10.0.30.3` |
+| `pve-node` | A | `10.0.99.2` |
 
 The wildcard `*` record sends all subdomain lookups to HAProxy, which then routes based on the `Host` header. This is the clean separation that makes adding new services trivial — just add an HAProxy backend, no DNS change needed.
 
 ### Configure MikroTik DHCP to Use Technitium
 
-On the MikroTik (`RT-TNG`), update the DHCP server for each VLAN that should use internal DNS:
+On the MikroTik (`router-edge`), update the DHCP server for each VLAN that should use internal DNS:
 
 ```routeros
 # MikroTik RouterOS — set DNS server for SERVER VLAN DHCP
 /ip dhcp-server network
-set [find address="10.1.30.0/24"] dns-server=10.1.30.4
+set [find address="10.0.30.0/24"] dns-server=10.0.30.4
 
 # USER VLAN
-set [find address="10.1.10.0/24"] dns-server=10.1.30.4
+set [find address="10.0.10.0/24"] dns-server=10.0.30.4
 ```
 
 ### Enable SSL on Technitium Admin UI
 
-After each Let's Encrypt renewal on `haproxy-tng`, the `technitium-dns-cert-manager.sh` script exports a `.pfx` and SCPs it to `technitium-tng`:
+After each Let's Encrypt renewal on `haproxy-edge`, the `technitium-dns-cert-manager.sh` script exports a `.pfx` and SCPs it to `dns-server`:
 
 ```bash
 #!/bin/bash
-# technitium-dns-cert-manager.sh — runs from haproxy-tng after cert renewal
+# technitium-dns-cert-manager.sh — runs from haproxy-edge after cert renewal
 
 DOMAIN="alkamfrz.my.id"
 CERT_DIR="/etc/letsencrypt/live/${DOMAIN}"
 PFX_PATH="/tmp/${DOMAIN}.pfx"
-TECH_HOST="10.1.30.4"
+TECH_HOST="10.0.30.4"
 TECH_KEY="/root/.ssh/id_ed25519_homelab"
 
 # Export to PFX (Technitium format)
@@ -504,9 +504,9 @@ echo "[$(date)] Technitium cert updated."
 
 ## Step 5: Docker Compose Stacks — Modular Service Management
 
-### Structure on `docker-tng`
+### Structure on `docker-host`
 
-**Portainer EE LTS** runs on `docker-tng` (`10.1.30.5`) as the management layer. All other services are deployed as Compose stacks, organized by function:
+**Portainer EE LTS** runs on `docker-host` (`10.0.30.5`) as the management layer. All other services are deployed as Compose stacks, organized by function:
 
 ```
 /opt/stacks/
@@ -530,10 +530,10 @@ All Compose files reference this external network so services can communicate di
 
 ### NFS Volume Helper
 
-Since almost all persistent data lives on `NAS-TNG` (`10.1.30.6`), I define a reusable NFS volume pattern. The NFS share `10.1.30.6:/volume1/Docker` is mounted at `/mnt/nas` on `docker-tng` via `/etc/fstab`:
+Since almost all persistent data lives on `nas-storage` (`10.0.30.6`), I define a reusable NFS volume pattern. The NFS share `10.0.30.6:/volume1/Docker` is mounted at `/mnt/nas` on `docker-host` via `/etc/fstab`:
 
 ```
-10.1.30.6:/volume1/Docker  /mnt/nas  nfs4  defaults,_netdev,auto,nfsvers=4  0 0
+10.0.30.6:/volume1/Docker  /mnt/nas  nfs4  defaults,_netdev,auto,nfsvers=4  0 0
 ```
 
 Verify:
@@ -730,50 +730,50 @@ services:
 | `home.alkamfrz.my.id` | Homepage Dashboard | `8082` |
 | `media.alkamfrz.my.id` | Jellyfin | `8096` |
 | `request.alkamfrz.my.id` | Seerr | `5055` |
-| `pve-tng.alkamfrz.my.id` | Proxmox VE UI | `8006` |
+| `pve-node.alkamfrz.my.id` | Proxmox VE UI | `8006` |
 
 ---
 
 ## Step 6: NFS Storage with Ugreen NAS DH2300
 
-### `NAS-TNG` Hardware and OS
+### `nas-storage` Hardware and OS
 
-`NAS-TNG` (`10.1.30.6`) is an **Ugreen NAS DH2300** running **Debian GNU/Linux 12 (Bookworm)** — not a NAS-specific OS like TrueNAS. Running plain Debian gives full control over the software stack without any vendor lock-in.
+`nas-storage` (`10.0.30.6`) is an **Ugreen NAS DH2300** running **Debian GNU/Linux 12 (Bookworm)** — not a NAS-specific OS like TrueNAS. Running plain Debian gives full control over the software stack without any vendor lock-in.
 
-NFS shares configured on `NAS-TNG`:
+NFS shares configured on `nas-storage`:
 
 | Share Path | Purpose |
 |---|---|
-| `/volume1/Docker` | All Docker service data (mounted at `/mnt/nas` on `docker-tng`) |
+| `/volume1/Docker` | All Docker service data (mounted at `/mnt/nas` on `docker-host`) |
 | `/volume1/Backups` | Backup targets (Proxmox Backup Server, Restic) |
 | `/volume1/Proxmox VE` | Proxmox VM/LXC backup storage |
 
-### Configure NFS on `NAS-TNG`
+### Configure NFS on `nas-storage`
 
 ```bash
-# On NAS-TNG (10.1.30.6)
+# On nas-storage (10.0.30.6)
 apt install -y nfs-kernel-server
 
 # Create the NFS export
 mkdir -p /volume1/Docker
 
 # /etc/exports
-/volume1/Docker  10.1.30.5(rw,sync,no_subtree_check,no_root_squash)
-/volume1/Backups 10.1.30.0/24(rw,sync,no_subtree_check,no_root_squash)
+/volume1/Docker  10.0.30.5(rw,sync,no_subtree_check,no_root_squash)
+/volume1/Backups 10.0.30.0/24(rw,sync,no_subtree_check,no_root_squash)
 
 # Apply exports
 exportfs -arv
 systemctl enable --now nfs-kernel-server
 ```
 
-### Mount on `docker-tng`
+### Mount on `docker-host`
 
 ```bash
-# On docker-tng
+# On docker-host
 apt install -y nfs-common
 
 # Add to /etc/fstab for persistent mounting
-echo "10.1.30.6:/volume1/Docker  /mnt/nas  nfs4  defaults,_netdev,auto,nfsvers=4  0 0" \
+echo "10.0.30.6:/volume1/Docker  /mnt/nas  nfs4  defaults,_netdev,auto,nfsvers=4  0 0" \
   >> /etc/fstab
 
 mount -a
@@ -790,7 +790,7 @@ mkdir -p /mnt/nas/downloads
 
 ### Backup Strategy
 
-I run **Proxmox Backup Server** as a VM pointing to `/volume1/Backups` on NAS-TNG. Each LXC and VM gets a daily backup job with 7-day retention. For Docker service data on `/volume1/Docker`, a nightly Restic job deduplicates and compresses to an S3-compatible bucket.
+I run **Proxmox Backup Server** as a VM pointing to `/volume1/Backups` on nas-storage. Each LXC and VM gets a daily backup job with 7-day retention. For Docker service data on `/volume1/Docker`, a nightly Restic job deduplicates and compresses to an S3-compatible bucket.
 
 ---
 
@@ -800,14 +800,14 @@ CrowdSec is a collaborative, open-source IPS that goes beyond simple fail2ban IP
 
 ### Architecture: Syslog UDP to CrowdSec Container
 
-Rather than installing CrowdSec directly on `haproxy-tng`, I run it as a Docker container on `docker-tng`. HAProxy on `haproxy-tng` ships its logs to CrowdSec via **UDP syslog on port 5514**:
+Rather than installing CrowdSec directly on `haproxy-edge`, I run it as a Docker container on `docker-host`. HAProxy on `haproxy-edge` ships its logs to CrowdSec via **UDP syslog on port 5514**:
 
 ```
-haproxy-tng:10.1.30.3 ──(UDP syslog:5514)──► CrowdSec container:10.1.30.5
+haproxy-edge:10.0.30.3 ──(UDP syslog:5514)──► CrowdSec container:10.0.30.5
                                                │ (decisions via LAPI)
                                                ▼
                                          HAProxy Lua bouncer
-                                         (runs on haproxy-tng, queries LAPI)
+                                         (runs on haproxy-edge, queries LAPI)
 ```
 
 ### Configure HAProxy Syslog to Send to CrowdSec
@@ -818,7 +818,7 @@ In `haproxy.cfg` global section, add a second syslog target:
 global
     log /dev/log local0
     # Ship access logs to CrowdSec container over UDP syslog
-    log 10.1.30.5:5514 local1 info
+    log 10.0.30.5:5514 local1 info
     ...
 ```
 
@@ -861,18 +861,18 @@ labels:
   type: syslog
 ```
 
-### Install the HAProxy Lua Bouncer on `haproxy-tng`
+### Install the HAProxy Lua Bouncer on `haproxy-edge`
 
 ```bash
-# On haproxy-tng
+# On haproxy-edge
 apt install -y crowdsec-haproxy-bouncer
 ```
 
 Configure `/etc/crowdsec/bouncers/crowdsec-haproxy-bouncer.conf`:
 
 ```ini
-# Point to CrowdSec LAPI on docker-tng
-API_URL = http://10.1.30.5:8080
+# Point to CrowdSec LAPI on docker-host
+API_URL = http://10.0.30.5:8080
 API_KEY = <generate with: docker exec crowdsec cscli bouncers add haproxy-bouncer>
 CACHE_EXPIRATION = 1
 CACHE_SIZE = 5000
@@ -936,9 +936,9 @@ param(
 )
 
 $SSH_KEY    = "$env:USERPROFILE\.ssh\id_ed25519_homelab"
-$HAPROXY    = "10.1.30.3"
-$DOCKER     = "10.1.30.5"
-$DNS        = "10.1.30.4"
+$HAPROXY    = "10.0.30.3"
+$DOCKER     = "10.0.30.5"
+$DNS        = "10.0.30.4"
 
 # ── Helper: run SSH command ───────────────────────────────────────────────────
 function Invoke-SSH {
@@ -999,7 +999,7 @@ function Deploy-HAProxy {
 function Deploy-CrowdSec {
     Write-Host "`n==> Deploying CrowdSec config ..." -ForegroundColor Green
 
-    # acquis.yaml lives in the NFS-backed config path on docker-tng
+    # acquis.yaml lives in the NFS-backed config path on docker-host
     Send-File ".\configs\crowdsec\acquis.yaml" $DOCKER "/mnt/nas/CrowdSec/config/acquis.yaml"
     Invoke-SSH $DOCKER "docker restart crowdsec"
 
@@ -1040,7 +1040,7 @@ function Deploy-DNS {
     # Usage: .\deploy-configs.ps1 -Target dns
     # (extend this function with params as needed)
     $serviceName = Read-Host "Service name (e.g. grafana)"
-    $backendIP   = Read-Host "Backend IP (e.g. 10.1.30.5)"
+    $backendIP   = Read-Host "Backend IP (e.g. 10.0.30.5)"
     $backendPort = Read-Host "Backend port (e.g. 3000)"
 
     Invoke-SSH $HAPROXY "bash /opt/scripts/haproxy-config-manager.sh add-service $serviceName $backendIP $backendPort SERVER"
@@ -1089,11 +1089,11 @@ Write-Host "`n✓ All done." -ForegroundColor Green
 
 ### Adding a New Service (End-to-End Flow)
 
-1. Write a new `docker-compose.yml` entry for the service on `docker-tng`
+1. Write a new `docker-compose.yml` entry for the service on `docker-host`
 2. Add a backend + ACL entry in `haproxy.cfg` locally
 3. Run `.\deploy-configs.ps1 -Target haproxy` — validates and reloads HAProxy
 4. Run `.\deploy-configs.ps1 -Target docker` — pulls and starts the new container
-5. The wildcard DNS (`*.alkamfrz.my.id → 10.1.30.3`) takes care of name resolution automatically
+5. The wildcard DNS (`*.alkamfrz.my.id → 10.0.30.3`) takes care of name resolution automatically
 
 New service is live in under two minutes.
 
@@ -1132,17 +1132,17 @@ The `prometheus` frontend we added to `haproxy.cfg` exposes native Prometheus me
 scrape_configs:
   - job_name: haproxy
     static_configs:
-      - targets: ["10.1.30.3:8405"]
+      - targets: ["10.0.30.3:8405"]
   - job_name: node_docker
     static_configs:
-      - targets: ["10.1.30.5:9100"]
+      - targets: ["10.0.30.5:9100"]
 ```
 
 This gives you real-time graphs of request rates, backend health, response times, and connection counts — all in Grafana.
 
 ### Tailscale as an Emergency Backdoor
 
-`tailscale-tng` (`10.1.99.3`) on the MGMT VLAN means I always have a way into the homelab from my phone or laptop if Cloudflare Tunnel goes down, HAProxy crashes, or I lock myself out. It is worth setting up even if you never plan to use it.
+`vpn-node` (`10.0.99.3`) on the MGMT VLAN means I always have a way into the homelab from my phone or laptop if Cloudflare Tunnel goes down, HAProxy crashes, or I lock myself out. It is worth setting up even if you never plan to use it.
 
 ### LXC Unprivileged Mode Is Worth the Extra Steps
 
@@ -1156,7 +1156,7 @@ This stack gives me a homelab that is genuinely production-grade in its security
 
 | Property | How It's Achieved |
 |---|---|
-| No open WAN ports | Cloudflare Tunnel outbound from `cfd-tng` |
+| No open WAN ports | Cloudflare Tunnel outbound from `cf-tunnel` |
 | SSL everywhere | Let's Encrypt wildcard via Certbot DNS-01 |
 | Zero-trust routing | HAProxy + Host-based ACLs |
 | Behavioral IPS | CrowdSec receiving HAProxy logs over UDP syslog |

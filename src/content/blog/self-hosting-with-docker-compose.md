@@ -8,7 +8,7 @@ description: "A practical guide to running your own self-hosted services using D
 
 A few years back I got tired of the cloud subscription treadmill — streaming fees, uptime-monitoring SaaS costs, and the nagging feeling that someone else's server held data that was fundamentally *mine*. So I built a homelab.
 
-Today my stack runs on a **Proxmox VE hypervisor**, with a dedicated **Ubuntu Linux VM** (`docker-tng`, VM 104) on a Server VLAN at `10.1.30.5`. Bulk storage comes from a **Ugreen NAS DH2300** (`NAS-TNG`, running Debian 12) at `10.1.30.6`, serving a single NFS share mounted across the Docker host. Everything is containerized with **Docker Compose**, managed via **Portainer EE**, and protected by **CrowdSec** and a **Cloudflare Tunnel** — so not a single WAN port is open on my router.
+Today my stack runs on a **Proxmox VE hypervisor**, with a dedicated **Ubuntu Linux VM** (`docker-host`, VM 104) on a Server VLAN at `10.0.30.5`. Bulk storage comes from a **Ugreen NAS DH2300** (`nas-storage`, running Debian 12) at `10.0.30.6`, serving a single NFS share mounted across the Docker host. Everything is containerized with **Docker Compose**, managed via **Portainer EE**, and protected by **CrowdSec** and a **Cloudflare Tunnel** — so not a single WAN port is open on my router.
 
 This post is the guide I wish I had when I started. It's opinionated, it uses my real configs, and it covers the unglamorous parts — storage tiers, networking, secrets, backups, and what breaks at 2 AM.
 
@@ -23,8 +23,8 @@ Before you touch a single YAML file, make sure you have:
 | A Linux server / VM | I use Ubuntu 24.04 inside Proxmox VE. Debian 12 works just as well. |
 | Docker Engine ≥ 24 | Install via the official script, not `apt`. |
 | Docker Compose v2 | Ships as a Docker plugin (`docker compose`, not `docker-compose`). |
-| A static LAN IP | Assign a DHCP reservation or configure it statically. I use `10.1.30.5`. |
-| NAS or secondary storage | My Ugreen NAS-TNG at `10.1.30.6` serves NFS. Any NAS with NFS works. |
+| A static LAN IP | Assign a DHCP reservation or configure it statically. I use `10.0.30.5`. |
+| NAS or secondary storage | My Ugreen nas-storage at `10.0.30.6` serves NFS. Any NAS with NFS works. |
 | Basic shell comfort | You'll be editing YAML and tailing logs. |
 
 ### Install Docker on Ubuntu
@@ -116,11 +116,11 @@ Each stack also gets its config/database data stored in one of two places, depen
 
 ### The NFS Mount
 
-On the NAS-TNG (`10.1.30.6`), the Docker volume dataset is exported via NFS: `/volume1/Docker`. On the Docker host, it's mounted at `/mnt/nas`:
+On the nas-storage (`10.0.30.6`), the Docker volume dataset is exported via NFS: `/volume1/Docker`. On the Docker host, it's mounted at `/mnt/nas`:
 
 ```bash
-# /etc/fstab on docker-tng
-10.1.30.6:/volume1/Docker  /mnt/nas  nfs  defaults,_netdev,nofail  0  0
+# /etc/fstab on docker-host
+10.0.30.6:/volume1/Docker  /mnt/nas  nfs  defaults,_netdev,nofail  0  0
 ```
 
 The `_netdev` flag tells systemd to wait for network before mounting — critical so containers don't fail to start after a reboot because the NAS isn't up yet.
@@ -145,7 +145,7 @@ networks:
 
 ## 4. Managing Stacks with Portainer EE
 
-I run **Portainer Enterprise Edition LTS** as my primary Docker management interface. It sits at `https://10.1.30.5:9443` and gives me a visual overview of every container, log stream, volume, and network.
+I run **Portainer Enterprise Edition LTS** as my primary Docker management interface. It sits at `https://10.0.30.5:9443` and gives me a visual overview of every container, log stream, volume, and network.
 
 **`/root/stacks/Portainer/docker-compose.yml`**
 
@@ -373,7 +373,7 @@ Homepage reads your `services.yaml` and `widgets.yaml` from `/mnt/nas/Homepage/c
 # /mnt/nas/Homepage/config/services.yaml
 - Media:
     - Jellyfin:
-        href: http://10.1.30.5:8096
+        href: http://10.0.30.5:8096
         icon: jellyfin.svg
         widget:
           type: jellyfin
@@ -382,7 +382,7 @@ Homepage reads your `services.yaml` and `widgets.yaml` from `/mnt/nas/Homepage/c
 
 - Management:
     - Portainer:
-        href: https://10.1.30.5:9443
+        href: https://10.0.30.5:9443
         icon: portainer.svg
         widget:
           type: portainer
@@ -481,8 +481,8 @@ Used for large files and anything that benefits from NAS-side capacity:
 ### NFS Mount in Detail
 
 ```bash
-# /etc/fstab on docker-tng
-10.1.30.6:/volume1/Docker  /mnt/nas  nfs  defaults,_netdev,nofail  0  0
+# /etc/fstab on docker-host
+10.0.30.6:/volume1/Docker  /mnt/nas  nfs  defaults,_netdev,nofail  0  0
 ```
 
 Key mount options:
@@ -495,7 +495,7 @@ Verify the mount:
 sudo mount -a
 df -h /mnt/nas
 # Filesystem             Size  Used Avail Use%
-# 10.1.30.6:/volume1/Docker  4.4T  1.2T  3.2T  27%  /mnt/nas
+# 10.0.30.6:/volume1/Docker  4.4T  1.2T  3.2T  27%  /mnt/nas
 ```
 
 ---
@@ -670,7 +670,7 @@ services:
       - WATCHTOWER_REMOVE_VOLUMES=false
       - WATCHTOWER_NOTIFICATIONS=slack
       - WATCHTOWER_NOTIFICATION_SLACK_HOOK_URL=${SLACK_WEBHOOK_URL}
-      - WATCHTOWER_NOTIFICATION_SLACK_IDENTIFIER=docker-tng
+      - WATCHTOWER_NOTIFICATION_SLACK_IDENTIFIER=docker-host
 ```
 
 ### Manual Update Workflow
@@ -811,7 +811,7 @@ docker exec homepage ping jellyfin -c 3
 ```bash
 # Check fstab has _netdev
 grep nfs /etc/fstab
-# 10.1.30.6:/volume1/Docker  /mnt/nas  nfs  defaults,_netdev,nofail  0  0
+# 10.0.30.6:/volume1/Docker  /mnt/nas  nfs  defaults,_netdev,nofail  0  0
 
 # Ensure rpcbind is enabled
 sudo systemctl enable --now rpcbind

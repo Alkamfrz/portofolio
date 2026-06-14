@@ -19,15 +19,15 @@ My current setup at a glance:
 
 | PVE ID | Hostname | Type | IP | Role |
 |---|---|---|---|---|
-| — | `pve-tng` | Bare Metal | `10.1.99.2` | Proxmox VE 8.x hypervisor |
-| 100 | `cfd-tng` | LXC | `10.1.30.2` | Cloudflare Tunnel (outbound, no port-forwarding) |
-| 101 | `haproxy-tng` | LXC | `10.1.30.3` | HAProxy reverse proxy + Let's Encrypt SSL |
-| 102 | `technitium-tng` | LXC | `10.1.30.4` | Technitium DNS — internal wildcard resolution |
-| 103 | `tailscale-tng` | LXC | `10.1.99.3` | Tailscale Mesh VPN for remote admin access |
-| 104 | `docker-tng` | VM | `10.1.30.5` | Ubuntu 24.04, Docker Engine + Portainer EE LTS |
-| — | `NAS-TNG` | Physical NAS | `10.1.30.6` | Ugreen DH2300, Debian 12, NFS shares |
+| — | `pve-node` | Bare Metal | `10.0.99.2` | Proxmox VE 8.x hypervisor |
+| 100 | `cf-tunnel` | LXC | `10.0.30.2` | Cloudflare Tunnel (outbound, no port-forwarding) |
+| 101 | `haproxy-edge` | LXC | `10.0.30.3` | HAProxy reverse proxy + Let's Encrypt SSL |
+| 102 | `dns-server` | LXC | `10.0.30.4` | Technitium DNS — internal wildcard resolution |
+| 103 | `vpn-node` | LXC | `10.0.99.3` | Tailscale Mesh VPN for remote admin access |
+| 104 | `docker-host` | VM | `10.0.30.5` | Ubuntu 24.04, Docker Engine + Portainer EE LTS |
+| — | `nas-storage` | Physical NAS | `10.0.30.6` | Ugreen DH2300, Debian 12, NFS shares |
 
-All internal services are resolved via Technitium DNS — `*.alkamfrz.my.id` resolves to HAProxy at `10.1.30.3`. External traffic reaches services via Cloudflare Tunnel, with zero open ports on the router. Let's walk through building this from scratch.
+All internal services are resolved via Technitium DNS — `*.alkamfrz.my.id` resolves to HAProxy at `10.0.30.3`. External traffic reaches services via Cloudflare Tunnel, with zero open ports on the router. Let's walk through building this from scratch.
 
 ---
 
@@ -45,11 +45,11 @@ Proxmox uses KVM, which relies on hardware virtualization extensions. Make sure 
 
 RAM is the real bottleneck in a homelab. KVM VMs each need their own allocated memory. My rough allocations:
 
-- `haproxy-tng` (LXC): 256 MB
-- `cfd-tng` (LXC): 128 MB
-- `technitium-tng` (LXC): 256 MB
-- `tailscale-tng` (LXC): 128 MB
-- `docker-tng` (VM): 8 GB
+- `haproxy-edge` (LXC): 256 MB
+- `cf-tunnel` (LXC): 128 MB
+- `dns-server` (LXC): 256 MB
+- `vpn-node` (LXC): 128 MB
+- `docker-host` (VM): 8 GB
 
 Keep ~20% of physical RAM free for the host OS and headroom. I run 16 GB total and stay comfortable.
 
@@ -60,7 +60,7 @@ Keep ~20% of physical RAM free for the host OS and headroom. I run 16 GB total a
 
 ### Networking
 
-A single gigabit NIC is sufficient to start. For VLANs, your NIC and switch must support **802.1Q VLAN tagging**. I use a **MikroTik RB450Gx4** (`RT-TNG`) as the core router/firewall with full VLAN enforcement.
+A single gigabit NIC is sufficient to start. For VLANs, your NIC and switch must support **802.1Q VLAN tagging**. I use a **MikroTik RB450Gx4** (`router-edge`) as the core router/firewall with full VLAN enforcement.
 
 ---
 
@@ -79,12 +79,12 @@ Boot from USB and follow the graphical installer. Key decisions:
 
 - **Target disk**: Select your NVMe SSD.
 - **Filesystem**: `ZFS (RAID0)` on a single disk gives you copy-on-write integrity and native snapshots. `ext4` is simpler but offers neither.
-- **Hostname**: Set something meaningful — I use `pve-tng.alkamfrz.my.id`.
-- **Management IP**: Use a static IP on the MGMT VLAN. Mine is `10.1.99.2/24`, gateway `10.1.99.1`.
+- **Hostname**: Set something meaningful — I use `pve-node.alkamfrz.my.id`.
+- **Management IP**: Use a static IP on the MGMT VLAN. Mine is `10.0.99.2/24`, gateway `10.0.99.1`.
 
 ### Post-Install Tweaks
 
-Once the web UI is reachable at `https://10.1.99.2:8006`, SSH in as `root` and apply these tweaks.
+Once the web UI is reachable at `https://10.0.99.2:8006`, SSH in as `root` and apply these tweaks.
 
 **1. Switch from the enterprise repo to the no-subscription repo:**
 
@@ -141,13 +141,13 @@ zfs list
 
 ### NAS-Backed Storage — Ugreen DH2300
 
-My persistent data lives on a dedicated **Ugreen DH2300 NAS** (`NAS-TNG`) running **Debian 12 (bookworm)** on a 6.1.x kernel. It's a standalone physical device on VLAN 30 at `10.1.30.6` — not a Proxmox VM.
+My persistent data lives on a dedicated **Ugreen DH2300 NAS** (`nas-storage`) running **Debian 12 (bookworm)** on a 6.1.x kernel. It's a standalone physical device on VLAN 30 at `10.0.30.6` — not a Proxmox VM.
 
 The NAS exposes three NFS shares:
 
 | NFS Export | Purpose |
 |---|---|
-| `/volume1/Docker` | Docker Compose volume data for `docker-tng` |
+| `/volume1/Docker` | Docker Compose volume data for `docker-host` |
 | `/volume1/Backups` | VM/LXC vzdump backup archives |
 | `/volume1/Proxmox VE` | Proxmox ISO images, snippets, and templates |
 
@@ -159,8 +159,8 @@ Add two entries:
 
 | ID | Server | Export | Content |
 |---|---|---|---|
-| `nas-backups` | `10.1.30.6` | `/volume1/Proxmox VE` | Backup, ISO image, Snippets |
-| `nas-vzdump` | `10.1.30.6` | `/volume1/Backups` | Backup |
+| `nas-backups` | `10.0.30.6` | `/volume1/Proxmox VE` | Backup, ISO image, Snippets |
+| `nas-vzdump` | `10.0.30.6` | `/volume1/Backups` | Backup |
 
 This lets Proxmox store scheduled vzdump archives directly on the NAS without any manual rsync.
 
@@ -174,17 +174,17 @@ My MikroTik RB450Gx4 enforces five VLANs with strict inter-VLAN firewall rules:
 
 | VLAN | Name | Subnet | Policy |
 |---|---|---|---|
-| 10 | USER | `10.1.10.0/24` | Trusted; can reach SERVER VLAN |
-| 20 | IOT | `10.1.20.0/24` | WAN-only; fully isolated |
-| 30 | SERVER | `10.1.30.0/24` | All VMs, LXC containers, NAS |
-| 40 | GUEST | `10.1.40.0/24` | WAN-only; isolated |
-| 99 | MGMT | `10.1.99.0/24` | Proxmox host + Tailscale VPN only |
+| 10 | USER | `10.0.10.0/24` | Trusted; can reach SERVER VLAN |
+| 20 | IOT | `10.0.20.0/24` | WAN-only; fully isolated |
+| 30 | SERVER | `10.0.30.0/24` | All VMs, LXC containers, NAS |
+| 40 | GUEST | `10.0.40.0/24` | WAN-only; isolated |
+| 99 | MGMT | `10.0.99.0/24` | Proxmox host + Tailscale VPN only |
 
 The Proxmox host itself lives on VLAN 99. Services (VMs/LXC) sit on VLAN 30. This means even a compromised service container cannot reach the hypervisor management interface.
 
 ### Proxmox Network Interfaces
 
-My `/etc/network/interfaces` on `pve-tng`:
+My `/etc/network/interfaces` on `pve-node`:
 
 ```
 auto lo
@@ -206,11 +206,11 @@ iface vmbr0 inet manual
 # MGMT VLAN — Proxmox host management interface
 auto vmbr0.99
 iface vmbr0.99 inet static
-    address 10.1.99.2/24
-    gateway 10.1.99.1
+    address 10.0.99.2/24
+    gateway 10.0.99.1
 ```
 
-With `bridge-vlan-aware yes`, each VM/LXC NIC is assigned a VLAN tag in the Proxmox web UI. For example, `haproxy-tng`'s NIC gets tag `30`, placing it on `10.1.30.0/24`. No separate bridge per VLAN needed.
+With `bridge-vlan-aware yes`, each VM/LXC NIC is assigned a VLAN tag in the Proxmox web UI. For example, `haproxy-edge`'s NIC gets tag `30`, placing it on `10.0.30.0/24`. No separate bridge per VLAN needed.
 
 Apply interface changes without a reboot:
 
@@ -224,13 +224,13 @@ I manage the MikroTik with a custom `hardening.rsc` script deployed from my Wind
 
 ```bash
 # Deploy MikroTik config via SCP + SSH (from PowerShell on Windows)
-scp hardening.rsc alkamfrz@10.1.99.1:/
-ssh alkamfrz@10.1.99.1 "/import hardening.rsc"
+scp hardening.rsc alkamfrz@10.0.99.1:/
+ssh alkamfrz@10.0.99.1 "/import hardening.rsc"
 ```
 
 Key hardening actions in the script:
 - Disables all plaintext management services (Telnet, FTP, HTTP, Winbox plain)
-- Restricts SSH access to MGMT VLAN (`10.1.99.0/24`) only
+- Restricts SSH access to MGMT VLAN (`10.0.99.0/24`) only
 - Disables the default `admin` account; only `alkamfrz` has access
 - Applies `optimization.rsc` for FastTrack connection tracking and QoS queues
 
@@ -253,17 +253,17 @@ pveam available | grep debian
 pveam download local debian-12-standard_12.2-1_amd64.tar.zst
 ```
 
-### haproxy-tng — Reverse Proxy LXC (ID 101)
+### haproxy-edge — Reverse Proxy LXC (ID 101)
 
 ```bash
 pct create 101 local:vztmpl/debian-12-standard_12.2-1_amd64.tar.zst \
-  --hostname haproxy-tng \
+  --hostname haproxy-edge \
   --cores 1 \
   --memory 256 \
   --swap 128 \
   --rootfs local-zfs:4 \
-  --net0 name=eth0,bridge=vmbr0,ip=10.1.30.3/24,gw=10.1.30.1,tag=30 \
-  --nameserver 10.1.30.4 \
+  --net0 name=eth0,bridge=vmbr0,ip=10.0.30.3/24,gw=10.0.30.1,tag=30 \
+  --nameserver 10.0.30.4 \
   --unprivileged 1 \
   --start 1
 ```
@@ -304,26 +304,26 @@ frontend https_in
     default_backend docker_backend
 
 backend docker_backend
-    server docker-tng 10.1.30.5:80 check
+    server docker-host 10.0.30.5:80 check
 
 backend portainer_backend
-    server docker-tng 10.1.30.5:9443 check ssl verify none
+    server docker-host 10.0.30.5:9443 check ssl verify none
 ```
 
 ```bash
 systemctl enable --now haproxy
 ```
 
-### technitium-tng — Internal DNS (ID 102)
+### dns-server — Internal DNS (ID 102)
 
 ```bash
 pct create 102 local:vztmpl/debian-12-standard_12.2-1_amd64.tar.zst \
-  --hostname technitium-tng \
+  --hostname dns-server \
   --cores 1 \
   --memory 256 \
   --swap 64 \
   --rootfs local-zfs:4 \
-  --net0 name=eth0,bridge=vmbr0,ip=10.1.30.4/24,gw=10.1.30.1,tag=30 \
+  --net0 name=eth0,bridge=vmbr0,ip=10.0.30.4/24,gw=10.0.30.1,tag=30 \
   --unprivileged 1 \
   --start 1
 ```
@@ -335,23 +335,23 @@ pct enter 102
 curl -sSL https://download.technitium.com/dns/install.sh | sudo bash
 ```
 
-In the Technitium web UI (`http://10.1.30.4:5380`), configure a **Zone** for `alkamfrz.my.id` and add a wildcard A record:
+In the Technitium web UI (`http://10.0.30.4:5380`), configure a **Zone** for `alkamfrz.my.id` and add a wildcard A record:
 
 ```
-*.alkamfrz.my.id  →  10.1.30.3   (HAProxy)
+*.alkamfrz.my.id  →  10.0.30.3   (HAProxy)
 ```
 
 With this, every service under `*.alkamfrz.my.id` automatically resolves to HAProxy, which routes by `Host` header to the correct upstream.
 
-### tailscale-tng — VPN LXC (ID 103)
+### vpn-node — VPN LXC (ID 103)
 
 ```bash
 pct create 103 local:vztmpl/debian-12-standard_12.2-1_amd64.tar.zst \
-  --hostname tailscale-tng \
+  --hostname vpn-node \
   --cores 1 \
   --memory 128 \
   --rootfs local-zfs:2 \
-  --net0 name=eth0,bridge=vmbr0,ip=10.1.99.3/24,gw=10.1.99.1,tag=99 \
+  --net0 name=eth0,bridge=vmbr0,ip=10.0.99.3/24,gw=10.0.99.1,tag=99 \
   --unprivileged 0 \
   --start 1
 ```
@@ -366,17 +366,17 @@ tailscale up --advertise-exit-node --ssh
 
 This gives me authenticated SSH access to all nodes from anywhere — no port forwarding on the router, no VPN certificates to manage.
 
-### cfd-tng — Cloudflare Tunnel (ID 100)
+### cf-tunnel — Cloudflare Tunnel (ID 100)
 
 The Cloudflare Tunnel container establishes an outbound-only encrypted tunnel to Cloudflare's edge, making services publicly accessible without opening any ports on my router.
 
 ```bash
 pct create 100 local:vztmpl/debian-12-standard_12.2-1_amd64.tar.zst \
-  --hostname cfd-tng \
+  --hostname cf-tunnel \
   --cores 1 \
   --memory 128 \
   --rootfs local-zfs:2 \
-  --net0 name=eth0,bridge=vmbr0,ip=10.1.30.2/24,gw=10.1.30.1,tag=30 \
+  --net0 name=eth0,bridge=vmbr0,ip=10.0.30.2/24,gw=10.0.30.1,tag=30 \
   --unprivileged 1 \
   --start 1
 ```
@@ -390,10 +390,10 @@ echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudf
   | tee /etc/apt/sources.list.d/cloudflared.list
 apt update && apt install -y cloudflared
 cloudflared tunnel login
-cloudflared tunnel create homelab-tng
+cloudflared tunnel create homelab-edge
 ```
 
-Configure the tunnel to route to HAProxy at `10.1.30.3`:
+Configure the tunnel to route to HAProxy at `10.0.30.3`:
 
 ```yaml
 # /etc/cloudflared/config.yml
@@ -402,7 +402,7 @@ credentials-file: /root/.cloudflared/<TUNNEL_ID>.json
 
 ingress:
   - hostname: "*.alkamfrz.my.id"
-    service: https://10.1.30.3:443
+    service: https://10.0.30.3:443
     originRequest:
       noTLSVerify: true
   - service: http_status:404
@@ -413,11 +413,11 @@ cloudflared service install
 systemctl enable --now cloudflared
 ```
 
-With this architecture, `cfd-tng` → `haproxy-tng` → `docker-tng` is the full request path for any public service.
+With this architecture, `cf-tunnel` → `haproxy-edge` → `docker-host` is the full request path for any public service.
 
 ---
 
-## 7. Creating the Docker VM — docker-tng (ID 104)
+## 7. Creating the Docker VM — docker-host (ID 104)
 
 Full VMs run their own kernel, making them the right choice for Docker (overlay2 filesystem, iptables rules, etc.).
 
@@ -434,7 +434,7 @@ Or upload via the web UI: **local → ISO Images → Upload**.
 
 ```bash
 qm create 104 \
-  --name docker-tng \
+  --name docker-host \
   --memory 8192 \
   --cores 4 \
   --sockets 1 \
@@ -466,7 +466,7 @@ systemctl enable --now qemu-guest-agent
 I use a dedicated install script (`install-portainer-ee.sh`) that secures the Docker daemon with mutual TLS on port 2376:
 
 ```bash
-# Inside docker-tng — secure Docker daemon setup
+# Inside docker-host — secure Docker daemon setup
 mkdir -p /etc/docker/certs
 # (Script generates CA, server cert, client cert, writes /etc/docker/daemon.json)
 bash /scripts/portainer/install-portainer-ee.sh
@@ -499,15 +499,15 @@ All persistent data volumes point to `/mnt/nas/<service>/`, backed by the NAS ov
 
 ## 8. Mounting NFS from the Ugreen NAS
 
-The Ugreen DH2300 (`NAS-TNG`) runs Debian 12 and exports three NFS shares. The primary one for Docker data is `/volume1/Docker`.
+The Ugreen DH2300 (`nas-storage`) runs Debian 12 and exports three NFS shares. The primary one for Docker data is `/volume1/Docker`.
 
 ### Manual Mount (Test First)
 
 ```bash
-# Inside docker-tng
+# Inside docker-host
 apt install -y nfs-common
 mkdir -p /mnt/nas
-mount -t nfs 10.1.30.6:/volume1/Docker /mnt/nas
+mount -t nfs 10.0.30.6:/volume1/Docker /mnt/nas
 df -h /mnt/nas
 ```
 
@@ -516,7 +516,7 @@ You should see the NAS filesystem with its available space reported.
 ### Persistent Mount via /etc/fstab
 
 ```bash
-echo "10.1.30.6:/volume1/Docker  /mnt/nas  nfs  defaults,_netdev,nofail  0  0" \
+echo "10.0.30.6:/volume1/Docker  /mnt/nas  nfs  defaults,_netdev,nofail  0  0" \
   >> /etc/fstab
 
 mount -a
@@ -546,7 +546,7 @@ services:
       - /mnt/nas/gitea:/data
 ```
 
-If `docker-tng` is ever rebuilt, all service data survives on the NAS — recovery is as simple as re-running `docker compose up -d`.
+If `docker-host` is ever rebuilt, all service data survives on the NAS — recovery is as simple as re-running `docker compose up -d`.
 
 ---
 
@@ -561,7 +561,7 @@ For a single-host homelab where all VMs run on the same physical CPU, always use
 For latency-sensitive workloads, pin vCPUs to specific physical cores to prevent NUMA effects:
 
 ```bash
-# Pin docker-tng's 4 vCPUs to physical cores 4-7
+# Pin docker-host's 4 vCPUs to physical cores 4-7
 qm set 104 --affinity 4-7
 ```
 
@@ -576,7 +576,7 @@ lscpu | grep -E 'Socket|Core|Thread'
 KVM supports memory ballooning — the guest can release unused RAM back to the host dynamically:
 
 ```bash
-# docker-tng: max 8 GB, balloon floor 2 GB
+# docker-host: max 8 GB, balloon floor 2 GB
 qm set 104 --memory 8192 --balloon 2048
 ```
 
@@ -593,7 +593,7 @@ Never commit more than 80% of physical RAM across all VMs and containers. Proxmo
 Monitor real usage:
 
 ```bash
-pvesh get /nodes/pve-tng/status
+pvesh get /nodes/pve-node/status
 ```
 
 ---
@@ -615,10 +615,10 @@ In the web UI: **Datacenter → Backup → Add**
 ### Manual Backup via CLI
 
 ```bash
-# Backup LXC 101 (haproxy-tng)
+# Backup LXC 101 (haproxy-edge)
 vzdump 101 --storage nas-vzdump --mode snapshot --compress zstd
 
-# Backup VM 104 (docker-tng)
+# Backup VM 104 (docker-host)
 vzdump 104 --storage nas-vzdump --mode snapshot --compress zstd
 
 # Backup all VMs/LXC at once
@@ -643,10 +643,10 @@ Run a test restore quarterly. A backup you've never restored is not a backup —
 
 ### Tailscale for Zero-Trust Remote Access
 
-`tailscale-tng` at `10.1.99.3` joins my Tailscale mesh and acts as an exit node. When I'm away from home, I connect via Tailscale and have authenticated access to every node on my homelab's MGMT VLAN — exactly as if I were physically on the network.
+`vpn-node` at `10.0.99.3` joins my Tailscale mesh and acts as an exit node. When I'm away from home, I connect via Tailscale and have authenticated access to every node on my homelab's MGMT VLAN — exactly as if I were physically on the network.
 
 ```bash
-# Check Tailscale status on tailscale-tng
+# Check Tailscale status on vpn-node
 tailscale status
 tailscale netcheck
 ```
@@ -658,9 +658,9 @@ All nodes accept root SSH key authentication. I manage this from my Windows work
 ```powershell
 # deploy-configs.ps1 (excerpt)
 $nodes = @(
-  @{ IP = "10.1.30.3"; Name = "haproxy-tng" },
-  @{ IP = "10.1.30.4"; Name = "technitium-tng" },
-  @{ IP = "10.1.30.5"; Name = "docker-tng" }
+  @{ IP = "10.0.30.3"; Name = "haproxy-edge" },
+  @{ IP = "10.0.30.4"; Name = "dns-server" },
+  @{ IP = "10.0.30.5"; Name = "docker-host" }
 )
 
 foreach ($node in $nodes) {
@@ -680,18 +680,18 @@ This makes reconfiguring any service a one-command operation from my workstation
 
 The Proxmox web UI shows per-node and per-VM CPU, RAM, disk I/O, and network throughput in real time under the **Summary** tab of each node or VM.
 
-For historical metrics, configure an external sink under **Datacenter → Metric Server**. I send metrics to an InfluxDB 2 instance running on `docker-tng`:
+For historical metrics, configure an external sink under **Datacenter → Metric Server**. I send metrics to an InfluxDB 2 instance running on `docker-host`:
 
 ```
 Type: InfluxDB
-Server: 10.1.30.5
+Server: 10.0.30.5
 Port: 8086
 Bucket: proxmox
 Organization: homelab
 Token: <your-influxdb-token>
 ```
 
-Grafana on `docker-tng` visualizes these metrics with a community Proxmox dashboard (ID `10048` on grafana.com).
+Grafana on `docker-host` visualizes these metrics with a community Proxmox dashboard (ID `10048` on grafana.com).
 
 ### Keeping Proxmox Updated
 
@@ -758,7 +758,7 @@ I had `vzdump` running nightly for months before I actually tested a restore. It
 
 ### 6. Using Privileged LXC Containers Without a Clear Reason
 
-Privileged LXC containers map UID 0 (root) inside the container to UID 0 on the host. A container escape is a full host compromise. Only `tailscale-tng` runs privileged in my setup, and only because it needs kernel TUN access. Everything else is unprivileged.
+Privileged LXC containers map UID 0 (root) inside the container to UID 0 on the host. A container escape is a full host compromise. Only `vpn-node` runs privileged in my setup, and only because it needs kernel TUN access. Everything else is unprivileged.
 
 ### 7. Skipping the QEMU Guest Agent
 
@@ -782,13 +782,13 @@ Building this homelab has taught me more about Linux networking, VLAN segmentati
 
 Here's my current stack in summary:
 
-- **`pve-tng`**: Proxmox VE 8.x on MGMT VLAN 99, isolated from all services
-- **`cfd-tng`**: Cloudflare Tunnel — zero open ports on my router, services still publicly reachable
-- **`haproxy-tng`**: Single ingress point for all HTTPS traffic, terminates TLS with Let's Encrypt certs
-- **`technitium-tng`**: Internal DNS, wildcard `*.alkamfrz.my.id` → HAProxy
-- **`tailscale-tng`**: Secure remote access from anywhere, no port-forwarding required
-- **`docker-tng`**: 10+ Docker Compose stacks, Docker daemon secured with mTLS
-- **`NAS-TNG`**: Ugreen DH2300 on Debian 12, NFS exports for Docker data and Proxmox backups
+- **`pve-node`**: Proxmox VE 8.x on MGMT VLAN 99, isolated from all services
+- **`cf-tunnel`**: Cloudflare Tunnel — zero open ports on my router, services still publicly reachable
+- **`haproxy-edge`**: Single ingress point for all HTTPS traffic, terminates TLS with Let's Encrypt certs
+- **`dns-server`**: Internal DNS, wildcard `*.alkamfrz.my.id` → HAProxy
+- **`vpn-node`**: Secure remote access from anywhere, no port-forwarding required
+- **`docker-host`**: 10+ Docker Compose stacks, Docker daemon secured with mTLS
+- **`nas-storage`**: Ugreen DH2300 on Debian 12, NFS exports for Docker data and Proxmox backups
 
 The whole infrastructure runs on a single server plus one dedicated NAS appliance. Idle power draw is around 40W combined. If you're weighing the effort of setting up a homelab against the cost of cloud VMs, the math firmly favors the homelab — especially once you want to run more than two or three services.
 

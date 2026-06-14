@@ -432,21 +432,21 @@ const categoryTitles = {
                 <circle cx="360" cy="200" r="35" class="node-circle" />
                 <circle cx="382" cy="178" r="4" class="node-status-dot" />
                 <text x="360" y="196" text-anchor="middle" class="node-text">HAProxy</text>
-                <text x="360" y="212" text-anchor="middle" class="node-subtext">haproxy-tng</text>
+                <text x="360" y="212" text-anchor="middle" class="node-subtext">haproxy-edge</text>
               </g>
 
               <g class="node-group" data-node="proxmox" style="cursor: pointer;">
                 <rect x="465" y="75" width="110" height="90" rx="10" class="node-rect" />
                 <circle cx="558" cy="88" r="4" class="node-status-dot" />
                 <text x="520" y="115" text-anchor="middle" class="node-text">Proxmox VE</text>
-                <text x="520" y="135" text-anchor="middle" class="node-subtext">pve-tng</text>
+                <text x="520" y="135" text-anchor="middle" class="node-subtext">pve-node</text>
               </g>
 
               <g class="node-group" data-node="docker" style="cursor: pointer;">
                 <circle cx="520" cy="280" r="40" class="node-circle" />
                 <circle cx="548" cy="254" r="4" class="node-status-dot" />
                 <text x="520" y="276" text-anchor="middle" class="node-text">Docker VM</text>
-                <text x="520" y="294" text-anchor="middle" class="node-subtext">docker-tng</text>
+                <text x="520" y="294" text-anchor="middle" class="node-subtext">docker-host</text>
               </g>
 
               <g class="node-group" data-node="nas" style="cursor: pointer;">
@@ -454,7 +454,7 @@ const categoryTitles = {
                 <circle cx="710" cy="248" r="4" class="node-status-dot" />
                 <text x="680" y="272" text-anchor="middle" class="node-text">UGREEN</text>
                 <text x="680" y="292" text-anchor="middle" class="node-subtext">NAS</text>
-                <text x="680" y="312" text-anchor="middle" class="node-subtext">nas-tng</text>
+                <text x="680" y="312" text-anchor="middle" class="node-subtext">nas-storage</text>
               </g>
             </svg>
             <div id="topology-tooltip" class="topology-tooltip" role="tooltip" aria-hidden="true"></div>
@@ -676,36 +676,36 @@ const categoryTitles = {
           color: '#94a3b8'
         },
         cloudflare: {
-          name: 'Cloudflare Tunnel (cfd-tng)',
-          ip: 'cfd-tng (LXC)',
+          name: 'Cloudflare Tunnel (cf-tunnel)',
+          ip: 'cf-tunnel (LXC)',
           role: 'Establishes a secure, outbound-only tunnel to Cloudflare Edge. Shields your public IP address completely and removes local port-forwarding requirements.',
           tags: ['Zero-Trust', 'Cloudflare Tunnel', 'DNS Proxy'],
           color: '#22d3ee'
         },
         haproxy: {
-          name: 'HAProxy Reverse Proxy (haproxy-tng)',
-          ip: 'haproxy-tng (LXC)',
+          name: 'HAProxy Reverse Proxy (haproxy-edge)',
+          ip: 'haproxy-edge (LXC)',
           role: 'Acts as the central gateway controller. Handles Let\'s Encrypt SSL termination, matches subdomain requests, and ships logs to CrowdSec via syslog UDP.',
           tags: ['Reverse Proxy', 'SSL Termination', 'syslog-relay', 'CrowdSec Bouncer'],
           color: '#22d3ee'
         },
         proxmox: {
-          name: 'Proxmox VE Hypervisor (pve-tng)',
-          ip: 'pve-tng (Host)',
+          name: 'Proxmox VE Hypervisor (pve-node)',
+          ip: 'pve-node (Host)',
           role: 'Debian-based hypervisor managing physical bare-metal hardware. Runs VMs (like the Docker VM) and LXC containers (like HAProxy and DNS) under secure segmentation.',
           tags: ['Hypervisor', 'KVM', 'LXC Containers'],
           color: '#3b82f6'
         },
         docker: {
-          name: 'Docker VM Host (docker-tng)',
-          ip: 'docker-tng (VM)',
+          name: 'Docker VM Host (docker-host)',
+          ip: 'docker-host (VM)',
           role: 'Virtual machine running 11 Docker Compose stacks managed via custom parallel deployment scripts. Runs Portainer EE, Authentik, Immich, Jellyfin, and CrowdSec.',
           tags: ['Docker Compose', 'Portainer EE', 'Live Restore', 'VM Workloads'],
           color: '#a855f7'
         },
         nas: {
-          name: 'UGREEN NAS (NAS-TNG)',
-          ip: 'nas-tng (NFS)',
+          name: 'UGREEN NAS (nas-storage)',
+          ip: 'nas-storage (NFS)',
           role: 'ARM64 Debian 12 NAS appliance with 1.8TB RAID1 (LVM) providing central NFS storage for Docker volumes, Proxmox backups, and file archives. Exports /volume1/Docker, /volume1/Backups, and /volume1/Proxmox VE to the cluster.',
           tags: ['UGREEN', 'Debian 12', 'NFS Share', 'RAID1 LVM', 'ARM64'],
           color: '#22c55e'
