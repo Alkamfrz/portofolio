@@ -219,6 +219,7 @@ test.describe('Tier 2: Boundary & Corner Cases (25 Tests)', () => {
   test.describe('Feature 5: Contact Form & API Submission', () => {
     test('F5-T2-1: Input boundary character overflow validation', async ({ page }) => {
       await page.goto('/');
+      await page.waitForLoadState('networkidle');
       await page.fill('#contact-name', 'A'.repeat(500));
       await page.fill('#contact-form #contact-email', 'test@overflow.com');
       await page.fill('#contact-message', 'B'.repeat(5000));
@@ -229,6 +230,7 @@ test.describe('Tier 2: Boundary & Corner Cases (25 Tests)', () => {
 
     test('F5-T2-2: Submitting with status 500 query triggers server error display', async ({ page }) => {
       await page.goto('/?status=500');
+      await page.waitForLoadState('networkidle');
       await page.fill('#contact-name', 'Jane');
       await page.fill('#contact-form #contact-email', 'jane@example.com');
       await page.fill('#contact-message', 'Force 500 error submission.');
@@ -241,6 +243,7 @@ test.describe('Tier 2: Boundary & Corner Cases (25 Tests)', () => {
 
     test('F5-T2-3: Submitting with status 429 query triggers rate limit display', async ({ page }) => {
       await page.goto('/?status=429');
+      await page.waitForLoadState('networkidle');
       await page.fill('#contact-name', 'Jane');
       await page.fill('#contact-form #contact-email', 'jane@example.com');
       await page.fill('#contact-message', 'Force 429 error.');
@@ -253,6 +256,7 @@ test.describe('Tier 2: Boundary & Corner Cases (25 Tests)', () => {
 
     test('F5-T2-4: Submitting whitespaces triggers empty field errors', async ({ page }) => {
       await page.goto('/');
+      await page.waitForLoadState('networkidle');
       await page.fill('#contact-name', '   ');
       await page.fill('#contact-form #contact-email', 'abc@def.com');
       await page.fill('#contact-message', '     ');
@@ -264,6 +268,7 @@ test.describe('Tier 2: Boundary & Corner Cases (25 Tests)', () => {
 
     test('F5-T2-5: Submitting HTML scripts is escaped safely without injection execution', async ({ page }) => {
       await page.goto('/');
+      await page.waitForLoadState('networkidle');
       const maliciousScript = '<script id="injected-tag">window.xssRun = true;</script>';
       await page.fill('#contact-name', 'Attacker');
       await page.fill('#contact-form #contact-email', 'attacker@inject.com');

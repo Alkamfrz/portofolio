@@ -10,7 +10,7 @@
 import { execSync, spawn } from 'child_process';
 import { setTimeout as sleep } from 'timers/promises';
 
-const PORT = 5555;
+const PORT = 5876;
 const BASE_URL = `http://localhost:${PORT}`;
 const PASS_THRESHOLD = 0.95;
 const CATEGORIES = ['performance', 'accessibility', 'best-practices', 'seo'];

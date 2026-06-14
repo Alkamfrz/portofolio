@@ -18,10 +18,10 @@ const { title } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
-    <!-- Preload critical fonts for faster LCP -->
-    <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/outfit-700.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/outfit-900.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- Google Fonts Preconnect and Link -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
     <meta name="description" content="Alkam Fariz – Developer & Home Server Enthusiast. Building robust infrastructure, self-hosted services, and polished web applications." />
     <meta property="og:title" content={title + ' - Alkamfrz Portfolio'} />
     <meta property="og:description" content="Alkam Fariz – Developer & Home Server Enthusiast. Building robust infrastructure, self-hosted services, and polished web applications." />
@@ -36,8 +36,7 @@ const { title } = Astro.props;
       };
       applyTheme();
     </script>
-    <!-- Self-hosted fonts: Inter & Outfit (inlined to eliminate render-blocking request) -->
-    <style>@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url('/fonts/inter-400.woff2') format('woff2')}@font-face{font-family:'Inter';font-style:normal;font-weight:500;font-display:swap;src:url('/fonts/inter-500.woff2') format('woff2')}@font-face{font-family:'Inter';font-style:normal;font-weight:600;font-display:swap;src:url('/fonts/inter-600.woff2') format('woff2')}@font-face{font-family:'Inter';font-style:normal;font-weight:700;font-display:swap;src:url('/fonts/inter-700.woff2') format('woff2')}@font-face{font-family:'Outfit';font-style:normal;font-weight:500;font-display:swap;src:url('/fonts/outfit-500.woff2') format('woff2')}@font-face{font-family:'Outfit';font-style:normal;font-weight:600;font-display:swap;src:url('/fonts/outfit-600.woff2') format('woff2')}@font-face{font-family:'Outfit';font-style:normal;font-weight:700;font-display:swap;src:url('/fonts/outfit-700.woff2') format('woff2')}@font-face{font-family:'Outfit';font-style:normal;font-weight:800;font-display:swap;src:url('/fonts/outfit-800.woff2') format('woff2')}@font-face{font-family:'Outfit';font-style:normal;font-weight:900;font-display:swap;src:url('/fonts/outfit-900.woff2') format('woff2')}</style>
+    <!-- Typography loaded via Google Fonts CDN -->
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to content</a>

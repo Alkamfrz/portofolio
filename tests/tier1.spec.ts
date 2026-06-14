@@ -168,15 +168,18 @@ test.describe('Tier 1: Feature Coverage (25 Tests)', () => {
   // FEATURE 5: CONTACT FORM & SUBMISSION
   // ==========================================
   test.describe('Feature 5: Contact Form & API Submission', () => {
-    test('F5-T1-1: Inputs exist on Homepage contact card', async ({ page }) => {
+    test.beforeEach(async ({ page }) => {
       await page.goto('/');
+      await page.waitForLoadState('networkidle');
+    });
+
+    test('F5-T1-1: Inputs exist on Homepage contact card', async ({ page }) => {
       await expect(page.locator('#contact-name')).toBeVisible();
       await expect(page.locator('#contact-form #contact-email')).toBeVisible();
       await expect(page.locator('#contact-message')).toBeVisible();
     });
 
     test('F5-T1-2: Submitting empty form fires client-side validation errors', async ({ page }) => {
-      await page.goto('/');
       await page.click('#contact-submit');
       await expect(page.locator('#name-error')).toHaveText('Name is required.');
       await expect(page.locator('#email-error')).toHaveText('Email is required.');
@@ -184,7 +187,6 @@ test.describe('Tier 1: Feature Coverage (25 Tests)', () => {
     });
 
     test('F5-T1-3: Validation alerts error for incorrect email syntax', async ({ page }) => {
-      await page.goto('/');
       await page.fill('#contact-name', 'John Doe');
       await page.fill('#contact-form #contact-email', 'john-email-without-at');
       await page.fill('#contact-message', 'Hello server');
@@ -193,7 +195,6 @@ test.describe('Tier 1: Feature Coverage (25 Tests)', () => {
     });
 
     test('F5-T1-4: Valid form submission displays confirmation message', async ({ page }) => {
-      await page.goto('/');
       await page.fill('#contact-name', 'Alice');
       await page.fill('#contact-form #contact-email', 'alice@example.com');
       await page.fill('#contact-message', 'This is a valid feedback message.');
@@ -203,7 +204,6 @@ test.describe('Tier 1: Feature Coverage (25 Tests)', () => {
     });
 
     test('F5-T1-5: Submit button shows sending text and is disabled during fetch', async ({ page }) => {
-      await page.goto('/');
       await page.fill('#contact-name', 'Bob');
       await page.fill('#contact-form #contact-email', 'bob@example.com');
       await page.fill('#contact-message', 'Delayed submission check.');

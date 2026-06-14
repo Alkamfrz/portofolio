@@ -37,7 +37,7 @@ test.describe('Production Smoke Tests', () => {
 
   test('Blog page loads with posts', async ({ page }) => {
     await page.goto('/blog');
-    await expect(page.locator('.blog-post-card')).toHaveCount(2);
+    await expect(page.locator('.blog-post-card')).toHaveCount(4);
   });
 
   test('404 page renders', async ({ page }) => {
