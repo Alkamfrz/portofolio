@@ -36,11 +36,20 @@ export default function Header() {
       if (e.key === 'Escape' && isOpen) closeMenu();
     };
 
+    const handlePageNavigation = () => {
+      setPathname(window.location.pathname);
+      setIsOpen(false);
+      const overlay = document.getElementById('nav-overlay');
+      if (overlay) overlay.classList.remove('show');
+    };
+
     window.addEventListener('scroll', handleScroll);
     document.addEventListener('keydown', handleEscape);
+    document.addEventListener('astro:page-load', handlePageNavigation);
     return () => {
       window.removeEventListener('scroll', handleScroll);
       document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('astro:page-load', handlePageNavigation);
     };
   }, [isOpen, closeMenu]);
 

@@ -201,7 +201,14 @@ const jsonLd = {
       });
     }
 
-    initProjectFilter();
+    // Run on initial load
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initProjectFilter);
+    } else {
+      initProjectFilter();
+    }
+    // Re-run on Astro view transition navigation
+    document.addEventListener('astro:page-load', initProjectFilter);
   </script>
 </Layout>
 
