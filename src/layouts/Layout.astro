@@ -18,10 +18,17 @@ const { title } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
-    <!-- Google Fonts Preconnect and Link -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+    <!-- Self-hosted fonts: preload critical weights for zero render-blocking -->
+    <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter-500.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/outfit-700.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/outfit-800.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- Non-render-blocking font face declarations -->
+    <link rel="stylesheet" href="/fonts/fonts.css" />
+    <!-- DNS prefetch for external social/project links -->
+    <link rel="dns-prefetch" href="https://github.com" />
+    <link rel="dns-prefetch" href="https://linkedin.com" />
+    <link rel="dns-prefetch" href="https://formspree.io" />
     <meta name="description" content="Alkam Fariz – Developer & Home Server Enthusiast. Building robust infrastructure, self-hosted services, and polished web applications." />
     <meta property="og:title" content={title + ' - Alkamfrz Portfolio'} />
     <meta property="og:description" content="Alkam Fariz – Developer & Home Server Enthusiast. Building robust infrastructure, self-hosted services, and polished web applications." />
@@ -36,7 +43,7 @@ const { title } = Astro.props;
       };
       applyTheme();
     </script>
-    <!-- Typography loaded via Google Fonts CDN -->
+    <!-- Typography: self-hosted from /public/fonts/, preloaded above for zero CLS -->
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to content</a>

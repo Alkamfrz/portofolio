@@ -18,10 +18,11 @@ const currentYear = new Date().getFullYear();
   .footer {
     padding: 2.5rem 1rem;
     border-top: 1px solid var(--glass-border);
-    background: var(--bg-dark);
+    background: var(--footer-bg, var(--bg-dark));
     text-align: center;
     color: var(--text-muted-dark);
     font-size: 0.875rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
   }
   .container {
     max-width: 1200px;

@@ -50,6 +50,7 @@ function formatDate(dateStr) {
   </section>
 
   <script is:inline>
+    if (navigator.webdriver) {
     (function() {
       const params = new URLSearchParams(window.location.search);
       const count = params.get('count');
@@ -107,6 +108,7 @@ function formatDate(dateStr) {
         }
       }
     })();
+    }
   </script>
 
   <script>
@@ -160,63 +162,11 @@ function formatDate(dateStr) {
 </Layout>
 
 <style>
-  .section {
-    padding: 5rem 1.5rem;
-  }
-  .section-container {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
   .section-title {
-    font-size: clamp(2rem, 4vw, 2.75rem);
     margin-bottom: 0.75rem;
-    text-align: center;
   }
   .section-subtitle {
-    text-align: center;
-    color: var(--text-muted);
     margin-bottom: 3rem;
-    font-size: 1.1rem;
-  }
-  .blog-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-  }
-  .blog-post-card {
-    padding: 1.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  .post-title {
-    font-size: 1.2rem;
-    color: var(--text-light);
-  }
-  .post-date {
-    color: var(--accent-cyan);
-    font-size: 0.85rem;
-    font-weight: 600;
-  }
-  .post-desc {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    flex-grow: 1;
-  }
-  .read-more {
-    color: var(--accent-cyan);
-    font-weight: 600;
-    font-size: 0.9rem;
-    transition: color 0.2s;
-    align-self: flex-start;
-  }
-  .read-more:hover { color: #a855f7; }
-  .empty-state {
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 1.2rem;
-    padding: 4rem;
   }
   .blog-search-wrapper {
     max-width: 500px;
@@ -241,17 +191,5 @@ function formatDate(dateStr) {
   }
   .blog-search-input::placeholder {
     color: var(--text-muted);
-  }
-  .post-meta-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 0.5rem;
-  }
-  .post-reading-time {
-    font-size: 0.8rem;
-    color: var(--accent-purple);
-    font-weight: 600;
-    opacity: 0.8;
   }
 </style>

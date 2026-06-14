@@ -25,6 +25,7 @@
     "ttf2woff2": "^8.0.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
     "@playwright/test": "^1.44.0",
     "@types/node": "^20.0.0",
     "typescript": "^5.0.0"

@@ -86,16 +86,11 @@ test.describe('Production Smoke Tests', () => {
     await expect(page.locator('#message-error')).not.toBeEmpty();
   });
 
-  test('Skills section has categories', async ({ page }) => {
+  test('Skills section shows all categories', async ({ page }) => {
     await page.goto('/');
     const skillSection = page.locator('#skills');
     await expect(skillSection).toBeVisible();
-    await expect(skillSection.locator('.skill-category')).toHaveCount(2);
-    const toggle = page.locator('#skills-toggle-btn');
-    if (await toggle.isVisible()) {
-      await toggle.click();
-      await expect(skillSection.locator('.skill-category')).toHaveCount(6);
-    }
+    await expect(skillSection.locator('.skill-category')).toHaveCount(6);
   });
 
   test('Experience timeline switches tabs', async ({ page }) => {

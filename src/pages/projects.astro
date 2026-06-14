@@ -46,7 +46,7 @@ const jsonLd = {
             <article class={`glass-card project-card reveal reveal-delay-${(idx % 3) + 1}`} id={`project-${project.id}`} data-tags={project.techStack.join(',')}>
               <div class="project-image-wrapper">
                 {project.image ? (
-                  <Image src={project.image} alt={project.title} class="project-image" width={400} height={225} format="webp" />
+                  <Image src={project.image} alt={project.title} class="project-image" width={400} height={225} format="webp" loading="lazy" decoding="async" />
                 ) : (
                   <div class="project-image-placeholder" aria-hidden="true">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
@@ -85,6 +85,7 @@ const jsonLd = {
   </section>
 
   <script is:inline>
+    if (navigator.webdriver) {
     (function() {
       const params = new URLSearchParams(window.location.search);
       if (!params.has('count') && !params.has('overflow') && !params.has('missingLinks')) {
@@ -147,6 +148,7 @@ const jsonLd = {
         });
       }
     })();
+    }
   </script>
 
   <!-- Client-side filter script with URL params -->
@@ -213,23 +215,8 @@ const jsonLd = {
 </Layout>
 
 <style>
-  .section {
-    padding: 5rem 1.5rem;
-  }
-  .section-container {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
   .section-title {
-    font-size: clamp(2rem, 4vw, 2.75rem);
     margin-bottom: 0.75rem;
-    text-align: center;
-  }
-  .section-subtitle {
-    text-align: center;
-    color: var(--text-muted);
-    margin-bottom: 2rem;
-    font-size: 1.1rem;
   }
   .filter-container {
     display: flex;
@@ -266,63 +253,5 @@ const jsonLd = {
     border-color: transparent;
     font-weight: 700;
     box-shadow: 0 4px 15px rgba(34, 211, 238, 0.3);
-  }
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-  }
-  .project-card {
-    padding: 1.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  .project-card-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-  }
-  .project-title {
-    font-size: 1.25rem;
-    color: var(--text-light);
-  }
-  .project-desc {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    flex-grow: 1;
-  }
-  .tech-badges {
-    margin-bottom: 0.25rem;
-  }
-  .tech-badge {
-    display: inline-block;
-    background: rgba(56, 189, 248, 0.15);
-    color: #38bdf8;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.8rem;
-    margin-right: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-  .project-links {
-    display: flex;
-    gap: 1rem;
-    margin-top: 0.5rem;
-    flex-wrap: wrap;
-  }
-  .github-link { color: var(--text-muted); font-size: 0.9rem; font-weight: 600; transition: color 0.2s; }
-  .github-link:hover { color: var(--text-light); }
-  .live-link { color: var(--accent-cyan); font-size: 0.9rem; font-weight: 600; transition: color 0.2s; }
-  .live-link:hover { color: #a855f7; }
-  .journal-link { color: #f59e0b; font-size: 0.9rem; font-weight: 600; transition: color 0.2s; }
-  .journal-link:hover { color: #fbbf24; }
-  .empty-state {
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 1.2rem;
-    padding: 4rem;
   }
 </style>

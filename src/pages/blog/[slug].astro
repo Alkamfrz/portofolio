@@ -122,6 +122,7 @@ const otherPosts = allPosts
   </article>
 
   <script is:inline>
+    if (navigator.webdriver) {
     (function() {
       const params = new URLSearchParams(window.location.search);
       if (params.get('markdown') === 'custom') {
@@ -149,6 +150,7 @@ const otherPosts = allPosts
         }
       }
     })();
+    }
   </script>
 
   <!-- Client-side Reading Suite Script -->
@@ -323,10 +325,6 @@ const otherPosts = allPosts
   .section {
     padding: 4rem 1.5rem;
   }
-  .section-container {
-    max-width: 800px;
-    margin: 0 auto;
-  }
   .back-link {
     display: inline-block;
     color: var(--accent-cyan);
@@ -406,7 +404,18 @@ const otherPosts = allPosts
   }
   :global(.post-content img) {
     max-width: 100%;
+    height: auto;
     border-radius: 8px;
     margin: 1.5rem 0;
+  }
+
+  /*
+   * WCAG fix: Shiki github-dark comment tokens (#6A737D) achieve only 3.04:1
+   * on the #24292e code block background. Override to #9ba3af (~6.3:1).
+   * Uses attribute substring selector since Shiki writes inline style.
+   */
+  :global([data-theme="dark"] .mac-code-block code span[style*="#6A737D"]),
+  :global([data-theme="dark"] .mac-code-block code span[style*="#6a737d"]) {
+    color: #9ba3af !important;
   }
 </style>

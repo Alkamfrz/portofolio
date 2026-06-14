@@ -1,7 +1,7 @@
 # 🌌 Personal Developer Portfolio (alkamfrz_portfolio)
 ## Product Requirements Document (PRD) & Design Specification
 
-> **Last updated:** 2026-06-13 — UI/UX overhaul v2 (typography system, navigation improvements, homepage layout, projects filtering, blog reading suite, visual polish)
+> **Last updated:** 2026-06-14 — Performance optimization pass v1 (self-hosted fonts, preload hints, lazy loading, Core Web Vitals, prefers-reduced-motion, theme-aware scrollbars)
 
 This document serves as the absolute source of truth for the portfolio website's features, visual design system, accessibility rules, testing guidelines, and deployment gatekeeping criteria.
 
@@ -184,6 +184,18 @@ Styling uses **Vanilla CSS** with scoped rules. Global design tokens are defined
 ### Asset Optimization & Media Specs
 * **Image Formats**: All images must be served in WebP or AVIF next-gen formats.
 * **Responsive Optimization**: Use Astro's native `<Image />` component for automatic optimization, cropping, and dynamic resizing of media assets during the build process to minimize Largest Contentful Paint (LCP).
+* **Lazy Loading**: All below-the-fold images must carry `loading="lazy"` and `decoding="async"` attributes. Above-the-fold LCP images carry `loading="eager"`, `decoding="sync"`, and `fetchpriority="high"`.
+* **CLS Prevention**: Global CSS enforces `img { max-width: 100%; height: auto; }` to prevent Cumulative Layout Shift across all image elements.
+
+### Font Performance
+* **Self-Hosted Fonts**: Inter and Outfit font families are served from `/public/fonts/` as woff2 files — no Google Fonts CDN dependency.
+* **Critical Preloads**: Inter 400/500 (body text) and Outfit 700/800 (headings) are declared with `<link rel="preload">` in the document `<head>` to make them available before the first paint.
+* **font-display: swap**: All `@font-face` rules use `font-display: swap` to prevent invisible text during font load (FOIT).
+
+### Accessibility & Motion
+* **`prefers-reduced-motion`**: A CSS `@media (prefers-reduced-motion: reduce)` rule disables all keyframe animations and transitions site-wide for users with vestibular or motion sensitivity settings.
+* **GPU Compositing**: Background orbs use `will-change: transform` to be promoted to GPU compositor layers, preventing main-thread repaints during float animations.
+* **Theme-Aware Scrollbars**: Scrollbar track and thumb colors use CSS custom properties (`--page-bg`, `--glass-border`) so they correctly adapt between dark and light mode.
 
 ---
 
@@ -208,7 +220,7 @@ Styling uses **Vanilla CSS** with scoped rules. Global design tokens are defined
 
 ## 🧪 7. Playwright Test Suite Specifications
 
-The application includes an automated E2E test suite running **66 test cases** locally using `npm run test` or `npx playwright test`.
+The application includes an automated E2E test suite running **203 test cases** across 3 browser engines (`chromium`, `firefox`, `Mobile Chrome`) using `npm run test:local` or `npx playwright test`.
 
 > [!NOTE]
 > Local executions on Windows hosts may experience Webkit engine hangs due to driver incompatibility. Developers should run stable targets locally (e.g. `npx playwright test --project=chromium --project=firefox --project="Mobile Chrome"`) while relying on CI pipelines for Webkit coverage.
