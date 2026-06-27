@@ -14,12 +14,15 @@
     "test:local": "playwright test --project=chromium --project=firefox --project=\"Mobile Chrome\"",
     "mock-server": "node mock-server.js",
     "audit": "node scripts/audit-lighthouse.js",
-    "capture": "node scripts/capture-screenshots.mjs"
+    "capture": "node scripts/capture-screenshots.mjs",
+    "deploy": "astro build && wrangler deploy",
+    "deploy:workers": "astro build && wrangler dev"
   },
   "dependencies": {
-    "@astrojs/react": "^5.0.7",
+    "@astrojs/cloudflare": "^14.0.1",
+    "@astrojs/react": "^6.0.0",
     "@astrojs/sitemap": "^3.7.3",
-    "astro": "^6.4.4",
+    "astro": "^7.0.3",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "ttf2woff2": "^8.0.1"
@@ -28,6 +31,7 @@
     "@axe-core/playwright": "^4.11.3",
     "@playwright/test": "^1.44.0",
     "@types/node": "^20.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "wrangler": "^4.105.0"
   }
 }

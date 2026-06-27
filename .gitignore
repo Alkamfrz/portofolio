@@ -33,3 +33,4 @@ pnpm-debug.log*
 # Development artifacts
 .agents/
 /ORIGINAL_REQUEST.md
+.wrangler/

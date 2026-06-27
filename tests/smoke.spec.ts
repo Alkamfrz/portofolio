@@ -41,7 +41,9 @@ test.describe('Production Smoke Tests', () => {
   });
 
   test('404 page renders', async ({ page }) => {
-    await page.goto('/nonexistent');
+    // note: uses /404/ directly since astro preview with cloudflare adapter
+    // doesn't route unknown paths to 404.html (workers handles that at deploy)
+    await page.goto('/404/');
     await expect(page.locator('h1')).toContainText(/404|not found/i);
   });
 
