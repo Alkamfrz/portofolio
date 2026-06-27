@@ -16,7 +16,6 @@ export default defineConfig({
     defaultStrategy: 'viewport',
   },
   build: {
-    inlineStylesheets: 'always',
   },
   markdown: {
     shikiConfig: {

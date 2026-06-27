@@ -48,19 +48,19 @@ function fmt(d) { try { return new Date(d).toLocaleDateString('en-US', { year: '
   <!-- Metrics -->
   <div class="flex flex-wrap gap-6 sm:gap-10 mt-12">
     <div>
-      <div class="text-2xl font-bold" style="color: var(--color-text-primary);">{projects.length}</div>
+      <div class="text-2xl font-bold metric-value" style="color: var(--color-text-primary);">{projects.length}</div>
       <div class="text-sm" style="color: var(--color-text-muted);">Projects</div>
     </div>
     <div>
-      <div class="text-2xl font-bold" style="color: var(--color-text-primary);">{projects.filter(p => p.status === 'active').length}</div>
+      <div class="text-2xl font-bold metric-value" style="color: var(--color-text-primary);">{projects.filter(p => p.status === 'active').length}</div>
       <div class="text-sm" style="color: var(--color-text-muted);">Active</div>
     </div>
     <div>
-      <div class="text-2xl font-bold" style="color: var(--color-text-primary);">{skillList.length}</div>
+      <div class="text-2xl font-bold metric-value" style="color: var(--color-text-primary);">{skillList.length}</div>
       <div class="text-sm" style="color: var(--color-text-muted);">Skills</div>
     </div>
     <div>
-      <div class="text-2xl font-bold" style="color: var(--color-text-primary);">{allTags.length}</div>
+      <div class="text-2xl font-bold metric-value" style="color: var(--color-text-primary);">{allTags.length}</div>
       <div class="text-sm" style="color: var(--color-text-muted);">Technologies</div>
     </div>
   </div>
@@ -257,4 +257,53 @@ function fmt(d) { try { return new Date(d).toLocaleDateString('en-US', { year: '
 </section>
 
 <script>import('../components/contact-form.js');</script>
+
+<!-- Counter animations -->
+<script is:inline>
+  (function() {
+    // Metrics counter — animate numbers from 0 to final
+    document.querySelectorAll('.metric-value').forEach(function(el) {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (!entry.isIntersecting) return;
+          observer.unobserve(el);
+          var final = parseInt(el.textContent.trim());
+          if (isNaN(final) || final === 0) return;
+          var start = performance.now();
+          var duration = 1000;
+          function tick(now) {
+            var p = Math.min((now - start) / duration, 1);
+            // ease-out cubic
+            var ease = 1 - Math.pow(1 - p, 3);
+            el.textContent = Math.round(ease * final);
+            if (p < 1) requestAnimationFrame(tick);
+          }
+          el.textContent = '0';
+          requestAnimationFrame(tick);
+        });
+      }, { threshold: 0.5 });
+      observer.observe(el);
+    });
+
+    // Cards stagger reveal via IntersectionObserver
+    document.querySelectorAll('.card').forEach(function(el) {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(12px)';
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (!entry.isIntersecting) return;
+          observer.unobserve(entry.target);
+          var delay = Array.from(document.querySelectorAll('.card')).indexOf(el) * 40;
+          setTimeout(function() {
+            el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+          }, delay);
+        });
+      }, { threshold: 0.1 });
+      observer.observe(el);
+    });
+  })();
+</script>
+
 </Layout>
