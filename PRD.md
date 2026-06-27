@@ -14,10 +14,10 @@ The goal of this project is to build an interactive, ultra-fast developer portfo
 ### Core Goals:
 1. **Developer-Recruiter Balance**: Cater equally to technical recruiters seeking quick validation and fellow developers inspecting coding standards.
 2. **Speed & Lightweight Footprint**: Build using **Astro v6** to output highly optimized static HTML with zero unnecessary client-side JavaScript.
-3. **Immersive Dark Theme**: Apply a premium dark glassmorphism design system to reflect a modern, state-of-the-art developer brand.
+3. **Terminal-Inspired Design**: Apply a dark terminal/dataviz design system with green-on-dark palette, grid background, monospace UI, and CLI-inspired interactions.
 4. **100% Automated Verification**: Maintain a robust E2E test coverage using **Playwright** to prevent regressions.
 5. **Reading Comfort**: Typography scaling system, prose width constraints, font-size widget, and Mac-style code blocks ensure a premium reading experience on both desktop and mobile.
-6. **Visual Delight**: Scroll-triggered reveal animations, orbital background effects, glow-on-hover cards, and micro-interactions at every touchpoint.
+6. **Visual Delight**: Terminal prompt animations, filesystem-tree skill visualization, git-log timeline, LED status indicators, and subtle hover interactions.
 
 ---
 
@@ -72,7 +72,7 @@ Must contain the following sections in this exact order:
 1. **Hero Section**: 
    - Viewport height: `90vh` to `100vh`.
    - Heading uses a large, high-contrast dual-color linear gradient (class `text-gradient`).
-   - Pure CSS background gradient orbs (no heavy image assets).
+   - Grid background pattern (CSS linear-gradient, pseudo-element, no image assets).
     - CTA buttons: *"View Projects"* (routes to `/projects`) and *"Read Blog"* (routes to `/blog`).
     - Primary CTA has `.btn-pulse` for a subtle box-shadow animation.
     - Scroll-down indicator (`.scroll-indicator`) at bottom with "Scroll" label and chevron.
@@ -92,7 +92,7 @@ Must contain the following sections in this exact order:
     - First featured project is rendered as `.spotlight` (full-width with 2-column layout on desktop, gradient background border).
     - Project cards (class `project-card` and `glass-card`) must contain: Title (`h3`), Description (`p`), tech badges (class `tech-badge`), GitHub source link (class `github-link`), and Live Demo link (class `live-link`).
     - Project card header shows a `.tag-chip` "Featured" label on the spotlight card.
-    - Cards use `.reveal` classes with staggered delays for scroll-triggered entrance.
+    - Sections use `.section-hidden` / `.section-visible` for fade-in on scroll.
     - Displays a redirection link pointing to the full `/projects` page.
  6. **Homelab Architecture (`#homelab`)**:
     - Interactive SVG topology diagram tracing the secure data flow (WAN, Cloudflare Tunnel, HAProxy, Proxmox VE, Docker VM, UGREEN NAS).
@@ -104,7 +104,7 @@ Must contain the following sections in this exact order:
     - Displays the 2 most recently published blog posts in a 2-column grid.
     - Post cards (class `blog-post-card`) contain: Title (`h3`), Date (class `post-date` formatted as `"Month DD, YYYY"`), reading time (class `.post-reading-time`), Description (`p`), and a *"Read More"* link (class `read-more`) pointing to `/blog/[slug]`.
  8. **Contact Section & Form (`#contact-form`)**:
-    - Dynamic React component (`ContactForm.jsx`) loaded with `client:load`.
+    - Vanilla JS contact form (`contact-form.js`) with Formspree POST + mock-server fallback.
    - Name input (`#contact-name`) with validation error span (`#name-error`).
    - Email input (`#contact-email`) with validation error span (`#email-error`).
    - Message textarea (`#contact-message`) with validation error span (`#message-error`).
@@ -194,7 +194,7 @@ Styling uses **Vanilla CSS** with scoped rules. Global design tokens are defined
 
 ### Accessibility & Motion
 * **`prefers-reduced-motion`**: A CSS `@media (prefers-reduced-motion: reduce)` rule disables all keyframe animations and transitions site-wide for users with vestibular or motion sensitivity settings.
-* **GPU Compositing**: Background orbs use `will-change: transform` to be promoted to GPU compositor layers, preventing main-thread repaints during float animations.
+* **CSS @layer Architecture**: Styles organized in cascade layers (base → components → utilities) for predictable specificity and smaller bundles.
 * **Theme-Aware Scrollbars**: Scrollbar track and thumb colors use CSS custom properties (`--page-bg`, `--glass-border`) so they correctly adapt between dark and light mode.
 
 ---
