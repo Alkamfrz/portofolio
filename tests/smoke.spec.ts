@@ -42,7 +42,7 @@ test.describe('Production Smoke Tests', () => {
 
   test('404 page renders', async ({ page }) => {
     await page.goto('/nonexistent');
-    await expect(page.locator('h1')).toContainText(/404|not found/i);
+    await expect(page.locator('.error-code')).toContainText(/404/);
   });
 
   test('Theme toggle switches mode', async ({ page }) => {
@@ -64,10 +64,10 @@ test.describe('Production Smoke Tests', () => {
     await expect(hamburger).toHaveAttribute('aria-expanded', 'true');
   });
 
-  test('Homelab section exists on homepage', async ({ page }) => {
+  test('Metrics bar shows stats', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('#homelab')).toBeVisible();
-    await expect(page.locator('#homelab')).toContainText('Homelab Architecture');
+    await expect(page.locator('.metrics-bar')).toBeVisible();
+    await expect(page.locator('.metric-item').first()).toBeVisible();
   });
 
   test('Contact form has input fields', async ({ page }) => {
@@ -86,23 +86,17 @@ test.describe('Production Smoke Tests', () => {
     await expect(page.locator('#message-error')).not.toBeEmpty();
   });
 
-  test('Skills section shows all categories', async ({ page }) => {
+  test('Skills section is visible', async ({ page }) => {
     await page.goto('/');
     const skillSection = page.locator('#skills');
     await expect(skillSection).toBeVisible();
-    await expect(skillSection.locator('.skill-category')).toHaveCount(6);
+    await expect(skillSection.locator('.skills-tree')).toBeVisible();
   });
 
-  test('Experience timeline switches tabs', async ({ page }) => {
+  test('Experience timeline is visible', async ({ page }) => {
     await page.goto('/');
-    const eduTab = page.locator('#tab-edu');
-    await eduTab.click();
-    await expect(eduTab).toHaveAttribute('aria-selected', 'true');
-    await expect(page.locator('#work-column')).not.toBeVisible();
-    await expect(page.locator('#edu-column')).toBeVisible();
-    const workTab = page.locator('#tab-work');
-    await workTab.click();
-    await expect(workTab).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('#experience')).toBeVisible();
+    await expect(page.locator('.git-timeline')).toBeVisible();
   });
 
   test('Footer has social links', async ({ page }) => {
@@ -116,6 +110,7 @@ test.describe('Production Smoke Tests', () => {
     await page.goto('/');
     await expect(page.locator('#back-to-top')).not.toBeVisible();
     await page.evaluate(() => window.scrollTo(0, 500));
+    await page.waitForTimeout(100);
     await expect(page.locator('#back-to-top')).toBeVisible();
   });
 
@@ -135,14 +130,13 @@ test.describe('Production Smoke Tests', () => {
 
   test('About section has bio highlights', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('#about')).toContainText('B.Eng. Informatics');
+    await expect(page.locator('#about')).toContainText('Informatics Engineering');
     await expect(page.locator('#about')).toContainText('3.90');
   });
 
-  test('Topology diagram is interactive', async ({ page }) => {
+  test('Terminal prompt header displays', async ({ page }) => {
     await page.goto('/');
-    const node = page.locator('.node-group').first();
-    await node.click();
-    await expect(page.locator('#node-detail-name')).not.toContainText('Select a Node');
+    await expect(page.locator('.terminal-prompt')).toBeVisible();
+    await expect(page.locator('.terminal-prompt')).toContainText('alkamfrz');
   });
 });

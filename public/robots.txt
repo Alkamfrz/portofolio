@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://alkamfrz.my.id/sitemap-index.xml
+Sitemap: https://alkamfrz.id/sitemap-index.xml

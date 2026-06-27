@@ -164,7 +164,7 @@ Because there are no open inbound ports, HTTP-01 challenge is not an option. The
 ```bash
 apt install -y certbot python3-certbot-dns-cloudflare
 
-# Narrow-scoped API token: Zone → DNS → Edit, for alkamfrz.my.id only
+# Narrow-scoped API token: Zone → DNS → Edit, for alkamfrz.id only
 mkdir -p /etc/letsencrypt/cf
 cat > /etc/letsencrypt/cf/credentials.ini <<EOF
 dns_cloudflare_api_token = YOUR_CF_DNS_EDIT_TOKEN
@@ -175,11 +175,11 @@ chmod 600 /etc/letsencrypt/cf/credentials.ini
 certbot certonly \
   --dns-cloudflare \
   --dns-cloudflare-credentials /etc/letsencrypt/cf/credentials.ini \
-  -d "*.alkamfrz.my.id" \
-  -d "alkamfrz.my.id" \
+  -d "*.alkamfrz.id" \
+  -d "alkamfrz.id" \
   --non-interactive \
   --agree-tos \
-  -m admin@alkamfrz.my.id
+  -m admin@alkamfrz.id
 ```
 
 HAProxy requires the cert and key in a single `.pem` file. The deploy hook (`haproxy-reload-hook.sh`) handles this automatically on renewal:
@@ -189,7 +189,7 @@ HAProxy requires the cert and key in a single `.pem` file. The deploy hook (`hap
 #!/bin/bash
 set -euo pipefail
 
-DOMAIN="alkamfrz.my.id"
+DOMAIN="alkamfrz.id"
 CERT_DIR="/etc/letsencrypt/live/${DOMAIN}"
 PEM_DIR="/etc/ssl/haproxy"
 PEM_PATH="${PEM_DIR}/${DOMAIN}.pem"
@@ -279,14 +279,14 @@ frontend fe_https
     http-response set-header Strict-Transport-Security "max-age=31536000; includeSubDomains"
 
     # ── ACLs ────────────────────────────────────────────────────────────────
-    acl host_root         hdr(host) -i alkamfrz.my.id
-    acl host_home         hdr(host) -i home.alkamfrz.my.id
-    acl host_authentik    hdr(host) -i authentik.alkamfrz.my.id
-    acl host_portainer    hdr(host) -i portainer.alkamfrz.my.id
-    acl host_immich       hdr(host) -i immich.alkamfrz.my.id
-    acl host_jellyfin     hdr(host) -i media.alkamfrz.my.id
-    acl host_seerr        hdr(host) -i request.alkamfrz.my.id
-    acl host_pve          hdr(host) -i pve-node.alkamfrz.my.id
+    acl host_root         hdr(host) -i alkamfrz.id
+    acl host_home         hdr(host) -i home.alkamfrz.id
+    acl host_authentik    hdr(host) -i authentik.alkamfrz.id
+    acl host_portainer    hdr(host) -i portainer.alkamfrz.id
+    acl host_immich       hdr(host) -i immich.alkamfrz.id
+    acl host_jellyfin     hdr(host) -i media.alkamfrz.id
+    acl host_seerr        hdr(host) -i request.alkamfrz.id
+    acl host_pve          hdr(host) -i pve-node.alkamfrz.id
 
     # ── Routing ─────────────────────────────────────────────────────────────
     use_backend be_portfolio   if host_root
@@ -389,12 +389,12 @@ credentials-file: /root/.cloudflared/<YOUR-TUNNEL-UUID>.json
 
 ingress:
   # All traffic hits HAProxy for routing decisions
-  - hostname: "*.alkamfrz.my.id"
+  - hostname: "*.alkamfrz.id"
     service: https://10.0.30.3:443
     originRequest:
       noTLSVerify: true   # HAProxy cert is internal; Cloudflare handles public TLS
 
-  - hostname: "alkamfrz.my.id"
+  - hostname: "alkamfrz.id"
     service: https://10.0.30.3:443
     originRequest:
       noTLSVerify: true
@@ -407,8 +407,8 @@ EOF
 ### Create DNS CNAME Records
 
 ```bash
-cloudflared tunnel route dns cf-tunnel "*.alkamfrz.my.id"
-cloudflared tunnel route dns cf-tunnel "alkamfrz.my.id"
+cloudflared tunnel route dns cf-tunnel "*.alkamfrz.id"
+cloudflared tunnel route dns cf-tunnel "alkamfrz.id"
 ```
 
 This creates `CNAME` records pointing to `<UUID>.cfargotunnel.com` — Cloudflare handles the rest.
@@ -427,9 +427,9 @@ journalctl -u cloudflared -f   # watch for "Connection established" messages
 
 ### The Problem with Public DNS Alone
 
-The public `*.alkamfrz.my.id` DNS records point to Cloudflare's anycast IPs (via CNAME to the tunnel). When a client on my LAN (`10.0.10.x`) requests `immich.alkamfrz.my.id`, I want it to resolve to `10.0.30.3` (HAProxy) directly — not go out to Cloudflare and back. This reduces latency, keeps media traffic off the WAN, and avoids Cloudflare's bandwidth limits for self-hosted media.
+The public `*.alkamfrz.id` DNS records point to Cloudflare's anycast IPs (via CNAME to the tunnel). When a client on my LAN (`10.0.10.x`) requests `immich.alkamfrz.id`, I want it to resolve to `10.0.30.3` (HAProxy) directly — not go out to Cloudflare and back. This reduces latency, keeps media traffic off the WAN, and avoids Cloudflare's bandwidth limits for self-hosted media.
 
-**Technitium DNS** (`dns-server` at `10.0.30.4`) runs as an authoritative resolver for `alkamfrz.my.id` internally, plus doubles as an ad-blocking DNS-over-HTTPS resolver for the whole LAN.
+**Technitium DNS** (`dns-server` at `10.0.30.4`) runs as an authoritative resolver for `alkamfrz.id` internally, plus doubles as an ad-blocking DNS-over-HTTPS resolver for the whole LAN.
 
 ### Install Technitium
 
@@ -445,7 +445,7 @@ Access the web UI at `http://10.0.30.4:5380`.
 
 ### Create the Internal Zone
 
-1. **Zones** → **Add Zone** → Name: `alkamfrz.my.id`, Type: **Primary Zone**
+1. **Zones** → **Add Zone** → Name: `alkamfrz.id`, Type: **Primary Zone**
 2. Add these records:
 
 | Name | Type | Value |
@@ -477,7 +477,7 @@ After each Let's Encrypt renewal on `haproxy-edge`, the `technitium-dns-cert-man
 #!/bin/bash
 # technitium-dns-cert-manager.sh — runs from haproxy-edge after cert renewal
 
-DOMAIN="alkamfrz.my.id"
+DOMAIN="alkamfrz.id"
 CERT_DIR="/etc/letsencrypt/live/${DOMAIN}"
 PFX_PATH="/tmp/${DOMAIN}.pfx"
 TECH_HOST="10.0.30.4"
@@ -724,13 +724,13 @@ services:
 
 | Domain | Service | Port |
 |---|---|---|
-| `alkamfrz.my.id` | Portfolio (this site) | `8085` |
-| `authentik.alkamfrz.my.id` | Authentik SSO | `9000` |
-| `immich.alkamfrz.my.id` | Immich Photos | `2283` |
-| `home.alkamfrz.my.id` | Homepage Dashboard | `8082` |
-| `media.alkamfrz.my.id` | Jellyfin | `8096` |
-| `request.alkamfrz.my.id` | Seerr | `5055` |
-| `pve-node.alkamfrz.my.id` | Proxmox VE UI | `8006` |
+| `alkamfrz.id` | Portfolio (this site) | `8085` |
+| `authentik.alkamfrz.id` | Authentik SSO | `9000` |
+| `immich.alkamfrz.id` | Immich Photos | `2283` |
+| `home.alkamfrz.id` | Homepage Dashboard | `8082` |
+| `media.alkamfrz.id` | Jellyfin | `8096` |
+| `request.alkamfrz.id` | Seerr | `5055` |
+| `pve-node.alkamfrz.id` | Proxmox VE UI | `8006` |
 
 ---
 
@@ -1093,7 +1093,7 @@ Write-Host "`n✓ All done." -ForegroundColor Green
 2. Add a backend + ACL entry in `haproxy.cfg` locally
 3. Run `.\deploy-configs.ps1 -Target haproxy` — validates and reloads HAProxy
 4. Run `.\deploy-configs.ps1 -Target docker` — pulls and starts the new container
-5. The wildcard DNS (`*.alkamfrz.my.id → 10.0.30.3`) takes care of name resolution automatically
+5. The wildcard DNS (`*.alkamfrz.id → 10.0.30.3`) takes care of name resolution automatically
 
 New service is live in under two minutes.
 
@@ -1118,7 +1118,7 @@ The Lua bouncer's in-memory cache (`CACHE_SIZE`) should reflect your traffic pat
 ### Separate Cloudflare API Tokens by Function
 
 Create narrow-scoped tokens:
-- **Cert renewal token**: `Zone → DNS → Edit` permission on `alkamfrz.my.id` only
+- **Cert renewal token**: `Zone → DNS → Edit` permission on `alkamfrz.id` only
 - **Tunnel token**: generated by `cloudflared tunnel login`, stored in the tunnel credentials JSON
 
 Never use the Global API Key for automation.

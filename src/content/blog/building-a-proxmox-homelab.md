@@ -27,7 +27,7 @@ My current setup at a glance:
 | 104 | `docker-host` | VM | `10.0.30.5` | Ubuntu 24.04, Docker Engine + Portainer EE LTS |
 | — | `nas-storage` | Physical NAS | `10.0.30.6` | Ugreen DH2300, Debian 12, NFS shares |
 
-All internal services are resolved via Technitium DNS — `*.alkamfrz.my.id` resolves to HAProxy at `10.0.30.3`. External traffic reaches services via Cloudflare Tunnel, with zero open ports on the router. Let's walk through building this from scratch.
+All internal services are resolved via Technitium DNS — `*.alkamfrz.id` resolves to HAProxy at `10.0.30.3`. External traffic reaches services via Cloudflare Tunnel, with zero open ports on the router. Let's walk through building this from scratch.
 
 ---
 
@@ -79,7 +79,7 @@ Boot from USB and follow the graphical installer. Key decisions:
 
 - **Target disk**: Select your NVMe SSD.
 - **Filesystem**: `ZFS (RAID0)` on a single disk gives you copy-on-write integrity and native snapshots. `ext4` is simpler but offers neither.
-- **Hostname**: Set something meaningful — I use `pve-node.alkamfrz.my.id`.
+- **Hostname**: Set something meaningful — I use `pve-node.alkamfrz.id`.
 - **Management IP**: Use a static IP on the MGMT VLAN. Mine is `10.0.99.2/24`, gateway `10.0.99.1`.
 
 ### Post-Install Tweaks
@@ -298,9 +298,9 @@ frontend http_in
     redirect scheme https code 301 if !{ ssl_fc }
 
 frontend https_in
-    bind *:443 ssl crt /etc/letsencrypt/live/alkamfrz.my.id/fullchain.pem
-    use_backend portainer_backend if { hdr(host) -i portainer.alkamfrz.my.id }
-    use_backend gitea_backend    if { hdr(host) -i git.alkamfrz.my.id }
+    bind *:443 ssl crt /etc/letsencrypt/live/alkamfrz.id/fullchain.pem
+    use_backend portainer_backend if { hdr(host) -i portainer.alkamfrz.id }
+    use_backend gitea_backend    if { hdr(host) -i git.alkamfrz.id }
     default_backend docker_backend
 
 backend docker_backend
@@ -335,13 +335,13 @@ pct enter 102
 curl -sSL https://download.technitium.com/dns/install.sh | sudo bash
 ```
 
-In the Technitium web UI (`http://10.0.30.4:5380`), configure a **Zone** for `alkamfrz.my.id` and add a wildcard A record:
+In the Technitium web UI (`http://10.0.30.4:5380`), configure a **Zone** for `alkamfrz.id` and add a wildcard A record:
 
 ```
-*.alkamfrz.my.id  →  10.0.30.3   (HAProxy)
+*.alkamfrz.id  →  10.0.30.3   (HAProxy)
 ```
 
-With this, every service under `*.alkamfrz.my.id` automatically resolves to HAProxy, which routes by `Host` header to the correct upstream.
+With this, every service under `*.alkamfrz.id` automatically resolves to HAProxy, which routes by `Host` header to the correct upstream.
 
 ### vpn-node — VPN LXC (ID 103)
 
@@ -401,7 +401,7 @@ tunnel: <TUNNEL_ID>
 credentials-file: /root/.cloudflared/<TUNNEL_ID>.json
 
 ingress:
-  - hostname: "*.alkamfrz.my.id"
+  - hostname: "*.alkamfrz.id"
     service: https://10.0.30.3:443
     originRequest:
       noTLSVerify: true
@@ -785,7 +785,7 @@ Here's my current stack in summary:
 - **`pve-node`**: Proxmox VE 8.x on MGMT VLAN 99, isolated from all services
 - **`cf-tunnel`**: Cloudflare Tunnel — zero open ports on my router, services still publicly reachable
 - **`haproxy-edge`**: Single ingress point for all HTTPS traffic, terminates TLS with Let's Encrypt certs
-- **`dns-server`**: Internal DNS, wildcard `*.alkamfrz.my.id` → HAProxy
+- **`dns-server`**: Internal DNS, wildcard `*.alkamfrz.id` → HAProxy
 - **`vpn-node`**: Secure remote access from anywhere, no port-forwarding required
 - **`docker-host`**: 10+ Docker Compose stacks, Docker daemon secured with mTLS
 - **`nas-storage`**: Ugreen DH2300 on Debian 12, NFS exports for Docker data and Proxmox backups

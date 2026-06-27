@@ -25,7 +25,7 @@ const projects = [
   {
     id: 3,
     title: 'Home Server Infrastructure',
-    url: 'https://alkamfrz.my.id',
+    url: 'https://alkamfrz.id',
     file: 'homelab-rack.webp',
     ssl: false,
   },

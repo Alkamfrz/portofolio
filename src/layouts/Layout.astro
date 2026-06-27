@@ -1,13 +1,12 @@
 ---
-import Header from '../components/Header.jsx';
-import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
 interface Props {
   title: string;
+  description?: string;
 }
 
-const { title } = Astro.props;
+const { title, description = 'Alkam Fariz – Developer & Home Server Enthusiast. Building robust infrastructure, self-hosted services, and polished web applications.' } = Astro.props;
 ---
 
 <!doctype html>
@@ -18,20 +17,18 @@ const { title } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
-    <!-- Self-hosted fonts: preload critical weights for zero render-blocking -->
+    <!-- Preload fonts -->
     <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/inter-500.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/outfit-700.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/outfit-800.woff2" as="font" type="font/woff2" crossorigin />
-    <!-- Non-render-blocking font face declarations -->
+    <link rel="preload" href="/fonts/inter-700.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/jetbrains-mono-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/fonts/fonts.css" />
-    <!-- DNS prefetch for external social/project links -->
     <link rel="dns-prefetch" href="https://github.com" />
     <link rel="dns-prefetch" href="https://linkedin.com" />
     <link rel="dns-prefetch" href="https://formspree.io" />
-    <meta name="description" content="Alkam Fariz – Developer & Home Server Enthusiast. Building robust infrastructure, self-hosted services, and polished web applications." />
-    <meta property="og:title" content={title + ' - Alkamfrz Portfolio'} />
-    <meta property="og:description" content="Alkam Fariz – Developer & Home Server Enthusiast. Building robust infrastructure, self-hosted services, and polished web applications." />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title + ' — Alkamfrz'} />
+    <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={Astro.url.href} />
     <title>{title} - Alkamfrz Portfolio</title>
@@ -42,141 +39,179 @@ const { title } = Astro.props;
         document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
       });
     </script>
-    <!-- Typography: self-hosted from /public/fonts/, preloaded above for zero CLS -->
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to content</a>
-    <div class="bg-orb bg-orb-1" transition:persist transition:animate="none"></div>
-    <div class="bg-orb bg-orb-2" transition:persist transition:animate="none"></div>
-    <div class="bg-orb bg-orb-3" transition:persist transition:animate="none"></div>
-    <Header client:idle transition:persist transition:animate="none" />
-    <div class="nav-overlay" id="nav-overlay"></div>
+
+    <!-- Terminal Header -->
+    <header class="terminal-header" id="site-header">
+      <div class="nav-container">
+        <a href="/" class="terminal-prompt" id="logo-link" style="text-decoration: none;">
+          <span class="prompt-user">visitor</span><span class="prompt-sep">@</span><span class="prompt-path">alkamfrz</span><span class="prompt-sep">:~$ </span>
+          <span id="prompt-cmd">cd /home</span>
+          <span class="prompt-cursor"></span>
+        </a>
+
+        <nav class="nav-links" id="nav-links" role="navigation" aria-label="Main navigation">
+          <a href="/" class="nav-link" id="nav-home">home</a>
+          <a href="/projects/" class="nav-link" id="nav-projects">projects</a>
+          <a href="/blog/" class="nav-link" id="nav-blog">blog</a>
+        </nav>
+
+        <div class="nav-actions">
+          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+            <span id="theme-icon">~</span>
+          </button>
+          <button id="hamburger" class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+            <span class="hamburger-bar"></span>
+          </button>
+        </div>
+      </div>
+      <div class="scroll-progress-container">
+        <div class="scroll-progress-bar" id="scroll-progress"></div>
+      </div>
+    </header>
+
     <main id="main-content" class="container" transition:animate="fade">
       <slot />
     </main>
-    <Footer />
-    
-    <!-- Floating Back to Top Button -->
-    <button id="back-to-top" class="back-to-top-btn" aria-label="Back to top" title="Back to top">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="18 15 12 9 6 15"/>
-      </svg>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-links">
+        <a href="https://github.com/alkamfrz" id="footer-github" target="_blank" rel="noopener noreferrer">github</a>
+        <a href="https://linkedin.com/in/alkamfrz" id="footer-linkedin" target="_blank" rel="noopener noreferrer">linkedin</a>
+        <a href="mailto:alkamfrz@gmail.com" id="footer-email">email</a>
+      </div>
+      <div>© 2025 alkamfrz — built with astro</div>
+    </footer>
+
+    <button id="back-to-top" class="back-to-top" aria-label="Back to top">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
     </button>
-
-    <div id="reading-progress-badge" class="reading-progress-badge" aria-hidden="true">0% read</div>
-
     <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="false"></div>
 
-    <script type="module">
+    <!-- Shared vanilla JS -->
+    <script is:inline>
+      (function() {
+        // Theme toggle
+        var themeToggle = document.getElementById('theme-toggle');
+        var themeIcon = document.getElementById('theme-icon');
+        function updateIcon(theme) {
+          themeIcon.textContent = theme === 'dark' ? '#' : '~';
+        }
+        if (themeToggle) {
+          updateIcon(document.documentElement.getAttribute('data-theme') || 'dark');
+          themeToggle.addEventListener('click', function() {
+            var current = document.documentElement.getAttribute('data-theme') || 'dark';
+            var next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            updateIcon(next);
+          });
+        }
+
+        // Mobile nav
+        var hamburger = document.getElementById('hamburger');
+        var navLinks = document.getElementById('nav-links');
+        if (hamburger && navLinks) {
+          hamburger.addEventListener('click', function() {
+            var expanded = hamburger.getAttribute('aria-expanded') === 'true';
+            hamburger.setAttribute('aria-expanded', !expanded);
+            hamburger.classList.toggle('open');
+            navLinks.classList.toggle('show');
+          });
+          // Close on nav click
+          navLinks.querySelectorAll('.nav-link').forEach(function(link) {
+            link.addEventListener('click', function() {
+              hamburger.setAttribute('aria-expanded', 'false');
+              hamburger.classList.remove('open');
+              navLinks.classList.remove('show');
+            });
+          });
+        }
+
+        // Active link highlighting
+        var path = window.location.pathname;
+        document.querySelectorAll('.nav-link').forEach(function(link) {
+          var href = link.getAttribute('href');
+          if (href === '/') {
+            if (path === '/') link.classList.add('active');
+          } else {
+            // Match /projects/ or /projects or /blog/ or /blog
+            var base = href.replace(/\/$/, '');
+            if (path === base || path.startsWith(base + '/')) link.classList.add('active');
+          }
+        });
+
+        // Scroll progress + compact header + back-to-top
+        var header = document.getElementById('site-header');
+        var progressBar = document.getElementById('scroll-progress');
+        var backToTop = document.getElementById('back-to-top');
+
+        if (!window.__termScrollHandler) {
+          window.__termScrollHandler = true;
+          window.addEventListener('scroll', function() {
+            var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+
+            // Header compact
+            if (header) header.classList.toggle('compact', winScroll > 60);
+
+            // Progress bar
+            if (progressBar) {
+              var scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+              progressBar.style.width = scrolled + '%';
+            }
+
+            // Back to top
+            if (backToTop) backToTop.classList.toggle('visible', winScroll > 400);
+          });
+        }
+
+        if (backToTop) {
+          backToTop.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+        }
+      })();
+
+      // Scroll reveal + section observer (re-run on astro:page-load)
       function initPageObservers() {
-        // ----- Scroll Reveal (Intersection Observer) -----
-        const revealElements = document.querySelectorAll('.reveal:not(.visible), .reveal-left:not(.visible), .reveal-scale:not(.visible)');
-        if (revealElements.length > 0) {
-          const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+        // Scroll reveal
+        var reveals = document.querySelectorAll('.reveal:not(.visible), .reveal-left:not(.visible), .reveal-scale:not(.visible)');
+        if (reveals.length > 0) {
+          var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
               if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
                 observer.unobserve(entry.target);
               }
             });
           }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-          revealElements.forEach(el => observer.observe(el));
+          reveals.forEach(function(el) { observer.observe(el); });
         }
 
-        // ----- Section Observer (sections fade in) -----
-        const sections = document.querySelectorAll('.section:not(.section-visible):not(.section-hidden)');
+        // Section fade-in
+        var sections = document.querySelectorAll('.section:not(.section-visible):not(.section-hidden)');
         if (sections.length > 0) {
-          const sectionObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+          var sectionObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
               if (entry.isIntersecting) {
                 entry.target.classList.add('section-visible');
                 sectionObserver.unobserve(entry.target);
               }
             });
           }, { threshold: 0 });
-          sections.forEach(s => {
+          sections.forEach(function(s) {
             s.classList.add('section-hidden');
             sectionObserver.observe(s);
           });
         }
-
-        // ----- Scroll-Spy: Highlight active nav section -----
-        const navLinks = document.querySelectorAll('.nav-link');
-        const spySections = document.querySelectorAll('section[id]');
-        const sectionNavMap = { hero: '/', projects: '/projects', blog: '/blog', skills: '/', homelab: '/', experience: '/', about: '/', contact: '/' };
-        if (navLinks.length > 0 && spySections.length > 0) {
-          navLinks.forEach(link => link.classList.remove('active'));
-          const spyObserver = new IntersectionObserver((entries) => {
-            let activeId = '';
-            entries.forEach(entry => {
-              if (entry.isIntersecting) activeId = entry.target.id;
-            });
-            if (activeId) {
-              const targetHref = sectionNavMap[activeId] || '/';
-              navLinks.forEach(link => {
-                const href = link.getAttribute('href');
-                link.classList.toggle('active', href === targetHref);
-              });
-            }
-          }, { threshold: 0, rootMargin: '-100px 0px -60% 0px' });
-          spySections.forEach(s => spyObserver.observe(s));
-        }
-
-        // ----- Back to Top Button Click Setup -----
-        const backToTopBtn = document.getElementById('back-to-top');
-        if (backToTopBtn) {
-          backToTopBtn.onclick = () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          };
-        }
       }
 
-      // ----- Global Scroll Event Handler (registered once to prevent duplicate window listeners) -----
-      if (!window.__hasScrollObserver) {
-        window.__hasScrollObserver = true;
-        window.addEventListener('scroll', () => {
-          // 1. Back to top visibility toggle
-          const backToTopBtn = document.getElementById('back-to-top');
-          if (backToTopBtn) {
-            backToTopBtn.classList.toggle('visible', window.scrollY > 400);
-          }
-
-          // 2. Reading progress badge (blog only)
-          const progressBadge = document.getElementById('reading-progress-badge');
-          const readingContent = document.querySelector('.post-content');
-          if (progressBadge && readingContent) {
-            const scrollTop = window.scrollY;
-            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const percent = docHeight > 0 ? Math.round((scrollTop / docHeight) * 100) : 0;
-            progressBadge.textContent = percent + '% read';
-            progressBadge.classList.toggle('visible', scrollTop > 600 && percent < 98);
-          }
-        });
-      }
-
-      // Run on initial load
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initPageObservers);
-      } else {
-        initPageObservers();
-      }
-      // Re-run on Astro view transition navigation
+      } else { initPageObservers(); }
       document.addEventListener('astro:page-load', initPageObservers);
     </script>
   </body>
 </html>
-
-
-<style>
-  body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  main.container {
-    flex-grow: 1;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-  }
-</style>

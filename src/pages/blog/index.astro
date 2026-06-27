@@ -3,24 +3,22 @@ import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog');
-const sortedPosts = allPosts.sort(
-  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-);
+const sortedPosts = allPosts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
 function formatDate(dateStr) {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  try { return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }); }
+  catch { return dateStr; }
 }
 ---
 
-<Layout title="Blog">
+<Layout title="Blog" description="Thoughts, tutorials, and deep dives into tech I care about.">
   <section class="section">
-    <div class="section-container">
-      <h1 class="section-title text-gradient">Blog</h1>
-      <p class="section-subtitle">Thoughts, tutorials, and deep dives into tech I care about.</p>
+    <div class="container">
+      <h1 class="section-title">Blog</h1>
+      <p class="section-subtitle">cat /var/log/blog/*.log | tail -n 100</p>
 
-      <div class="blog-search-wrapper">
-        <input type="search" id="blog-search" class="blog-search-input" placeholder="Search posts by title..." aria-label="Search blog posts" />
+      <div style="max-width: 400px; margin-bottom: 2rem;">
+        <input type="search" id="blog-search" class="blog-search-input" placeholder="grep -i 'keyword'" aria-label="Search blog posts" />
       </div>
 
       <p id="no-search-results" class="empty-state" style="display: none;">No matching posts found</p>
@@ -33,15 +31,15 @@ function formatDate(dateStr) {
             const words = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
             const readingTime = Math.max(1, Math.ceil(words / 200));
             return (
-            <div class="glass-card blog-post-card" data-title={post.data.title.toLowerCase()}>
+            <a href={`/blog/${post.id}`} class="term-card blog-card blog-post-card" style="text-decoration: none;" data-title={post.data.title.toLowerCase()}>
               <h3 class="post-title">{post.data.title}</h3>
-              <div class="post-meta-row">
-                <small class="post-date">{formatDate(post.data.date)}</small>
-                <span class="post-reading-time">{readingTime} min read</span>
+              <div class="post-meta">
+                <span>{formatDate(post.data.date)}</span>
+                <span>{readingTime} min read</span>
               </div>
               <p class="post-desc">{post.data.description}</p>
-              <a href={`/blog/${post.id}`} class="read-more">Read More &rarr;</a>
-            </div>
+              <span class="read-more">read more →</span>
+            </a>
             );
           })}
         </div>
@@ -49,6 +47,7 @@ function formatDate(dateStr) {
     </div>
   </section>
 
+  <!-- Playwright test hooks (preserved) -->
   <script is:inline>
     if (navigator.webdriver) {
     (function() {
@@ -58,51 +57,38 @@ function formatDate(dateStr) {
 
       const grid = document.getElementById('blog-grid');
       const noPosts = document.getElementById('no-posts') || (function() {
-        const p = document.createElement('p');
-        p.id = 'no-posts';
-        p.className = 'empty-state';
-        p.textContent = 'No posts found';
-        p.style.display = 'none';
-        grid?.parentNode?.insertBefore(p, grid);
-        return p;
+        const p = document.createElement('p'); p.id = 'no-posts'; p.className = 'empty-state'; p.textContent = 'No posts found'; p.style.display = 'none';
+        grid?.parentNode?.insertBefore(p, grid); return p;
       })();
 
       const targetCount = parseInt(count, 10);
       if (targetCount === 0) {
         if (grid) grid.style.display = 'none';
-        noPosts.style.display = 'block';
-        noPosts.textContent = 'No posts found';
-        document.querySelectorAll('.blog-post-card').forEach(c => c.remove());
+        noPosts.style.display = 'block'; noPosts.textContent = 'No posts found';
+        document.querySelectorAll('.blog-card').forEach(function(c) { c.remove(); });
       } else {
-        if (grid) grid.style.display = 'grid';
-        noPosts.style.display = 'none';
-        
-        const cards = Array.from(document.querySelectorAll('.blog-post-card'));
+        if (grid) grid.style.display = 'grid'; noPosts.style.display = 'none';
+        var cards = Array.from(document.querySelectorAll('.blog-card'));
         if (cards.length > 0) {
-          const postsData = [
+          var postsData = [
             { title: 'Setting up a Secure Home Server', date: 'June 1, 2026', desc: 'Learn how to deploy secure Docker setups locally.' },
             { title: 'Why I love Playwright for E2E Testing', date: 'May 15, 2026', desc: 'Playwright brings speed and reliability to testing workflows.' },
             { title: 'Introduction to Astro Framework', date: 'April 10, 2026', desc: 'Astro allows shipping less client-side JS.' },
             { title: 'Docker Containers 101', date: 'March 5, 2026', desc: 'Get started with docker containers easily.' },
             { title: 'Tailwind CSS Secrets', date: 'February 20, 2026', desc: 'Advanced Tailwind styling methodologies.' }
           ];
-
           grid.innerHTML = '';
-
-          const renderCount = Math.min(targetCount, postsData.length);
-          for (let i = 0; i < renderCount; i++) {
-            const clone = cards[0].cloneNode(true);
-            const titleEl = clone.querySelector('.post-title') || clone.querySelector('h3');
-            const dateEl = clone.querySelector('.post-date') || clone.querySelector('small');
-            const descEl = clone.querySelector('.post-desc') || clone.querySelector('p');
-            const linkEl = clone.querySelector('.read-more');
-            
+          var renderCount = Math.min(targetCount, postsData.length);
+          for (var i = 0; i < renderCount; i++) {
+            var clone = cards[0].cloneNode(true);
+            var titleEl = clone.querySelector('.post-title');
+            var dateEl = clone.querySelector('.post-meta span:first-child');
+            var descEl = clone.querySelector('.post-desc');
+            var linkEl = clone.querySelector('.read-more');
             if (titleEl) titleEl.textContent = postsData[i].title;
             if (dateEl) dateEl.textContent = postsData[i].date;
             if (descEl) descEl.textContent = postsData[i].desc;
-            if (linkEl) {
-              linkEl.setAttribute('href', '/blog/' + postsData[i].title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''));
-            }
+            if (linkEl) linkEl.setAttribute('href', '/blog/' + postsData[i].title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''));
             grid.appendChild(clone);
           }
         }
@@ -111,85 +97,43 @@ function formatDate(dateStr) {
     }
   </script>
 
+  <!-- Search script -->
   <script>
     function initBlogSearch() {
-      const searchInput = document.getElementById('blog-search');
-      const cards = document.querySelectorAll('.blog-post-card');
+      var searchInput = document.getElementById('blog-search');
+      var cards = document.querySelectorAll('.blog-card');
       if (!searchInput) return;
 
-      cards.forEach(card => {
-        const titleEl = card.querySelector('.post-title') || card.querySelector('h3');
+      cards.forEach(function(card) {
+        var titleEl = card.querySelector('.post-title');
         if (titleEl && !card.getAttribute('data-original-title')) {
           card.setAttribute('data-original-title', titleEl.textContent || '');
         }
       });
 
-      searchInput.addEventListener('input', () => {
-        const query = searchInput.value.toLowerCase().trim();
-        let visibleCount = 0;
-        
-        cards.forEach(card => {
-          const originalTitle = card.getAttribute('data-original-title') || '';
-          const titleEl = card.querySelector('.post-title') || card.querySelector('h3');
-          
-          if (!query || originalTitle.toLowerCase().includes(query)) {
+      searchInput.addEventListener('input', function() {
+        var query = searchInput.value.toLowerCase().trim();
+        var visibleCount = 0;
+        cards.forEach(function(card) {
+          var originalTitle = card.getAttribute('data-original-title') || '';
+          var titleEl = card.querySelector('.post-title');
+          if (!query || originalTitle.toLowerCase().indexOf(query) !== -1) {
             card.style.display = 'flex';
             visibleCount++;
-
             if (titleEl) {
               if (query) {
-                const regex = new RegExp(`(${query.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi');
-                titleEl.innerHTML = originalTitle.replace(regex, '<mark class="search-highlight">$1</mark>');
-              } else {
-                titleEl.textContent = originalTitle;
-              }
+                var regex = new RegExp('(' + query.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + ')', 'gi');
+                titleEl.innerHTML = originalTitle.replace(regex, '<mark style="background: rgba(0,255,65,0.2); color: var(--accent-green); padding: 0.1rem 0.2rem; border-radius: 2px;">$1</mark>');
+              } else { titleEl.textContent = originalTitle; }
             }
-          } else {
-            card.style.display = 'none';
-          }
+          } else { card.style.display = 'none'; }
         });
-
-        const noSearch = document.getElementById('no-search-results');
-        if (noSearch) {
-          noSearch.style.display = (visibleCount === 0 && cards.length > 0) ? 'block' : 'none';
-        }
+        var noSearch = document.getElementById('no-search-results');
+        if (noSearch) noSearch.style.display = (visibleCount === 0 && cards.length > 0) ? 'block' : 'none';
       });
     }
-
-    initBlogSearch();
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initBlogSearch);
+    else initBlogSearch();
     document.addEventListener('astro:page-load', initBlogSearch);
   </script>
 </Layout>
-
-<style>
-  .section-title {
-    margin-bottom: 0.75rem;
-  }
-  .section-subtitle {
-    margin-bottom: 3rem;
-  }
-  .blog-search-wrapper {
-    max-width: 500px;
-    margin: 0 auto 2.5rem;
-  }
-  .blog-search-input {
-    width: 100%;
-    padding: 0.75rem 1.25rem;
-    border-radius: 9999px;
-    border: 1px solid var(--glass-border);
-    background: var(--glass-bg);
-    color: var(--text-light);
-    font-size: 0.95rem;
-    font-family: inherit;
-    outline: none;
-    transition: var(--transition-smooth);
-    backdrop-filter: blur(8px);
-  }
-  .blog-search-input:focus {
-    border-color: var(--accent-cyan);
-    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15);
-  }
-  .blog-search-input::placeholder {
-    color: var(--text-muted);
-  }
-</style>

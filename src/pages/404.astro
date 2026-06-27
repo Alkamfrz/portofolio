@@ -2,61 +2,13 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="404 - Page Not Found">
-  <section class="not-found-section">
-    <div id="not-found-card" class="glass-card not-found-card">
-      <h1 class="error-code text-gradient">404</h1>
-      <p class="error-message">Oops! The page you're looking for doesn't exist.</p>
-      <p class="error-sub">It might have been moved, deleted, or you may have mistyped the URL.</p>
-      <a id="go-home-link" href="/" class="btn-home">Go Home</a>
+<Layout title="404 — Page Not Found">
+  <section class="error-section">
+    <div class="term-card error-card">
+      <div class="error-code">404</div>
+      <p class="error-message">ERROR: page not found</p>
+      <p class="error-sub">The requested resource does not exist on this server.<br/>It may have been moved, deleted, or the URL may be incorrect.</p>
+      <a href="/" id="go-home-link" class="btn btn-primary btn-sm" style="display: inline-flex;">$ cd ~ &amp;&amp; ls</a>
     </div>
   </section>
 </Layout>
-
-<style>
-  .not-found-section {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 70vh;
-    padding: 4rem 1.5rem;
-    text-align: center;
-  }
-  .not-found-card {
-    max-width: 500px;
-    width: 100%;
-    padding: 3rem 2rem;
-  }
-  .error-code {
-    font-size: clamp(4rem, 12vw, 8rem);
-    font-weight: 900;
-    line-height: 1;
-    margin-bottom: 1rem;
-  }
-  .error-message {
-    font-size: 1.2rem;
-    color: var(--text-light);
-    margin-bottom: 0.75rem;
-    font-weight: 600;
-  }
-  .error-sub {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    margin-bottom: 2rem;
-    line-height: 1.6;
-  }
-  .btn-home {
-    display: inline-block;
-    padding: 0.85rem 2rem;
-    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-    color: #0f172a;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-  }
-  .btn-home:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 30px rgba(34, 211, 238, 0.4);
-  }
-</style>

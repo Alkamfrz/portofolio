@@ -1,15 +1,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-/**
- * Accessibility Test Suite — WCAG 2.1 AA
- * Uses @axe-core/playwright to scan every page in both dark and light mode.
- * Fails on `critical` and `serious` violations only (the two impact levels
- * that actively prevent users from accessing or understanding content).
- *
- * Run independently: npx playwright test tests/accessibility.spec.ts --project=chromium
- */
-
 const PAGES = [
   { name: 'Homepage', url: '/' },
   { name: 'Projects', url: '/projects' },
@@ -19,16 +10,10 @@ const PAGES = [
 
 const BLOCKING_IMPACTS: string[] = ['critical', 'serious'];
 
-/**
- * Filter axe results to only the violations that block usage.
- */
 function getBlockingViolations(violations: any[]) {
   return violations.filter(v => BLOCKING_IMPACTS.includes(v.impact));
 }
 
-/**
- * Format violations into a readable assertion message.
- */
 function formatViolations(violations: any[]): string {
   return violations
     .map(v =>
@@ -39,15 +24,10 @@ function formatViolations(violations: any[]): string {
     .join('\n');
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DARK MODE SCANS
-// ─────────────────────────────────────────────────────────────────────────────
 test.describe('Accessibility: Dark Mode', () => {
   for (const { name, url } of PAGES) {
     test(`${name} (${url}) — dark mode has no critical/serious violations`, async ({ page }) => {
       await page.goto(url);
-
-      // Ensure dark theme is applied
       await page.evaluate(() => {
         localStorage.setItem('theme', 'dark');
         document.documentElement.setAttribute('data-theme', 'dark');
@@ -55,9 +35,7 @@ test.describe('Accessibility: Dark Mode', () => {
       await page.waitForLoadState('networkidle');
 
       const results = await new AxeBuilder({ page })
-        // Target WCAG 2.1 AA rules
         .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-        // Exclude third-party iframes that we can't control
         .exclude('iframe')
         .analyze();
 
@@ -71,15 +49,10 @@ test.describe('Accessibility: Dark Mode', () => {
   }
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// LIGHT MODE SCANS
-// ─────────────────────────────────────────────────────────────────────────────
 test.describe('Accessibility: Light Mode', () => {
   for (const { name, url } of PAGES) {
     test(`${name} (${url}) — light mode has no critical/serious violations`, async ({ page }) => {
       await page.goto(url);
-
-      // Switch to light theme
       await page.evaluate(() => {
         localStorage.setItem('theme', 'light');
         document.documentElement.setAttribute('data-theme', 'light');
@@ -101,13 +74,9 @@ test.describe('Accessibility: Light Mode', () => {
   }
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// KEYBOARD NAVIGATION CHECKS
-// ─────────────────────────────────────────────────────────────────────────────
 test.describe('Accessibility: Keyboard Navigation', () => {
   test('Skip-link is the first focusable element and leads to #main-content', async ({ page }) => {
     await page.goto('/');
-    // Tab once — skip link should be focused
     await page.keyboard.press('Tab');
     const focused = page.locator(':focus');
     await expect(focused).toHaveClass(/skip-link/);
@@ -116,7 +85,6 @@ test.describe('Accessibility: Keyboard Navigation', () => {
 
   test('All nav links are reachable via Tab and have visible focus indicators', async ({ page }) => {
     await page.goto('/');
-    // Navigate into the nav
     let found = false;
     for (let i = 0; i < 15; i++) {
       await page.keyboard.press('Tab');
@@ -145,7 +113,6 @@ test.describe('Accessibility: Keyboard Navigation', () => {
 
   test('Contact form fields are Tab-reachable and labelled', async ({ page }) => {
     await page.goto('/');
-    // Wait for React (client:idle) to hydrate the ContactForm component
     await page.waitForSelector('#contact-name', { state: 'visible', timeout: 10000 });
 
     const nameInput = page.locator('#contact-name');
@@ -156,7 +123,6 @@ test.describe('Accessibility: Keyboard Navigation', () => {
     await expect(emailInput).toBeVisible();
     await expect(messageInput).toBeVisible();
 
-    // Each field must have an associated label (by aria-label, aria-labelledby, or <label for>)
     for (const locator of [nameInput, emailInput, messageInput]) {
       const hasLabel = await locator.evaluate((el: HTMLElement) => {
         const id = el.id;

@@ -11,6 +11,21 @@ export async function getStaticPaths() {
 }
 
 const { post, allPosts } = Astro.props;
+const { Content } = await render(post);
+
+const words = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
+const readingTime = Math.max(1, Math.ceil(words / 200));
+
+function formatDate(dateStr) {
+  try { return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }); }
+  catch { return dateStr; }
+}
+
+const otherPosts = allPosts
+  .filter(p => p.id !== post.id)
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 2);
+
 const blogJsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
@@ -18,404 +33,151 @@ const blogJsonLd = {
   "datePublished": post.data.date,
   "author": { "@type": "Person", "name": "Alkam Fariz" },
   "description": post.data.description,
-  "url": `https://alkamfrz.my.id/blog/${post.id}`
+  "url": `https://alkamfrz.id/blog/${post.id}`
 };
-const { Content } = await render(post);
-
-// Calculate reading time & word count on the server/build side
-const words = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
-const readingTime = Math.max(1, Math.ceil(words / 200));
-
-function formatDate(dateStr) {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-}
-
-const otherPosts = allPosts
-  .filter(p => p.id !== post.id)
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
-  .slice(0, 2);
 ---
 
-<Layout title={post.data.title}>
+<Layout title={post.data.title} description={post.data.description}>
   <script type="application/ld+json">{JSON.stringify(blogJsonLd)}</script>
-  <article class="section">
-    <div class="section-container" style="max-width: 1200px;">
+
+  <article class="section" aria-labelledby="post-title-heading">
+    <div class="container" style="max-width: 800px;">
       <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a>
+        <a href="/">home</a>
         <span class="sep">/</span>
-        <a href="/blog/">Blog</a>
+        <a href="/blog/">blog</a>
         <span class="sep">/</span>
         <span class="current">{post.data.title}</span>
       </nav>
-      
-      <div class="blog-layout-wrapper">
-        <!-- Main Column: Article Content -->
-        <div style="max-width: 720px; width: 100%;">
-          <!-- Font Size Widget -->
-          <div class="font-size-widget">
-            <button class="font-size-btn" id="fs-sm" title="Small text">A-</button>
-            <button class="font-size-btn active" id="fs-md" title="Medium text">A</button>
-            <button class="font-size-btn" id="fs-lg" title="Large text">A+</button>
+
+      <div class="term-card blog-post-card">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+          <h1 id="post-title-heading" class="post-title" style="font-size: clamp(1.25rem, 3vw, 1.75rem); margin: 0;">{post.data.title}</h1>
+          <!-- Font size widget -->
+          <div style="display: flex; gap: 2px; font-family: var(--font-mono); font-size: var(--text-xs);">
+            <button class="btn btn-sm" id="fs-sm" style="padding: 0.2rem 0.4rem;">A-</button>
+            <button class="btn btn-sm active" id="fs-md" style="padding: 0.2rem 0.4rem; background: var(--accent-green); color: var(--bg-primary); border-color: var(--accent-green);">A</button>
+            <button class="btn btn-sm" id="fs-lg" style="padding: 0.2rem 0.4rem;">A+</button>
           </div>
-
-          <div class="glass-card blog-post-detail">
-            <h1 class="post-title">{post.data.title}</h1>
-            <div class="post-meta">
-              <span>Published on {formatDate(post.data.date)}</span>
-              <span style="margin: 0 8px; color: var(--glass-border);">•</span>
-              <span id="reading-time-placeholder">⏱️ {readingTime} min read <span style="opacity: 0.7; font-weight: normal; margin-left: 4px;">({words} words)</span></span>
-            </div>
-            <div class="post-content text-md" id="post-content-body">
-              <Content />
-            </div>
-
-            <!-- Social Sharing -->
-            <div class="share-buttons" id="share-buttons">
-              <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted); align-self: center;">Share:</span>
-              <button class="share-btn" id="share-twitter" aria-label="Share on Twitter/X">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
-                X
-              </button>
-              <button class="share-btn" id="share-linkedin" aria-label="Share on LinkedIn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-                LinkedIn
-              </button>
-              <button class="share-btn" id="share-copy" aria-label="Copy link to clipboard">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                Copy Link
-              </button>
-            </div>
-          </div>
-
-          <!-- Related Posts -->
-          {otherPosts.length > 0 && (
-            <div class="related-posts">
-              <h3>Continue Reading</h3>
-              <div class="related-grid">
-                {otherPosts.map(related => {
-                  const rWords = related.body ? related.body.trim().split(/\s+/).filter(Boolean).length : 0;
-                  const rTime = Math.max(1, Math.ceil(rWords / 200));
-                  return (
-                  <a href={`/blog/${related.id}`} class="glass-card blog-post-card" style="text-decoration: none; padding: 1.25rem;">
-                    <h4 style="font-size: 1.05rem; color: var(--text-light); margin-bottom: 0.4rem;">{related.data.title}</h4>
-                    <small style="color: var(--accent-cyan); font-size: 0.8rem;">{formatDate(related.data.date)} · {rTime} min read</small>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">{related.data.description}</p>
-                  </a>
-                  );
-                })}
-              </div>
-            </div>
-          )}
         </div>
 
-        <!-- Right Column: Sticky Table of Contents -->
-        <aside class="toc-sidebar glass-card">
-          <h4 class="toc-title">Table of Contents</h4>
-          <div class="toc-progress" id="toc-progress"></div>
-          <ul class="toc-list" id="toc-list-container">
-            <!-- Dynamic elements will be inserted here -->
-          </ul>
-        </aside>
+        <div class="post-meta" style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-subtle); display: flex; gap: 1rem; flex-wrap: wrap;">
+          <span>published: {formatDate(post.data.date)}</span>
+          <span>⏱ {readingTime} min read</span>
+          <span style="opacity: 0.5;">{words} words</span>
+        </div>
+
+        <div class="post-content text-md" id="post-content-body">
+          <Content />
+        </div>
+
+        <!-- Social sharing -->
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-subtle); font-family: var(--font-mono); font-size: var(--text-xs);">
+          <span style="color: var(--text-muted);">share:</span>
+          <button class="btn btn-sm" id="share-twitter" style="padding: 0.25rem 0.6rem;">x</button>
+          <button class="btn btn-sm" id="share-linkedin" style="padding: 0.25rem 0.6rem;">in</button>
+          <button class="btn btn-sm" id="share-copy" style="padding: 0.25rem 0.6rem;">copy</button>
+        </div>
       </div>
+
+      <!-- Related Posts -->
+      {otherPosts.length > 0 && (
+        <div style="margin-top: 2rem;">
+          <h3 style="font-family: var(--font-mono); font-size: var(--text-sm); color: var(--accent-green); margin-bottom: 1rem;">## continue reading</h3>
+          <div class="blog-grid" style="grid-template-columns: 1fr;">
+            {otherPosts.map(related => {
+              const rWords = related.body ? related.body.trim().split(/\s+/).filter(Boolean).length : 0;
+              const rTime = Math.max(1, Math.ceil(rWords / 200));
+              return (
+              <a href={`/blog/${related.id}`} class="term-card blog-card blog-post-card" style="text-decoration: none;">
+                <h4 class="post-title">{related.data.title}</h4>
+                <div class="post-meta">
+                  <span>{formatDate(related.data.date)}</span>
+                  <span>{rTime} min read</span>
+                </div>
+                <p class="post-desc">{related.data.description}</p>
+                <span class="read-more">read more →</span>
+              </a>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   </article>
 
-  <script is:inline>
-    if (navigator.webdriver) {
-    (function() {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('markdown') === 'custom') {
-        const detail = document.querySelector('.blog-post-detail');
-        if (detail) {
-          detail.innerHTML = `
-            <h1>Custom Markdown Title</h1>
-            <p class="post-meta">Published on June 10, 2026 by Alkamfrz</p>
-            <h2>Introduction to custom rendering</h2>
-            <p>Here is some paragraph text demonstrating basic inline styling.</p>
-            <blockquote>
-              This is a blockquote element representing an important quote from a section.
-            </blockquote>
-            <h3>Here is a list:</h3>
-            <ul>
-              <li>Item A</li>
-              <li>Item B</li>
-              <li>Item C</li>
-            </ul>
-            <h3>Code Snippet:</h3>
-            <pre><code>const a = 123;\nconsole.log(a);</code></pre>
-            <h3>Media Image:</h3>
-            <img src="/placeholder.jpg" alt="Demo Markdown Image" class="post-img" style="max-width:100%; border-radius:0.5rem;" />
-          `;
-        }
-      }
-    })();
-    }
-  </script>
-
-  <!-- Client-side Reading Suite Script -->
   <script>
-    function initBlogReadingSuite() {
-      const contentBody = document.getElementById('post-content-body');
-      if (!contentBody) return;
+    // Blog reading suite — font size, TOC highlight, social sharing, mac code copy
+    (function() {
+      function initBlogReadingSuite() {
+        var content = document.getElementById('post-content-body');
+        if (!content) return;
 
-      // 1. Calculate reading time & word count (Moved to server/build side to avoid layout shift)
-
-      // 2. Font Size Widget Controls
-      const btnSm = document.getElementById('fs-sm');
-      const btnMd = document.getElementById('fs-md');
-      const btnLg = document.getElementById('fs-lg');
-
-      function setFontSizeClass(className) {
-        contentBody.className = `post-content ${className}`;
-        [btnSm, btnMd, btnLg].forEach(b => b && b.classList.remove('active'));
-        if (className === 'text-sm' && btnSm) btnSm.classList.add('active');
-        if (className === 'text-md' && btnMd) btnMd.classList.add('active');
-        if (className === 'text-lg' && btnLg) btnLg.classList.add('active');
-      }
-
-      if (btnSm) btnSm.addEventListener('click', () => setFontSizeClass('text-sm'));
-      if (btnMd) btnMd.addEventListener('click', () => setFontSizeClass('text-md'));
-      if (btnLg) btnLg.addEventListener('click', () => setFontSizeClass('text-lg'));
-
-      // 3. Dynamic Table of Contents Generation
-      const headings = contentBody.querySelectorAll('h2, h3');
-      const tocContainer = document.getElementById('toc-list-container');
-      const tocProgress = document.getElementById('toc-progress');
-
-      if (tocContainer) {
-        if (headings.length === 0) {
-          const sidebar = document.querySelector('.toc-sidebar');
-          if (sidebar) sidebar.style.display = 'none';
-        } else {
-          // Clear any previously inserted items (in case of re-init)
-          tocContainer.innerHTML = '';
-          headings.forEach(function(heading, idx) {
-            if (!heading.id) {
-              heading.id = 'heading-' + idx;
-            }
-            const item = document.createElement('li');
-            item.className = 'toc-item ' + heading.tagName.toLowerCase();
-            const link = document.createElement('a');
-            link.href = '#' + heading.id;
-            link.textContent = heading.textContent;
-            item.appendChild(link);
-            tocContainer.appendChild(item);
-          });
-        }
-      }
-
-      // 4. Scroll Spy: Highlight active heading in TOC + progress bar
-      const tocItems = document.querySelectorAll('.toc-item');
-      function spyScroll() {
-        let activeIdx = -1;
-        const scrollTop = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const percent = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
-
-        if (tocProgress) {
-          tocProgress.style.width = percent + '%';
-        }
-
-        headings.forEach(function(heading, idx) {
-          const rect = heading.getBoundingClientRect();
-          // 140px is our threshold from viewport top
-          if (rect.top <= 140) {
-            activeIdx = idx;
-          }
-        });
-
-        tocItems.forEach(function(item, idx) {
-          item.classList.toggle('active', idx === activeIdx);
-        });
-      }
-
-      window.addEventListener('scroll', spyScroll, { passive: true });
-      spyScroll();
-
-      // 5. Mac-style Code Blocks with copy buttons
-      const preBlocks = contentBody.querySelectorAll('pre');
-      preBlocks.forEach(function(pre) {
-        // Avoid double-wrapping if already processed
-        if (pre.closest('.mac-code-block')) return;
-
-        const code = pre.querySelector('code');
-        let lang = 'code';
-        if (code) {
-          const langClass = Array.from(code.classList).find(c => c.startsWith('language-'));
-          if (langClass) lang = langClass.replace('language-', '');
-        }
-
-        const wrapper = document.createElement('div');
-        wrapper.className = 'mac-code-block';
-
-        const header = document.createElement('div');
-        header.className = 'mac-code-header';
-
-        const dots = document.createElement('div');
-        dots.className = 'mac-dots';
-        ['red', 'yellow', 'green'].forEach(function(color) {
-          const dot = document.createElement('span');
-          dot.className = 'mac-dot ' + color;
-          dots.appendChild(dot);
-        });
-
-        const langLabel = document.createElement('span');
-        langLabel.className = 'mac-lang';
-        langLabel.textContent = lang;
-
-        const copyBtn = document.createElement('button');
-        copyBtn.className = 'mac-copy-btn';
-        copyBtn.textContent = 'Copy';
-        copyBtn.addEventListener('click', function() {
-          const textToCopy = code ? (code.textContent || '') : (pre.textContent || '');
-          navigator.clipboard.writeText(textToCopy).then(function() {
-            copyBtn.textContent = 'Copied!';
-            setTimeout(function() { copyBtn.textContent = 'Copy'; }, 2000);
-          }).catch(function(err) {
-            console.error('Failed to copy: ', err);
+        // 1. Font size widget
+        var sizes = [
+          { id: 'fs-sm', size: 'text-sm' },
+          { id: 'fs-md', size: 'text-md' },
+          { id: 'fs-lg', size: 'text-lg' },
+        ];
+        var activeSize = 'text-md';
+        sizes.forEach(function(s) {
+          var btn = document.getElementById(s.id);
+          if (!btn) return;
+          btn.addEventListener('click', function() {
+            sizes.forEach(function(x) {
+              var b = document.getElementById(x.id);
+              if (b) { b.style.background = ''; b.style.color = ''; b.style.borderColor = ''; }
+            });
+            content.classList.remove('text-sm', 'text-md', 'text-lg');
+            content.classList.add(s.size);
+            activeSize = s.size;
+            btn.style.background = 'var(--accent-green)';
+            btn.style.color = 'var(--bg-primary)';
+            btn.style.borderColor = 'var(--accent-green)';
           });
         });
 
-        header.appendChild(dots);
-        header.appendChild(langLabel);
-        header.appendChild(copyBtn);
+        // 2. Social sharing
+        var pageUrl = encodeURIComponent(window.location.href);
+        var pageTitle = encodeURIComponent(document.title.replace(/ —.*$/, ''));
+        var twitterBtn = document.getElementById('share-twitter');
+        var linkedinBtn = document.getElementById('share-linkedin');
+        var shareCopyBtn = document.getElementById('share-copy');
 
-        pre.parentNode.insertBefore(wrapper, pre);
-        wrapper.appendChild(header);
-        wrapper.appendChild(pre);
-      });
+        if (twitterBtn) twitterBtn.addEventListener('click', function() {
+          window.open('https://twitter.com/intent/tweet?text=' + pageTitle + '&url=' + pageUrl, '_blank', 'noopener,width=600,height=400');
+        });
+        if (linkedinBtn) linkedinBtn.addEventListener('click', function() {
+          window.open('https://linkedin.com/sharing/share-offsite/?url=' + pageUrl, '_blank', 'noopener,width=600,height=400');
+        });
+        if (shareCopyBtn) shareCopyBtn.addEventListener('click', async function() {
+          try {
+            await navigator.clipboard.writeText(window.location.href);
+            shareCopyBtn.textContent = 'done';
+            setTimeout(function() { shareCopyBtn.textContent = 'copy'; }, 2000);
+          } catch { shareCopyBtn.textContent = 'fail'; }
+        });
 
-      // 6. Social Sharing
-      const pageUrl = encodeURIComponent(window.location.href);
-      const pageTitle = encodeURIComponent(document.title.replace(' - Alkamfrz Portfolio', ''));
-      const twitterBtn = document.getElementById('share-twitter');
-      const linkedinBtn = document.getElementById('share-linkedin');
-      const shareCopyBtn = document.getElementById('share-copy');
+        // 3. Mac code blocks — copy button
+        document.querySelectorAll('.mac-code-block').forEach(function(wrapper) {
+          var copyBtn = wrapper.querySelector('.mac-copy-btn');
+          if (!copyBtn) return;
+          var newBtn = copyBtn.cloneNode(true);
+          copyBtn.parentNode.replaceChild(newBtn, copyBtn);
+          newBtn.addEventListener('click', function() {
+            var code = wrapper.querySelector('code');
+            var text = code ? (code.textContent || '') : (wrapper.textContent || '');
+            navigator.clipboard.writeText(text).then(function() {
+              newBtn.textContent = 'done';
+              setTimeout(function() { newBtn.textContent = 'copy'; }, 2000);
+            });
+          });
+        });
+      }
 
-      if (twitterBtn) twitterBtn.addEventListener('click', function() {
-        window.open('https://twitter.com/intent/tweet?text=' + pageTitle + '&url=' + pageUrl, '_blank', 'noopener,width=600,height=400');
-      });
-      if (linkedinBtn) linkedinBtn.addEventListener('click', function() {
-        window.open('https://linkedin.com/sharing/share-offsite/?url=' + pageUrl, '_blank', 'noopener,width=600,height=400');
-      });
-      if (shareCopyBtn) shareCopyBtn.addEventListener('click', async function() {
-        try {
-          await navigator.clipboard.writeText(window.location.href);
-          shareCopyBtn.textContent = 'Copied!';
-          setTimeout(function() { shareCopyBtn.textContent = 'Copy Link'; }, 2000);
-        } catch {
-          shareCopyBtn.textContent = 'Failed';
-        }
-      });
-    }
-
-    // Run once DOM is ready — works with or without Astro ViewTransitions
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initBlogReadingSuite);
-    } else {
-      initBlogReadingSuite();
-    }
-    // Also re-run on Astro view-transition navigation if enabled in future
-    document.addEventListener('astro:page-load', initBlogReadingSuite);
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initBlogReadingSuite);
+      else initBlogReadingSuite();
+      document.addEventListener('astro:page-load', initBlogReadingSuite);
+    })();
   </script>
 </Layout>
-
-<style>
-  .section {
-    padding: 4rem 1.5rem;
-  }
-  .back-link {
-    display: inline-block;
-    color: var(--accent-cyan);
-    font-weight: 600;
-    font-size: 0.9rem;
-    margin-bottom: 1.5rem;
-    transition: color 0.2s;
-  }
-  .back-link:hover { color: #a855f7; }
-  .blog-post-detail {
-    padding: 2.5rem;
-  }
-  .post-title {
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    color: var(--text-light);
-    margin-bottom: 0.75rem;
-  }
-  .post-meta {
-    color: var(--accent-cyan);
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--glass-border);
-  }
-  .post-content {
-    color: var(--text-muted);
-  }
-  :global(.post-content h1),
-  :global(.post-content h2),
-  :global(.post-content h3),
-  :global(.post-content h4) {
-    color: var(--text-light);
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
-    scroll-margin-top: 100px;
-  }
-  :global(.post-content p) {
-    margin-bottom: 1rem;
-  }
-  :global(.post-content ul),
-  :global(.post-content ol) {
-    padding-left: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  :global(.post-content li) {
-    margin-bottom: 0.5rem;
-  }
-  :global(.post-content blockquote) {
-    border-left: 4px solid var(--accent-cyan);
-    padding: 0.75rem 1.5rem;
-    background: rgba(34, 211, 238, 0.05);
-    border-radius: 0 8px 8px 0;
-    margin: 1.5rem 0;
-    color: var(--text-light);
-    font-style: italic;
-  }
-  :global(.post-content pre) {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid var(--glass-border);
-    border-radius: 8px;
-    padding: 1.25rem;
-    overflow-x: auto;
-    margin-bottom: 1rem;
-  }
-  :global(.post-content code) {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.9rem;
-    color: var(--accent-cyan);
-  }
-  :global(.post-content pre code) {
-    color: var(--text-light);
-  }
-  :global(.post-content a) {
-    color: var(--accent-cyan);
-    text-decoration: underline;
-  }
-  :global(.post-content img) {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin: 1.5rem 0;
-  }
-
-  /*
-   * WCAG fix: Shiki github-dark comment tokens (#6A737D) achieve only 3.04:1
-   * on the #24292e code block background. Override to #9ba3af (~6.3:1).
-   * Uses attribute substring selector since Shiki writes inline style.
-   */
-  :global([data-theme="dark"] .mac-code-block code span[style*="#6A737D"]),
-  :global([data-theme="dark"] .mac-code-block code span[style*="#6a737d"]) {
-    color: #9ba3af !important;
-  }
-</style>
