@@ -123,14 +123,14 @@ const blogJsonLd = { "@context": "https://schema.org", "@type": "BlogPosting", "
       });
 
       // Mac code copy
-      document.querySelectorAll('.mac-code-block').forEach(function(w) {
-        var btn = w.querySelector('.mac-copy-btn');
+      document.querySelectorAll('.code-block-wrapper').forEach(function(w) {
+        var btn = w.querySelector('.code-block-copy');
         if (!btn) return;
         var nb = btn.cloneNode(true);
         btn.parentNode.replaceChild(nb, btn);
         nb.addEventListener('click', function() {
           var code = w.querySelector('code');
-          navigator.clipboard.writeText(code ? code.textContent : w.textContent).then(function() { nb.textContent = 'Done!'; setTimeout(function() { nb.textContent = 'Copy'; }, 2000); });
+          navigator.clipboard.writeText(code ? code.textContent : w.textContent).then(function() { nb.textContent = 'Copied!'; setTimeout(function() { nb.textContent = 'Copy'; }, 2000); });
         });
       });
     }

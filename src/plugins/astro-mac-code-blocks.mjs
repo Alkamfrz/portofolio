@@ -30,8 +30,8 @@ export default function astroMacCodeBlocks() {
           html = html.replace(/<pre(?:\s+[^>]*)?>[\s\S]*?<\/pre>/g, (match) => {
             const langMatch = match.match(/data-language="([^"]*)"/);
             const lang = langMatch ? langMatch[1] : 'code';
-            const header = `<div class="mac-code-header"><div class="mac-dots"><span class="mac-dot red"></span><span class="mac-dot yellow"></span><span class="mac-dot green"></span></div><span class="mac-lang">${lang}</span><button class="mac-copy-btn" data-copy="">Copy</button></div>`;
-            return `<div class="mac-code-block">${header}${match}</div>`;
+            const header = `<div class="code-block-header"><span class="code-block-lang">${lang}</span><button class="code-block-copy">Copy</button></div>`;
+            return `<div class="code-block-wrapper">${header}${match}</div>`;
           });
           if (html !== original) {
             await writeFile(fp, html, 'utf-8');
