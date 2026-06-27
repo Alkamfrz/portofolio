@@ -9,10 +9,10 @@ function fmt(d) { try { return new Date(d).toLocaleDateString('en-US', { year: '
 ---
 
 <Layout title="Blog" description="Thoughts, tutorials, and deep dives into tech I care about.">
-<section class="py-16 sm:py-20">
+<section class="py-16 sm:py-20" aria-labelledby="blog-index-title">
   <div>
     <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color: var(--color-accent);">Blog</p>
-    <h1 class="text-3xl sm:text-4xl font-bold mb-6" style="color: var(--color-text-primary);">All Posts</h1>
+    <h1 id="blog-index-title" class="text-3xl sm:text-4xl font-bold mb-6" style="color: var(--color-text-primary);">All Posts</h1>
 
     <div class="max-w-xs mb-8">
       <input type="search" id="blog-search" class="form-input" placeholder="Search posts..." aria-label="Search blog posts" />
