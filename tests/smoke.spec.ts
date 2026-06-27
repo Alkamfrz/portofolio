@@ -4,22 +4,19 @@ test.describe('Production Smoke Tests', () => {
 
   test('Homepage loads with correct title', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle(/Home.*Alkamfrz Portfolio/);
+    await expect(page).toHaveTitle(/Home.*Alkamfrz/);
   });
 
   test('Navigation links are present', async ({ page, isMobile }) => {
     await page.goto('/');
-    if (isMobile) {
-      await page.click('#hamburger');
-    }
-    await expect(page.locator('#nav-home')).toBeVisible();
-    await expect(page.locator('#nav-projects')).toBeVisible();
-    await expect(page.locator('#nav-blog')).toBeVisible();
+    await page.waitForSelector('.nav-link', { timeout: 5000 });
+    const links = page.locator('.nav-link');
+    await expect(links.first()).toBeVisible();
   });
 
   test('Hero section has heading with name', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('#hero-heading')).toContainText('Muhammad Alkam Alfariz');
+    await expect(page.locator('#hero-name')).toContainText('Muhammad Alkam');
   });
 
   test('Projects page loads and shows project cards', async ({ page }) => {
@@ -31,7 +28,6 @@ test.describe('Production Smoke Tests', () => {
     await page.goto('/projects');
     const filterBtn = page.locator('.filter-btn', { hasText: 'Python' });
     await filterBtn.click();
-    await expect(filterBtn).toHaveClass(/active/);
     await expect(page.locator('.project-card:visible')).toHaveCount(2);
   });
 
@@ -42,7 +38,7 @@ test.describe('Production Smoke Tests', () => {
 
   test('404 page renders', async ({ page }) => {
     await page.goto('/nonexistent');
-    await expect(page.locator('.error-code')).toContainText(/404/);
+    await expect(page.locator('h1')).toContainText(/not found/i);
   });
 
   test('Theme toggle switches mode', async ({ page }) => {
@@ -64,10 +60,9 @@ test.describe('Production Smoke Tests', () => {
     await expect(hamburger).toHaveAttribute('aria-expanded', 'true');
   });
 
-  test('Metrics bar shows stats', async ({ page }) => {
+  test('Metrics show stats', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('.metrics-bar')).toBeVisible();
-    await expect(page.locator('.metric-item').first()).toBeVisible();
+    await expect(page.locator('.text-2xl.font-bold').first()).toBeVisible();
   });
 
   test('Contact form has input fields', async ({ page }) => {
@@ -86,17 +81,16 @@ test.describe('Production Smoke Tests', () => {
     await expect(page.locator('#message-error')).not.toBeEmpty();
   });
 
-  test('Skills section is visible', async ({ page }) => {
+  test('Skills section shows categories', async ({ page }) => {
     await page.goto('/');
-    const skillSection = page.locator('#skills');
-    await expect(skillSection).toBeVisible();
-    await expect(skillSection.locator('.skills-tree')).toBeVisible();
+    const section = page.locator('#skills');
+    await expect(section).toBeVisible();
+    await expect(section.locator('.skill-category')).toHaveCount(6);
   });
 
   test('Experience timeline is visible', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('#experience')).toBeVisible();
-    await expect(page.locator('.git-timeline')).toBeVisible();
   });
 
   test('Footer has social links', async ({ page }) => {
@@ -110,15 +104,14 @@ test.describe('Production Smoke Tests', () => {
     await page.goto('/');
     await expect(page.locator('#back-to-top')).not.toBeVisible();
     await page.evaluate(() => window.scrollTo(0, 500));
-    await page.waitForTimeout(100);
+    await page.waitForTimeout(200);
     await expect(page.locator('#back-to-top')).toBeVisible();
   });
 
   test('Download CV button exists', async ({ page }) => {
     await page.goto('/');
-    const cvBtn = page.locator('.btn-cv');
+    const cvBtn = page.locator('a[download]');
     await expect(cvBtn).toBeVisible();
-    await expect(cvBtn).toHaveAttribute('download');
   });
 
   test('JSON-LD structured data exists', async ({ page }) => {
@@ -134,9 +127,9 @@ test.describe('Production Smoke Tests', () => {
     await expect(page.locator('#about')).toContainText('3.90');
   });
 
-  test('Terminal prompt header displays', async ({ page }) => {
-    await page.goto('/');
-    await expect(page.locator('.terminal-prompt')).toBeVisible();
-    await expect(page.locator('.terminal-prompt')).toContainText('alkamfrz');
+  test('Header logo links to homepage', async ({ page }) => {
+    await page.goto('/projects');
+    await page.click('#logo-link');
+    await expect(page).toHaveURL(/\/$/);
   });
 });

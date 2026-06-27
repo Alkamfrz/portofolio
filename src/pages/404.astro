@@ -2,13 +2,13 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="404 — Page Not Found">
-  <section class="error-section">
-    <div class="term-card error-card">
-      <div class="error-code">404</div>
-      <p class="error-message">ERROR: page not found</p>
-      <p class="error-sub">The requested resource does not exist on this server.<br/>It may have been moved, deleted, or the URL may be incorrect.</p>
-      <a href="/" id="go-home-link" class="btn btn-primary btn-sm" style="display: inline-flex;">$ cd ~ &amp;&amp; ls</a>
-    </div>
-  </section>
+<Layout title="404 — Not Found">
+<section class="min-h-[60vh]" flex items-center justify-center py-20">
+  <div class="text-center max-w-sm">
+    <div class="text-7xl font-bold mb-2" style="color: var(--color-text-muted);">404</div>
+    <h1 class="text-xl font-semibold mb-2" style="color: var(--color-text-primary);">Page not found</h1>
+    <p class="text-sm mb-6" style="color: var(--color-text-secondary);">The page you're looking for doesn't exist or has been moved.</p>
+    <a href="/" id="go-home-link" class="btn btn-primary">Go Home</a>
+  </div>
+</section>
 </Layout>

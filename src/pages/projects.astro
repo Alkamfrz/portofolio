@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Image } from 'astro:assets';
 import { projects } from '../data/projects.js';
 
 const allProjects = projects;
@@ -10,157 +9,136 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "ItemList",
   "itemListElement": allProjects.map((p, i) => ({
-    "@type": "CreativeWork",
-    "position": i + 1,
-    "name": p.title,
-    "description": p.description,
-    "url": p.liveUrl || p.journalUrl || p.githubUrl || '',
-    "keywords": p.techStack.join(", "),
-    "author": { "@type": "Person", "name": "Alkam Fariz" }
+    "@type": "CreativeWork", "position": i + 1, "name": p.title,
+    "description": p.description, "url": p.liveUrl || p.journalUrl || p.githubUrl || '',
+    "keywords": p.techStack.join(", "), "author": { "@type": "Person", "name": "Alkam Fariz" }
   }))
 };
 ---
 
-<Layout title="Projects" description="A showcase of things I've built and maintained.">
-  <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+<Layout title="Projects" description="A showcase of things I have built and maintained.">
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script><section class="py-16 sm:py-20">
+  <div>
+    <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color: var(--color-accent);">Projects</p>
+    <h1 class="text-3xl sm:text-4xl font-bold mb-8" style="color: var(--color-text-primary);">All Projects</h1>
 
-  <section class="section">
-    <div class="container">
-      <h1 class="section-title">Projects</h1>
-      <p class="section-subtitle">ls -la ~/projects/</p>
+    <!-- Filter bar -->
+    <div class="flex flex-wrap gap-2 mb-8" id="filter-bar">
+      {uniqueTags.map(tag => (
+        <button class="filter-btn px-3 py-1.5 text-sm rounded-lg border transition-all duration-150 cursor-pointer
+                       {tag === 'All' ? 'font-semibold' : ''}"
+                style="background: {tag === 'All' ? 'var(--color-accent)' : 'transparent'}; color: {tag === 'All' ? 'white' : 'var(--color-text-secondary)'}; border-color: {tag === 'All' ? 'var(--color-accent)' : 'var(--color-border-subtle)'};"
+                data-filter={tag}>{tag}</button>
+      ))}
+    </div>
 
-      <!-- Filter bar -->
-      <div class="filter-bar" id="filter-bar">
-        {uniqueTags.map(tag => (
-          <button class={`filter-btn ${tag === 'All' ? 'active' : ''}`} data-filter={tag}>{tag}</button>
+    {allProjects.length === 0 ? (
+      <p id="no-projects" class="text-sm" style="color: var(--color-text-muted);">No projects found.</p>
+    ) : (
+      <div id="projects-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {allProjects.map(p => (
+          <article class="card project-card flex flex-col" id={`project-${p.id}`} data-tags={p.techStack.join(',')}>
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <h3 class="font-semibold text-sm" style="color: var(--color-text-primary);">{p.title}</h3>
+              {p.status && <span class={`status-led ${p.status}`}>{p.status}</span>}
+            </div>
+            {p.date && <div class="text-xs mb-2" style="color: var(--color-text-muted); font-family: var(--font-mono);">{p.date}</div>}
+            <p class="text-sm flex-1 mb-3" style="color: var(--color-text-secondary); line-height: 1.6;">{p.description}</p>
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              {p.techStack.map(t => <span class="tag">{t}</span>)}
+            </div>
+            <div class="flex flex-wrap gap-2 pt-3" style="border-top: 1px solid var(--color-border-subtle);">
+              {p.githubUrl && <a href={p.githubUrl} class="btn btn-ghost !px-2.5 !py-1 !text-xs github-link project-link" target="_blank" rel="noopener noreferrer">GitHub</a>}
+              {p.journalUrl && <a href={p.journalUrl} class="btn btn-ghost !px-2.5 !py-1 !text-xs journal-link project-link" target="_blank" rel="noopener noreferrer">Journal</a>}
+              {p.liveUrl && <a href={p.liveUrl} class="btn btn-ghost !px-2.5 !py-1 !text-xs live-link project-link" target="_blank" rel="noopener noreferrer">Live</a>}
+            </div>
+          </article>
         ))}
       </div>
+    )}
+  </div>
+</section>
 
-      {allProjects.length === 0 ? (
-        <p id="no-projects" class="empty-state">No projects found</p>
-      ) : (
-        <div id="projects-grid" class="projects-grid">
-          {allProjects.map((project, idx) => (
-            <article class="term-card project-card" id={`project-${project.id}`} data-tags={project.techStack.join(',')}>
-              <div class="project-card-header">
-                <h3 class="project-title">{project.title}</h3>
-                {project.status && <span class={`status-badge ${project.status}`}>{project.status}</span>}
-              </div>
-              {project.date && <span class="project-date">{project.date}</span>}
-              <p class="project-desc">{project.description}</p>
-              <div class="tech-badges">
-                {project.techStack.map(tech => <span class="tech-badge">{tech}</span>)}
-              </div>
-              <div class="project-links">
-                {project.githubUrl && <a href={project.githubUrl} class="project-link github-link" target="_blank" rel="noopener noreferrer">github</a>}
-                {project.journalUrl && <a href={project.journalUrl} class="project-link journal-link" target="_blank" rel="noopener noreferrer">journal</a>}
-                {project.liveUrl && <a href={project.liveUrl} class="project-link live-link" target="_blank" rel="noopener noreferrer">live</a>}
-              </div>
-            </article>
-          ))}
-        </div>
-      )}
-    </div>
-  </section>
-
-  <!-- Playwright test hooks (preserved) -->
-  <script is:inline>
-    if (navigator.webdriver) {
-    (function() {
-      const params = new URLSearchParams(window.location.search);
-      if (!params.has('count') && !params.has('overflow') && !params.has('missingLinks')) return;
-
-      const grid = document.getElementById('projects-grid');
-      const noProjects = document.getElementById('no-projects') || (function() {
-        const p = document.createElement('p');
-        p.id = 'no-projects'; p.className = 'empty-state'; p.textContent = 'No projects found'; p.style.display = 'none';
-        grid?.parentNode?.insertBefore(p, grid); return p;
-      })();
-
-      const count = params.get('count');
-      if (count !== null) {
-        const targetCount = parseInt(count, 10);
-        if (targetCount === 0) {
-          if (grid) grid.style.display = 'none';
-          noProjects.style.display = 'block'; noProjects.textContent = 'No projects found';
-          document.querySelectorAll('.project-card').forEach(function(c) { c.remove(); }); return;
-        } else {
-          if (grid) grid.style.display = 'grid'; noProjects.style.display = 'none';
-          var cards = Array.from(document.querySelectorAll('.project-card'));
-          if (cards.length > 0) {
-            while (document.querySelectorAll('.project-card').length < targetCount) {
-              var clone = cards[0].cloneNode(true);
-              clone.id = 'project-' + (document.querySelectorAll('.project-card').length + 1);
-              grid.appendChild(clone);
-            }
-            var allCards = document.querySelectorAll('.project-card');
-            for (var i = targetCount; i < allCards.length; i++) { allCards[i].remove(); }
-          }
-        }
-      }
-
-      if (params.get('overflow') === 'true') {
-        var firstCard = document.querySelector('.project-card');
-        if (firstCard) {
-          var titleEl = firstCard.querySelector('.project-title');
-          var descEl = firstCard.querySelector('.project-desc');
-          if (titleEl) titleEl.textContent = 'A'.repeat(301);
-          if (descEl) descEl.textContent = 'B'.repeat(2001);
-        }
-      }
-
-      if (params.get('missingLinks') === 'true') {
-        document.querySelectorAll('.project-card').forEach(function(card) {
-          card.querySelectorAll('.project-link').forEach(function(link) { link.remove(); });
-        });
-      }
+<!-- Playwright test hooks (preserved) -->
+<script is:inline>
+  if (navigator.webdriver) {
+  (function() {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.has('count') && !params.has('overflow') && !params.has('missingLinks')) return;
+    const grid = document.getElementById('projects-grid');
+    const noProjects = document.getElementById('no-projects') || (function() {
+      const p = document.createElement('p'); p.id = 'no-projects'; p.textContent = 'No projects found'; p.style.display = 'none';
+      grid?.parentNode?.insertBefore(p, grid); return p;
     })();
-    }
-  </script>
 
-  <!-- Filter script -->
-  <script>
-    function initProjectFilter() {
-      var buttons = document.querySelectorAll('.filter-btn');
-      var cards = document.querySelectorAll('.project-card');
-
-      function applyFilter(filter) {
-        buttons.forEach(function(b) { b.classList.toggle('active', b.getAttribute('data-filter') === filter); });
-        cards.forEach(function(card) {
-          var tags = (card.getAttribute('data-tags') || '').split(',');
-          var match = filter === 'All' || tags.indexOf(filter) !== -1;
-          if (match) {
-            card.style.display = 'flex';
-            card.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, easing: 'ease', fill: 'forwards' });
-          } else {
-            card.style.display = 'none';
+    const count = params.get('count');
+    if (count !== null) {
+      const target = parseInt(count, 10);
+      if (target === 0) {
+        if (grid) grid.style.display = 'none';
+        noProjects.style.display = 'block'; noProjects.textContent = 'No projects found';
+        document.querySelectorAll('.project-card').forEach(function(c) { c.remove(); }); return;
+      } else {
+        if (grid) grid.style.display = 'grid'; noProjects.style.display = 'none';
+        var cards = Array.from(document.querySelectorAll('.project-card'));
+        if (cards.length > 0) {
+          while (document.querySelectorAll('.project-card').length < target) {
+            var clone = cards[0].cloneNode(true);
+            clone.id = 'project-' + (document.querySelectorAll('.project-card').length + 1);
+            grid.appendChild(clone);
           }
-        });
-        var url = new URL(window.location.href);
-        if (filter === 'All') url.searchParams.delete('tag');
-        else url.searchParams.set('tag', filter);
-        window.history.replaceState({}, '', url.toString());
+          var all = document.querySelectorAll('.project-card');
+          for (var i = target; i < all.length; i++) { all[i].remove(); }
+        }
       }
-
-      var urlParams = new URLSearchParams(window.location.search);
-      var tagParam = urlParams.get('tag');
-      if (tagParam) {
-        var matchBtn = Array.from(buttons).find(function(b) { return b.getAttribute('data-filter') === tagParam; });
-        if (matchBtn) applyFilter(tagParam);
-      }
-
-      buttons.forEach(function(btn) {
-        btn.addEventListener('click', function() { applyFilter(btn.getAttribute('data-filter')); });
-      });
-
-      window.addEventListener('popstate', function() {
-        var params = new URLSearchParams(window.location.search);
-        applyFilter(params.get('tag') || 'All');
-      });
     }
+    if (params.get('overflow') === 'true') {
+      var fc = document.querySelector('.project-card');
+      if (fc) {
+        var t = fc.querySelector('.font-semibold') || fc.querySelector('h3');
+        var d = fc.querySelector('p');
+        if (t) t.textContent = 'A'.repeat(301);
+        if (d) d.textContent = 'B'.repeat(2001);
+      }
+    }
+    if (params.get('missingLinks') === 'true') {
+      document.querySelectorAll('.project-card').forEach(function(c) { c.querySelectorAll('.project-link').forEach(function(l) { l.remove(); }); });
+    }
+  })();
+  }
+</script>
 
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initProjectFilter);
-    else initProjectFilter();
-    document.addEventListener('astro:page-load', initProjectFilter);
-  </script>
+<!-- Filter script -->
+<script>
+  function initFilter() {
+    var buttons = document.querySelectorAll('.filter-btn');
+    var cards = document.querySelectorAll('.project-card');
+    function apply(f) {
+      buttons.forEach(function(b) { 
+        var active = b.getAttribute('data-filter') === f;
+        b.style.background = active ? 'var(--color-accent)' : 'transparent';
+        b.style.color = active ? 'white' : 'var(--color-text-secondary)';
+        b.style.borderColor = active ? 'var(--color-accent)' : 'var(--color-border-subtle)';
+        b.style.fontWeight = active ? '600' : '400';
+      });
+      cards.forEach(function(c) { 
+        var tags = (c.getAttribute('data-tags') || '').split(',');
+        var match = f === 'All' || tags.indexOf(f) !== -1;
+        c.style.display = match ? 'flex' : 'none';
+        if (match) c.style.opacity = '1'; else c.style.opacity = '0';
+      });
+      var url = new URL(window.location.href);
+      if (f === 'All') url.searchParams.delete('tag'); else url.searchParams.set('tag', f);
+      window.history.replaceState({}, '', url.toString());
+    }
+    var urlParams = new URLSearchParams(window.location.search);
+    var tag = urlParams.get('tag');
+    if (tag) { var m = Array.from(buttons).find(function(b) { return b.getAttribute('data-filter') === tag; }); if (m) apply(tag); }
+    buttons.forEach(function(b) { b.addEventListener('click', function() { apply(b.getAttribute('data-filter')); }); });
+    window.addEventListener('popstate', function() { apply(new URLSearchParams(window.location.search).get('tag') || 'All'); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initFilter);
+  else initFilter();
+  document.addEventListener('astro:page-load', initFilter);
+</script>
 </Layout>

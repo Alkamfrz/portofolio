@@ -10,319 +10,252 @@ const recentPosts = [...allPosts]
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
   .slice(0, 2);
 
-const featuredProjects = projects.filter(p => p.featured).slice(0, 3);
-
-const totalProjects = projects.length;
-const activeProjects = projects.filter(p => p.status === 'active').length;
-const totalSkills = Object.values(skills).flat().length;
-const skillCategories = Object.keys(skills).length;
+const featured = projects.filter(p => p.featured).slice(0, 3);
+const skillList = Object.values(skills).flat();
+const allTags = [...new Set(projects.flatMap(p => p.techStack))].sort();
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
-    { "@type": "WebSite", "name": "Alkamfrz Portfolio", "url": "https://alkamfrz.id", "author": { "@type": "Person", "name": "Muhammad Alkam Alfariz" } },
+    { "@type": "WebSite", "name": "Alkamfrz", "url": "https://alkamfrz.id", "author": { "@type": "Person", "name": "Muhammad Alkam Alfariz" } },
     { "@type": "Person", "@id": "https://alkamfrz.id/#person", "name": "Muhammad Alkam Alfariz", "givenName": "Muhammad Alkam", "familyName": "Alfariz", "url": "https://alkamfrz.id", "sameAs": ["https://github.com/alkamfrz", "https://linkedin.com/in/alkamfrz"] },
     { "@type": "ProfilePage", "@id": "https://alkamfrz.id/#profilepage", "url": "https://alkamfrz.id", "mainEntity": { "@id": "https://alkamfrz.id/#person" } }
   ]
 };
+
+function fmt(d) { try { return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }); } catch { return d; } }
 ---
 
 <Layout title="Home" description="Muhammad Alkam Alfariz – Informatics Engineering graduate specializing in IT infrastructure, automation, and systems.">
-  <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script><!-- Hero -->
+<section class="py-20 sm:py-28 md:py-36" aria-labelledby="hero-name">
+  <div class="max-w-3xl">
+    <p class="text-sm font-medium mb-4" style="color: var(--color-accent);">Hi, I'm</p>
+    <h1 id="hero-name" class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.1] mb-4" style="color: var(--color-text-primary);">
+      Muhammad Alkam<br>
+      <span style="color: var(--color-text-secondary);">Alfariz</span>
+    </h1>
+    <p class="text-lg sm:text-xl mb-8 max-w-xl" style="color: var(--color-text-secondary); line-height: 1.6;">
+      Informatics engineer building infrastructure, automation, and computer vision systems.
+      Graduated with a GPA of 3.90/4.00 from Universitas Mercu Buana.
+    </p>
+    <div class="flex flex-wrap gap-3">
+      <a href="#projects" class="btn btn-primary">View Projects</a>
+      <a href="/CV_Muhammad_Alkam_Alfariz.pdf" class="btn btn-secondary" download>Download CV</a>
+      <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+    </div>
+  </div>
 
-  <!-- ==================== HERO ==================== -->
-  <section class="terminal-hero" aria-labelledby="hero-heading">
-    <div class="container">
-      <pre class="hero-banner"><span class="hl-green">  ╔══════════════════════════════════════════╗</span>
-<span class="hl-green">  ║</span>  <span class="hl-cyan">______     _                     __   </span>  <span class="hl-green">║</span>
-<span class="hl-green">  ║</span>  <span class="hl-cyan">|  _  \   | |                   / _|  </span>  <span class="hl-green">║</span>
-<span class="hl-green">  ║</span>  <span class="hl-cyan">| | | | __| | __ _  ___  ___   | |_   </span>  <span class="hl-green">║</span>
-<span class="hl-green">  ║</span>  <span class="hl-cyan">| | | |/ _` |/ _` |/ _ \/ __|  |  _|  </span>  <span class="hl-green">║</span>
-<span class="hl-green">  ║</span>  <span class="hl-cyan">| |/ / (_| | (_| |  __/\__ \  | |    </span>  <span class="hl-green">║</span>
-<span class="hl-green">  ║</span>  <span class="hl-cyan">|___/ \__,_|\__, |\___||___/  |_|    </span>  <span class="hl-green">║</span>
-<span class="hl-green">  ║</span>  <span class="hl-cyan">             __/ |                    </span>  <span class="hl-green">║</span>
-<span class="hl-green">  ║</span>  <span class="hl-cyan">            |___/                     </span>  <span class="hl-green">║</span>
-<span class="hl-green">  ║</span>  <span class="hl-amber">    Infrastructure &amp; Systems Engineer </span>  <span class="hl-green">║</span>
-<span class="hl-green">  ╚══════════════════════════════════════════╝</span></pre>
+  <!-- Metrics -->
+  <div class="flex flex-wrap gap-6 sm:gap-10 mt-12">
+    <div>
+      <div class="text-2xl font-bold" style="color: var(--color-text-primary);">{projects.length}</div>
+      <div class="text-sm" style="color: var(--color-text-muted);">Projects</div>
+    </div>
+    <div>
+      <div class="text-2xl font-bold" style="color: var(--color-text-primary);">{projects.filter(p => p.status === 'active').length}</div>
+      <div class="text-sm" style="color: var(--color-text-muted);">Active</div>
+    </div>
+    <div>
+      <div class="text-2xl font-bold" style="color: var(--color-text-primary);">{skillList.length}</div>
+      <div class="text-sm" style="color: var(--color-text-muted);">Skills</div>
+    </div>
+    <div>
+      <div class="text-2xl font-bold" style="color: var(--color-text-primary);">{allTags.length}</div>
+      <div class="text-sm" style="color: var(--color-text-muted);">Technologies</div>
+    </div>
+  </div>
+</section>
 
-      <h1 id="hero-heading" class="hero-headline">
-        <span class="hl-green">$</span> whoami<br>
-        <span class="hl-cyan">Muhammad Alkam Alfariz</span>
-      </h1>
+<div style="height: 1px; background: var(--color-border-subtle);"></div>
 
-      <p class="hero-description">
-        Informatics Engineering graduate from Universitas Mercu Buana (GPA 3.90/4.00).
-        Specializing in IT infrastructure, network optimization, computer vision research,
-        and AI-driven automation.
+<!-- About -->
+<section id="about" class="py-16 sm:py-20 section-hidden" aria-labelledby="about-title">
+  <h2 id="about-title" class="text-sm font-semibold tracking-widest uppercase mb-2" style="color: var(--color-accent);">About</h2>
+  <p class="text-2xl sm:text-3xl font-bold mb-6" style="color: var(--color-text-primary);">
+    Infrastructure meets innovation.
+  </p>
+  <div class="grid md:grid-cols-2 gap-8">
+    <div>
+      <p class="mb-4" style="color: var(--color-text-secondary); line-height: 1.7;">
+        Informatics Engineering graduate from Universitas Mercu Buana (GPA 3.90/4.00) with proven expertise in IT infrastructure, system automation, and cross-platform development. Experienced with homelab deployments, Docker Compose stacks, computer vision research, and CI/CD pipelines.
       </p>
-
-      <div class="metrics-bar">
-        <div class="metric-item">
-          <span class="metric-label">projects</span>
-          <span class="metric-value">{totalProjects}</span>
-        </div>
-        <div class="metric-item">
-          <span class="metric-label">active</span>
-          <span class="metric-value">{activeProjects}</span>
-        </div>
-        <div class="metric-item">
-          <span class="metric-label">skills</span>
-          <span class="metric-value">{totalSkills}</span>
-        </div>
-        <div class="metric-item">
-          <span class="metric-label">categories</span>
-          <span class="metric-value">{skillCategories}</span>
-        </div>
-      </div>
-
-      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-        <a href="#projects" class="btn btn-primary">View Projects</a>
-        <a href="#blog" class="btn btn-secondary">Read Blog</a>
-        <a href="/CV_Muhammad_Alkam_Alfariz.pdf" class="btn btn-cv" download>Download CV</a>
-      </div>
+      <p style="color: var(--color-text-secondary); line-height: 1.7;">
+        <span class="font-semibold" style="color: var(--color-text-primary);">Education:</span> S.Kom. — Informatics Engineering<br />
+        <span class="font-semibold" style="color: var(--color-text-primary);">Focus:</span> IT Infrastructure, Automation, AI
+      </p>
     </div>
-  </section>
-
-  <div class="section-divider">
-    <div class="section-divider-terminal">
-      <span class="line"></span>
-      <span>~$ cd about</span>
-      <span class="line"></span>
+    <div>
+      <p class="font-semibold mb-3 text-sm" style="color: var(--color-text-primary);">Certifications</p>
+      <ul class="space-y-2">
+        <li class="flex items-start gap-2 text-sm" style="color: var(--color-text-secondary);">
+          <span style="color: var(--color-accent);">→</span> Google IT Automation with Python
+        </li>
+        <li class="flex items-start gap-2 text-sm" style="color: var(--color-text-secondary);">
+          <span style="color: var(--color-accent);">→</span> Networking for Beginners (Codepolitan)
+        </li>
+        <li class="flex items-start gap-2 text-sm" style="color: var(--color-text-secondary);">
+          <span style="color: var(--color-accent);">→</span> Programming with Python (Dicoding)
+        </li>
+        <li class="flex items-start gap-2 text-sm" style="color: var(--color-text-secondary);">
+          <span style="color: var(--color-accent);">→</span> DevOps Fundamentals (Dicoding)
+        </li>
+      </ul>
     </div>
   </div>
+</section>
 
-  <!-- ==================== ABOUT ==================== -->
-  <section id="about" class="section" aria-labelledby="about-heading">
-    <div class="container">
-      <h2 id="about-heading" class="section-title">About</h2>
-      <p class="section-subtitle">whoami — current user profile</p>
+<div style="height: 1px; background: var(--color-border-subtle);"></div>
 
-      <div class="term-card" style="padding: 1.5rem;">
-        <div class="about-grid">
-          <div>
-            <div class="terminal-line"><span class="prompt">$</span> cat profile.txt</div>
-            <div class="terminal-line" style="margin-top: 0.5rem;">
-              Versatile Informatics Engineering graduate from Universitas Mercu Buana (3.90/4.00)<br>
-              with proven expertise in IT infrastructure, system automation, and<br>
-              cross-platform development. Experienced with homelab deployments,<br>
-              Docker Compose stacks, computer vision research, and CI/CD pipelines.
+<!-- Skills -->
+<section id="skills" class="py-16 sm:py-20 section-hidden" aria-labelledby="skills-title">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h2 id="skills-title" class="text-sm font-semibold tracking-widest uppercase" style="color: var(--color-accent);">Skills</h2>
+      <p class="text-2xl sm:text-3xl font-bold mt-1" style="color: var(--color-text-primary);">Tech Stack</p>
+    </div>
+  </div>
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+    {Object.entries(skills).map(([category, items]) => (
+      <div class="card skill-category">
+        <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color: var(--color-accent);">{category}</p>
+        <div class="flex flex-wrap gap-1.5">
+          {items.map(item => <span class="tag">{item}</span>)}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<div style="height: 1px; background: var(--color-border-subtle);"></div>
+
+<!-- Experience -->
+<section id="experience" class="py-16 sm:py-20 section-hidden" aria-labelledby="exp-title">
+  <h2 id="exp-title" class="text-sm font-semibold tracking-widest uppercase mb-2" style="color: var(--color-accent);">Experience</h2>
+  <p class="text-2xl sm:text-3xl font-bold mb-8" style="color: var(--color-text-primary);">Career History</p>
+  <div class="space-y-0">
+    {[
+      { period: '2025 — Present', title: 'Infrastructure Engineer', org: 'Homelab & Self-Hosted', desc: 'Proxmox VE, Docker Compose, HAProxy, Cloudflare Tunnel, Tailscale, MikroTik — 15+ production services.' },
+      { period: '2024 — 2025', title: 'Computer Vision Researcher', org: 'Universitas Mercu Buana', desc: 'RetinaNet-based oil palm ripeness detection. Published on Garuda. PyTorch, OpenCV.' },
+      { period: '2024', title: 'Network Engineer Intern', org: 'IT Services', desc: 'MikroTik routing, VLAN segmentation, firewall policy, CCTV infrastructure, DHCP/DNS management.' },
+      { period: '2023 — 2024', title: 'Freelance IT Support', org: 'Various Clients', desc: 'Active Directory, network troubleshooting, hardware provisioning, technical documentation.' },
+    ].map(job => (
+      <div class="flex flex-col sm:flex-row sm:gap-6 py-5" style="border-bottom: 1px solid var(--color-border-subtle);">
+        <div class="text-sm shrink-0 mb-1 sm:mb-0 sm:w-36" style="color: var(--color-text-muted); font-family: var(--font-mono);">{job.period}</div>
+        <div>
+          <div class="font-semibold" style="color: var(--color-text-primary);">{job.title}</div>
+          <div class="text-sm mb-1" style="color: var(--color-accent);">{job.org}</div>
+          <div class="text-sm" style="color: var(--color-text-secondary);">{job.desc}</div>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<div style="height: 1px; background: var(--color-border-subtle);"></div>
+
+<!-- Featured Projects -->
+<section id="projects" class="py-16 sm:py-20 section-hidden" aria-labelledby="projects-title">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h2 id="projects-title" class="text-sm font-semibold tracking-widest uppercase" style="color: var(--color-accent);">Projects</h2>
+      <p class="text-2xl sm:text-3xl font-bold mt-1" style="color: var(--color-text-primary);">Featured Work</p>
+    </div>
+    <a href="/projects/" class="btn btn-ghost text-sm hidden sm:inline-flex">View all →</a>
+  </div>
+
+  {featured.length === 0 ? (
+    <p class="text-sm" style="color: var(--color-text-muted);">No featured projects yet.</p>
+  ) : (
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {featured.map(p => (
+        <article class="card flex flex-col" data-tags={p.techStack.join(',')}>
+          <div class="flex items-start justify-between gap-2 mb-2">
+            <h3 class="font-semibold text-sm" style="color: var(--color-text-primary);">{p.title}</h3>
+            {p.status && <span class={`status-led ${p.status}`}>{p.status}</span>}
+          </div>
+          {p.date && <div class="text-xs mb-2" style="color: var(--color-text-muted); font-family: var(--font-mono);">{p.date}</div>}
+          <p class="text-sm flex-1 mb-3" style="color: var(--color-text-secondary); line-height: 1.6;">{p.description}</p>
+          <div class="flex flex-wrap gap-1.5 mb-3">
+            {p.techStack.map(t => <span class="tag">{t}</span>)}
+          </div>
+          <div class="flex flex-wrap gap-2 pt-3" style="border-top: 1px solid var(--color-border-subtle);">
+            {p.githubUrl && <a href={p.githubUrl} class="btn btn-ghost !px-2.5 !py-1 !text-xs github-link" target="_blank" rel="noopener noreferrer">GitHub</a>}
+            {p.journalUrl && <a href={p.journalUrl} class="btn btn-ghost !px-2.5 !py-1 !text-xs journal-link" target="_blank" rel="noopener noreferrer">Journal</a>}
+            {p.liveUrl && <a href={p.liveUrl} class="btn btn-ghost !px-2.5 !py-1 !text-xs live-link" target="_blank" rel="noopener noreferrer">Live</a>}
+          </div>
+        </article>
+      ))}
+    </div>
+  )}
+  <a href="/projects/" class="btn btn-ghost text-sm mt-4 sm:hidden inline-flex">View all projects →</a>
+</section>
+
+<div style="height: 1px; background: var(--color-border-subtle);"></div>
+
+<!-- Blog Preview -->
+<section id="blog" class="py-16 sm:py-20 section-hidden blog-preview-section" aria-labelledby="blog-title">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h2 id="blog-title" class="text-sm font-semibold tracking-widest uppercase" style="color: var(--color-accent);">Blog</h2>
+      <p class="text-2xl sm:text-3xl font-bold mt-1" style="color: var(--color-text-primary);">Latest Posts</p>
+    </div>
+    <a href="/blog/" class="btn btn-ghost text-sm hidden sm:inline-flex">View all →</a>
+  </div>
+
+  {recentPosts.length === 0 ? (
+    <p class="text-sm" style="color: var(--color-text-muted);">No posts yet.</p>
+  ) : (
+    <div class="grid sm:grid-cols-2 gap-4">
+      {recentPosts.map(post => {
+        const wc = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
+        const rt = Math.max(1, Math.ceil(wc / 200));
+        return (
+          <a href={`/blog/${post.id}`} class="card blog-post-card no-underline flex flex-col" style="text-decoration: none;" data-title={post.data.title.toLowerCase()}>
+            <h3 class="font-semibold text-sm mb-1" style="color: var(--color-text-primary);">{post.data.title}</h3>
+            <div class="flex gap-3 text-xs mb-2" style="color: var(--color-text-muted); font-family: var(--font-mono);">
+              <span>{fmt(post.data.date)}</span>
+              <span>{rt} min read</span>
             </div>
-            <div class="terminal-line" style="margin-top: 0.75rem;">
-              <span class="prompt">$</span> echo <span style="color: var(--accent-amber);">$EDUCATION</span><br>
-              <span style="color: var(--accent-cyan);">→</span> S.Kom. — Informatics Engineering<br>
-              <span style="color: var(--accent-cyan);">→</span> Universitas Mercu Buana
-            </div>
-          </div>
-          <div>
-            <div class="terminal-line"><span class="prompt">$</span> cat certs.txt</div>
-            <div class="terminal-line" style="margin-top: 0.5rem; color: var(--accent-cyan);">
-              → Google IT Automation with Python (Coursera)<br>
-              → Belajar Jaringan Komputer untuk Pemula (Codepolitan)<br>
-              → Memulai Pemrograman dengan Python (Dicoding)<br>
-              → Belajar Dasar-Dasar DevOps (Dicoding)
-            </div>
-          </div>
-        </div>
+            <p class="text-sm flex-1 mb-2" style="color: var(--color-text-secondary);">{post.data.description}</p>
+            <span class="text-xs font-medium" style="color: var(--color-accent);">Read more →</span>
+          </a>
+        );
+      })}
+    </div>
+  )}
+  <a href="/blog/" class="btn btn-ghost text-sm mt-4 sm:hidden inline-flex">View all posts →</a>
+</section>
+
+<div style="height: 1px; background: var(--color-border-subtle);"></div>
+
+<!-- Contact -->
+<section id="contact" class="py-16 sm:py-20 section-hidden" aria-labelledby="contact-title">
+  <h2 id="contact-title" class="text-sm font-semibold tracking-widest uppercase mb-2" style="color: var(--color-accent);">Contact</h2>
+  <p class="text-2xl sm:text-3xl font-bold mb-8" style="color: var(--color-text-primary);">Get in Touch</p>
+
+  <div class="max-w-md">
+    <form id="contact-form" novalidate>
+      <div class="mb-4">
+        <label for="contact-name" class="block text-sm font-medium mb-1.5" style="color: var(--color-text-secondary);">Name</label>
+        <input type="text" id="contact-name" name="name" class="form-input" placeholder="Your name" required />
+        <small class="form-error" id="name-error" data-error="name"></small>
       </div>
-    </div>
-  </section>
-
-  <div class="section-divider">
-    <div class="section-divider-terminal">
-      <span class="line"></span>
-      <span>~$ ls skills/</span>
-      <span class="line"></span>
-    </div>
-  </div>
-
-  <!-- ==================== SKILLS ==================== -->
-  <section id="skills" class="section" aria-labelledby="skills-heading">
-    <div class="container">
-      <h2 id="skills-heading" class="section-title">Skills</h2>
-      <p class="section-subtitle">ls -la ~/tech-stack/</p>
-
-      <div class="term-card" style="padding: 1.25rem;">
-        <div class="skills-tree">
-          <span class="tree-node"><span class="tree-pipe">.</span></span>
-          <span class="tree-node"><span class="tree-pipe">├──</span> <span class="tree-dir">languages/</span> <span class="tree-file">{skills.languages.join(', ')}</span></span>
-          <span class="tree-node"><span class="tree-pipe">├──</span> <span class="tree-dir">databases/</span> <span class="tree-file">{skills.databases.join(', ')}</span></span>
-          <span class="tree-node"><span class="tree-pipe">├──</span> <span class="tree-dir">infrastructure/</span> <span class="tree-file">{skills.infrastructure.join(', ')}</span></span>
-          <span class="tree-node"><span class="tree-pipe">├──</span> <span class="tree-dir">security/</span> <span class="tree-file">{skills.security.join(', ')}</span></span>
-          <span class="tree-node"><span class="tree-pipe">├──</span> <span class="tree-dir">systems/</span> <span class="tree-file">{skills.systems.join(', ')}</span></span>
-          <span class="tree-node"><span class="tree-pipe">└──</span> <span class="tree-dir">softskills/</span> <span class="tree-file">{skills.softskills.join(', ')}</span></span>
-        </div>
+      <div class="mb-4">
+        <label for="contact-email" class="block text-sm font-medium mb-1.5" style="color: var(--color-text-secondary);">Email</label>
+        <input type="email" id="contact-email" name="email" class="form-input" placeholder="you@example.com" required />
+        <small class="form-error" id="email-error" data-error="email"></small>
       </div>
-    </div>
-  </section>
-
-  <div class="section-divider">
-    <div class="section-divider-terminal">
-      <span class="line"></span>
-      <span>~$ git log --oneline</span>
-      <span class="line"></span>
-    </div>
-  </div>
-
-  <!-- ==================== EXPERIENCE ==================== -->
-  <section id="experience" class="section" aria-labelledby="exp-heading">
-    <div class="container">
-      <h2 id="exp-heading" class="section-title">Experience</h2>
-      <p class="section-subtitle">git log --oneline --reverse</p>
-
-      <div class="term-card" style="padding: 1.25rem;">
-        <div class="git-timeline">
-          <div class="timeline-item">
-            <span class="timeline-hash">a1b2c3d</span>
-            <span class="timeline-date">2025-01</span>
-            <span class="timeline-ref">INFRASTRUCTURE ENGINEER</span>
-            <span class="timeline-msg">Homelab deployment & automation — Proxmox, Docker, HAProxy, Tailscale</span>
-          </div>
-          <div class="timeline-item">
-            <span class="timeline-hash">e4f5g6h</span>
-            <span class="timeline-date">2024-09</span>
-            <span class="timeline-ref">COMPUTER VISION RESEARCH</span>
-            <span class="timeline-msg">RetinaNet oil palm ripeness detection — PyTorch, published on Garuda</span>
-          </div>
-          <div class="timeline-item">
-            <span class="timeline-hash">i7j8k9l</span>
-            <span class="timeline-date">2024-03</span>
-            <span class="timeline-ref">NETWORK ENGINEER INTERN</span>
-            <span class="timeline-msg">MikroTik routing, VLAN segmentation, firewall policy, CCTV infrastructure</span>
-          </div>
-          <div class="timeline-item">
-            <span class="timeline-hash">m0n1o2p</span>
-            <span class="timeline-date">2023-06</span>
-            <span class="timeline-ref">FREELANCE IT SUPPORT</span>
-            <span class="timeline-msg">Active Directory, network troubleshooting, hardware provisioning, SOP docs</span>
-          </div>
-        </div>
+      <div class="mb-4">
+        <label for="contact-message" class="block text-sm font-medium mb-1.5" style="color: var(--color-text-secondary);">Message</label>
+        <textarea id="contact-message" name="message" class="form-textarea" placeholder="Your message..." required></textarea>
+        <small class="form-error" id="message-error" data-error="message"></small>
       </div>
-    </div>
-  </section>
-
-  <div class="section-divider">
-    <div class="section-divider-terminal">
-      <span class="line"></span>
-      <span>~$ ls projects/</span>
-      <span class="line"></span>
-    </div>
+      <div id="contact-status" class="form-status"></div>
+      <button type="submit" id="contact-submit" class="btn btn-primary w-full justify-center">Send</button>
+    </form>
   </div>
+</section>
 
-  <!-- ==================== FEATURED PROJECTS ==================== -->
-  <section id="projects" class="section" aria-labelledby="projects-heading">
-    <div class="container">
-      <h2 id="projects-heading" class="section-title">Featured Projects</h2>
-      <p class="section-subtitle">cat projects.json | jq '.featured'</p>
-
-      {featuredProjects.length === 0 ? (
-        <p class="empty-state">No featured projects found</p>
-      ) : (
-        <div class="projects-grid">
-          {featuredProjects.map((project, idx) => (
-            <article class="term-card project-card reveal reveal-delay-{(idx % 3) + 1}" data-tags={project.techStack.join(',')}>
-              <div class="project-card-header">
-                <h3 class="project-title">{project.title}</h3>
-                {project.status && <span class={`status-badge ${project.status}`}>{project.status}</span>}
-              </div>
-              {project.date && <span class="project-date">{project.date}</span>}
-              <p class="project-desc">{project.description}</p>
-              <div class="tech-badges">
-                {project.techStack.map(tech => <span class="tech-badge">{tech}</span>)}
-              </div>
-              <div class="project-links">
-                {project.githubUrl && <a href={project.githubUrl} class="project-link github-link" target="_blank" rel="noopener noreferrer">github</a>}
-                {project.journalUrl && <a href={project.journalUrl} class="project-link journal-link" target="_blank" rel="noopener noreferrer">journal</a>}
-                {project.liveUrl && <a href={project.liveUrl} class="project-link live-link" target="_blank" rel="noopener noreferrer">live</a>}
-              </div>
-            </article>
-          ))}
-        </div>
-      )}
-
-      <div style="text-align: center; margin-top: 2rem;">
-        <a href="/projects/" class="btn btn-secondary btn-sm">view all projects →</a>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-divider">
-    <div class="section-divider-terminal">
-      <span class="line"></span>
-      <span>~$ cat /var/log/blog</span>
-      <span class="line"></span>
-    </div>
-  </div>
-
-  <!-- ==================== BLOG ==================== -->
-  <section id="blog" class="section blog-preview-section" aria-labelledby="blog-heading">
-    <div class="container">
-      <h2 id="blog-heading" class="section-title">Latest Posts</h2>
-      <p class="section-subtitle">tail -n 2 /var/log/blog</p>
-
-      {recentPosts.length === 0 ? (
-        <p class="empty-state">No posts yet</p>
-      ) : (
-        <div class="blog-grid">
-          {recentPosts.map(post => {
-            const words = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
-            const readingTime = Math.max(1, Math.ceil(words / 200));
-            return (
-            <a href={`/blog/${post.id}`} class="term-card blog-card blog-post-card" style="text-decoration: none;">
-              <h3 class="post-title">{post.data.title}</h3>
-              <div class="post-meta">
-                <span>{post.data.date}</span>
-                <span>{readingTime} min read</span>
-              </div>
-              <p class="post-desc">{post.data.description}</p>
-              <span class="read-more">read more →</span>
-            </a>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  </section>
-
-  <div class="section-divider">
-    <div class="section-divider-terminal">
-      <span class="line"></span>
-      <span>~$ nc contact 443</span>
-      <span class="line"></span>
-    </div>
-  </div>
-
-  <!-- ==================== CONTACT ==================== -->
-  <section id="contact" class="section" aria-labelledby="contact-heading">
-    <div class="container">
-      <h2 id="contact-heading" class="section-title">Contact</h2>
-      <p class="section-subtitle">echo $MESSAGE | nc alkamfrz.id 443</p>
-
-      <div class="term-card" style="padding: 1.5rem; max-width: 500px;">
-        <form id="contact-form" class="contact-form" novalidate>
-          <div class="form-group">
-            <label for="contact-name" class="form-label">name</label>
-            <input type="text" id="contact-name" name="name" class="form-input" placeholder="your name" required />
-            <small class="form-error" id="name-error" data-error="name"></small>
-          </div>
-          <div class="form-group">
-            <label for="contact-email" class="form-label">email</label>
-            <input type="email" id="contact-email" name="email" class="form-input" placeholder="you@example.com" required />
-            <small class="form-error" id="email-error" data-error="email"></small>
-          </div>
-          <div class="form-group">
-            <label for="contact-message" class="form-label">message</label>
-            <textarea id="contact-message" name="message" class="form-textarea" placeholder="your message here..." required></textarea>
-            <small class="form-error" id="message-error" data-error="message"></small>
-          </div>
-          <div id="contact-status" data-status class="form-status"></div>
-          <button type="submit" id="contact-submit" class="btn btn-primary btn-sm" style="width: 100%; justify-content: center;">Send</button>
-        </form>
-      </div>
-    </div>
-  </section>
+<script>import('../components/contact-form.js');</script>
 </Layout>
-
-<script>
-  // Contact form — load async (not render-blocking)
-  import('../components/contact-form.js');
-</script>
