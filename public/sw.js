@@ -25,17 +25,34 @@ self.addEventListener('activate', function(e) {
 self.addEventListener('fetch', function(e) {
   var req = e.request;
   var url = new URL(req.url);
+  var isAsset = url.origin === location.origin &&
+    (url.pathname.match(/\.(woff2|css|js|png|ico|svg|webp)$/) || url.pathname === '/favicon.ico');
 
-  // Static assets: cache-first
-  if (url.origin === location.origin && (url.pathname.match(/\.(woff2|css|js|png|ico|svg|webp)$/) || url.pathname === '/favicon.ico')) {
+  if (isAsset) {
+    // Cache-first for static assets
     e.respondWith(
-      caches.match(req).then(function(cached) { return cached || fetch(req).then(function(res) { var c = caches.open(CACHE); c.then(function(cache) { cache.put(req, res.clone()); }); return res; }); })
+      caches.match(req).then(function(cached) {
+        if (cached) return cached;
+        return fetch(req).then(function(res) {
+          // Clone synchronously before async cache open
+          var cloned = res.clone();
+          caches.open(CACHE).then(function(cache) { cache.put(req, cloned); });
+          return res;
+        });
+      })
     );
     return;
   }
 
-  // HTML pages: network-first
+  // Network-first for HTML pages
   e.respondWith(
-    fetch(req).then(function(res) { var c = caches.open(CACHE); c.then(function(cache) { cache.put(req, res.clone()); }); return res; }).catch(function() { return caches.match(req).then(function(cached) { return cached || caches.match('/'); }); })
+    fetch(req).then(function(res) {
+      // Clone synchronously before async cache open
+      var cloned = res.clone();
+      caches.open(CACHE).then(function(cache) { cache.put(req, cloned); });
+      return res;
+    }).catch(function() {
+      return caches.match(req).then(function(cached) { return cached || caches.match('/'); });
+    })
   );
 });
