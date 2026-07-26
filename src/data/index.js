@@ -75,10 +75,84 @@ export const education = [
 ];
 
 export const certifications = [
-  'Google IT Automation with Python — Google',
-  'Programming with Python — Dicoding',
-  'DevOps Fundamentals — Dicoding',
-  'Networking for Beginners — Codepolitan',
+  {
+    name: 'Data Engineer Associate',
+    issuer: 'DataCamp',
+    url: 'https://www.datacamp.com/certificate/DEA0016020382191',
+    year: '2024',
+  },
+  {
+    name: 'Enterprise Data Science in Practice',
+    issuer: 'IBM',
+    url: 'https://www.credly.com/badges/6c77c8f0-2233-4980-9462-69fa06139c32',
+    year: '2023',
+  },
+  {
+    name: 'CCNA',
+    issuer: 'Cisco Networking Academy',
+    url: null,
+    year: '2020',
+  },
+  {
+    name: 'CCNA: Introduction to Networks',
+    issuer: 'Cisco',
+    url: 'https://www.credly.com/badges/82190ef0-1788-4343-8bab-95067d452406',
+    year: '2022',
+  },
+  {
+    name: 'Oracle Database 11g: Program with PL/SQL',
+    issuer: 'Oracle',
+    url: null,
+    year: '2022',
+  },
+  {
+    name: 'Python Essentials 1',
+    issuer: 'Cisco',
+    url: 'https://www.credly.com/badges/1c99cf06-63db-46ca-bd31-93a6f3f821e4',
+    year: '2023',
+  },
+  {
+    name: 'JavaScript Essentials 1',
+    issuer: 'Cisco',
+    url: 'https://www.credly.com/badges/fc092e51-2a6d-4a5a-bf3d-a90712db0d30',
+    year: '2023',
+  },
+  {
+    name: 'Memulai Pemrograman dengan Python',
+    issuer: 'Dicoding Indonesia',
+    url: 'https://www.dicoding.com/certificates/53XE4340VZRN',
+    year: '2023',
+  },
+  {
+    name: 'Belajar Dasar Data Science',
+    issuer: 'Dicoding Indonesia',
+    url: 'https://www.dicoding.com/certificates/EYX4Y86OJZDL',
+    year: '2023',
+  },
+  {
+    name: 'Belajar Dasar Structured Query Language (SQL)',
+    issuer: 'Dicoding Indonesia',
+    url: 'https://www.dicoding.com/certificates/1RXY076WKZVM',
+    year: '2023',
+  },
+  {
+    name: 'Qontak, Chat Omnichannel for Advanced Customer Service',
+    issuer: 'Mekari University',
+    url: 'https://univ.mekari.com/certificates/ser2iwob1i',
+    year: '2025',
+  },
+  {
+    name: 'Customer Relationship Management 101',
+    issuer: 'Mekari University',
+    url: 'https://univ.mekari.com/certificates/xgnz9bbwdr',
+    year: '2025',
+  },
+  {
+    name: 'Qontak, Complete CRM Solution for Sales and Customer Management',
+    issuer: 'Mekari University',
+    url: 'https://univ.mekari.com/certificates/hrpdjgwfmr',
+    year: '2025',
+  },
 ];
 
 export const skills = {

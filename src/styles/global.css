@@ -322,28 +322,52 @@ code {
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
-.cert-list {
-  list-style: none;
+.cert-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+@media (max-width: 560px) {
+  .cert-grid { grid-template-columns: 1fr; }
+}
+.cert-item {
+  padding: 0.625rem 0.75rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 5px;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  margin-top: 1rem;
+  gap: 0.2rem;
 }
-.cert-list li {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  padding-left: 1rem;
-  position: relative;
-  line-height: 1.4;
+.cert-name {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.35;
 }
-.cert-list li::before {
-  content: '→';
-  position: absolute;
-  left: 0;
+.cert-meta {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.cert-issuer {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+}
+.cert-year {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-faint);
+}
+.cert-link {
+  font-size: 0.75rem;
   color: var(--accent);
-  opacity: 0.6;
-  font-size: 0.8em;
+  text-decoration: none;
+  margin-top: 0.15rem;
 }
+.cert-link:hover { text-decoration: underline; }
 
 /* ─── Experience ─── */
 .exp-entry {
