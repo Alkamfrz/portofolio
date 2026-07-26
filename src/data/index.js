@@ -1,10 +1,25 @@
 export const experience = [
   {
+    id: 'mekari',
+    role: 'Activation Specialist',
+    org: 'Mekari Qontak',
+    location: 'Jakarta',
+    period: 'Nov 2025 – Present',
+    description: 'Customer success and onboarding specialist at Mekari Qontak — Indonesia\'s leading CRM and customer engagement platform under Mekari.',
+    achievements: [
+      'Onboarded and trained 10+ enterprise clients on Mekari Qontak CRM features, workflows, and integrations.',
+      'Conducted onsite and remote training sessions on Qontak Omnichannel, CRM, and telephony features.',
+      'Consulted clients to align Qontak platform capabilities with their business processes and operational needs.',
+      'Delivered 3+ client-specific demonstrations and requirement-gathering sessions for custom CRM workflows.',
+      'Supported post-implementation adoption, reducing client churn through proactive engagement and training.',
+    ],
+  },
+  {
     id: 'smf',
     role: 'IT Hardware Support Intern',
     org: 'Sinarmas Multifinance',
     location: 'West Jakarta',
-    period: 'May 2025 – Present',
+    period: 'May 2025 – Oct 2025',
     description: 'IT hardware support for a leading Indonesian financial services company under Sinar Mas Group.',
     achievements: [
       'Deployed Windows 11, Linux openSUSE 15.6, and macOS across 40+ workstations with 99% success rate.',
