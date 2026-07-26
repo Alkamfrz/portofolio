@@ -11,10 +11,9 @@ import { experience, education, certifications, skills, projects } from '../data
       <p class="hero-eyebrow">Infrastructure Engineer · Tangerang, Indonesia</p>
       <h1 class="hero-title" id="hero-title">Building systems<br>that last.</h1>
       <p class="hero-lede">
-        Informatics Engineering graduate (GPA&nbsp;3.90/4.00) specializing in IT infrastructure,
-        system automation, and computer vision. Currently at Sinarmas Multifinance —
-        previously at Halodoc and EMTEK Group. I build homelabs, write automation scripts,
-        and publish research on deep learning for agriculture.
+        Infrastructure Engineer who builds homelabs, automates pipelines, and deploys
+        production systems — from bare metal to zero-trust VPN. Published researcher in
+        computer vision for agriculture and medical imaging.
       </p>
       <div class="hero-actions">
         <a href="/CV_Muhammad_Alkam_Alfariz.pdf" class="btn btn-primary" download>
@@ -39,14 +38,14 @@ import { experience, education, certifications, skills, projects } from '../data
       <div class="about-grid">
         <div>
           <p>
-            I approach infrastructure as software — repeatable, version-controlled,
-            and observable. My work spans from bare-metal Proxmox deployments
-            to CNN-based computer vision pipelines, unified by a focus on reliability
-            and operational simplicity.
+            I run a production-grade homelab on Proxmox VE — 15+ self-hosted services,
+            VLAN-segmented networking, Cloudflare Tunnel, and Tailscale VPN for remote access.
+            Every deployment is scripted, version-controlled, and reproducible.
           </p>
           <p>
-            Outside of work I maintain a homelab that runs 15+ services
-            and contribute to open tooling for homelab automation.
+            I've published research in precision agriculture (RetinaNet for oil palm ripeness detection)
+            and medical imaging (ResNet50 for brain tumor classification). I also automate
+            infrastructure pipelines with PowerShell and Bash — backups, deployments, and alerting.
           </p>
         </div>
         <div>
@@ -121,6 +120,7 @@ import { experience, education, certifications, skills, projects } from '../data
           <div class="project-card-links">
             {p.github && <a href={p.github} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">GitHub</a>}
             {p.live && <a href={p.live} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Live ↗</a>}
+            {p.journal && <a href={p.journal} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Paper ↗</a>}
           </div>
         </div>
       ))}

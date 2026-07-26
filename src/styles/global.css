@@ -444,6 +444,7 @@ code {
 }
 .status-dot.active { color: var(--green); }
 .status-dot.archived { color: var(--text-muted); }
+.status-dot.published { color: var(--accent); }
 
 /* ─── Projects — stacked full-width cards ─── */
 .project-card {
