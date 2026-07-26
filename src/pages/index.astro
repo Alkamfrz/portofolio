@@ -1,23 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { experience, education, certifications, skills, projects } from '../data/index.js';
-import { getCollection } from 'astro:content';
 
-const allPosts = await getCollection('blog');
-const recentPosts = [...allPosts]
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
-  .slice(0, 4);
-
-function fmtDate(d) {
-  try {
-    return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-  } catch { return d; }
-}
+const navLinks = [
+  { num: '01', label: 'About', href: '/#about' },
+  { num: '02', label: 'Experience', href: '/#experience' },
+  { num: '03', label: 'Projects', href: '/#projects' },
+  { num: '04', label: 'Skills', href: '/#skills' },
+];
 ---
 
-<Layout title="Home" description="Muhammad Alkam Alfariz — Infrastructure Engineer specializing in IT automation, homelab systems, and computer vision.">
+<Layout title="Home" navLinks={navLinks} description="Muhammad Alkam Alfariz — Infrastructure Engineer specializing in IT automation, homelab systems, and computer vision.">
 
-  <!-- ── Hero ── -->
+  <!-- ── Hero / About ── -->
   <section id="about" aria-labelledby="hero-title">
     <div class="hero">
       <p class="hero-eyebrow">Infrastructure Engineer · Tangerang, Indonesia</p>
@@ -45,7 +40,7 @@ function fmtDate(d) {
     <div class="section">
       <div class="section-header">
         <p class="section-label">
-          <span class="section-label-num">01</span>About
+          <span class="section-label-num">About</span>
         </p>
       </div>
       <div class="about-grid">
@@ -57,8 +52,8 @@ function fmtDate(d) {
             and operational simplicity.
           </p>
           <p>
-            Outside of work I maintain a homelab that runs 15+ services, contribute
-            to open tooling for homelab automation, and write about self-hosting.
+            Outside of work I maintain a homelab that runs 15+ services
+            and contribute to open tooling for homelab automation.
           </p>
         </div>
         <div>
@@ -86,7 +81,7 @@ function fmtDate(d) {
     <div class="section">
       <div class="section-header">
         <p class="section-label">
-          <span class="section-label-num">02</span>Experience
+          <span class="section-label-num">Experience</span>
         </p>
       </div>
       {experience.map(job => (
@@ -114,7 +109,7 @@ function fmtDate(d) {
     <div class="section">
       <div class="section-header">
         <p class="section-label">
-          <span class="section-label-num">03</span>Projects
+          <span class="section-label-num">Projects</span>
         </p>
       </div>
       {projects.map((p, i) => (
@@ -144,7 +139,7 @@ function fmtDate(d) {
     <div class="section">
       <div class="section-header">
         <p class="section-label">
-          <span class="section-label-num">04</span>Skills
+          <span class="section-label-num">Skills</span>
         </p>
       </div>
       <div>
@@ -160,46 +155,12 @@ function fmtDate(d) {
     </div>
   </section>
 
-  <!-- ── Writing ── -->
-  <section id="writing" aria-labelledby="writing-title">
-    <div class="section">
-      <div class="section-header">
-        <p class="section-label">
-          <span class="section-label-num">05</span>Writing
-        </p>
-      </div>
-      {recentPosts.length === 0 ? (
-        <p>No posts yet.</p>
-      ) : (
-        <div>
-          {recentPosts.map(post => {
-            const wc = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
-            const rt = Math.max(1, Math.ceil(wc / 200));
-            return (
-              <a href={`/blog/${post.id}`} class="writing-item">
-                <div class="writing-date">{fmtDate(post.data.date)}</div>
-                <div>
-                  <h3 class="writing-title">{post.data.title}</h3>
-                  <div class="writing-meta">{rt} min read</div>
-                  <p class="writing-excerpt">{post.data.description}</p>
-                </div>
-              </a>
-            );
-          })}
-          <div class="writing-item-actions">
-            <a href="/blog/" class="btn btn-outline">All posts →</a>
-          </div>
-        </div>
-      )}
-    </div>
-  </section>
-
   <!-- ── Contact ── -->
   <section id="contact" aria-labelledby="contact-title">
     <div class="section">
       <div class="section-header">
         <p class="section-label">
-          <span class="section-label-num">06</span>Contact
+          <span class="section-label-num">Contact</span>
         </p>
       </div>
       <div class="contact-grid">
