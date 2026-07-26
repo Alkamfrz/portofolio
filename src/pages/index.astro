@@ -70,7 +70,7 @@ function fmt(d) { try { return new Date(d).toLocaleDateString('en-US', { year: '
     <div class="card">
       <h4 class="text-base mb-3 font-semibold" style="font-family: var(--font-sans);">Education</h4>
       {education.map(e => (
-        <div class="mb-4 last:mb-0">
+        <div class="mb-4">
           <div class="text-sm font-medium" style="color: var(--color-text);">{e.degree}</div>
           <div class="text-sm" style="color: var(--color-accent);">{e.school}</div>
           <div class="text-xs" style="color: var(--color-text-muted);">{e.period} — GPA {e.gpa}</div>
