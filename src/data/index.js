@@ -105,12 +105,6 @@ export const certifications = [
   {
     name: 'CCNA',
     issuer: 'Cisco Networking Academy',
-    url: 'https://www.credly.com/badges/fc092e51-2a6d-4a5a-bf3d-a90712db0d30',
-    year: '2020',
-  },
-  {
-    name: 'CCNA: Scaling Networks',
-    issuer: 'Cisco Networking Academy',
     url: 'https://drive.google.com/file/d/1aR2-EXcQ-ByvGxn_ADtM0yL48c9xkPLd/view',
     year: '2020',
   },
