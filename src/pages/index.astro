@@ -57,25 +57,6 @@ import { experience, education, certifications, skills, projects } from '../data
               <div style="font-size: 0.75rem; color: var(--text-muted);">{e.period}</div>
             </div>
           ))}
-          <div style="margin-top: 1.5rem;">
-            <p class="section-label" style="margin-bottom: 0.75rem;">Certifications</p>
-            <div class="cert-grid">
-              {certifications.map(c => (
-                <div class="cert-item">
-                  <div class="cert-name">{c.name}</div>
-                  <div class="cert-meta">
-                    <span class="cert-issuer">{c.issuer}</span>
-                    <span class="cert-year">{c.year}</span>
-                  </div>
-                  {c.url && (
-                    <a href={c.url} class="cert-link" target="_blank" rel="noopener noreferrer">
-                      Show credential ↗
-                    </a>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -167,6 +148,33 @@ import { experience, education, certifications, skills, projects } from '../data
             <div class="skills-tags">
               {items.map(item => <span class="tag">{item}</span>)}
             </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Certifications ── -->
+  <section id="certifications" aria-labelledby="cert-title">
+    <div class="section">
+      <div class="section-header">
+        <p class="section-label">
+          <span class="section-label-num">Certifications</span>
+        </p>
+      </div>
+      <div class="cert-grid">
+        {certifications.map(c => (
+          <div class="cert-item">
+            <div class="cert-name">{c.name}</div>
+            <div class="cert-meta">
+              <span class="cert-issuer">{c.issuer}</span>
+              <span class="cert-year">{c.year}</span>
+            </div>
+            {c.url && (
+              <a href={c.url} class="cert-link" target="_blank" rel="noopener noreferrer">
+                Show credential ↗
+              </a>
+            )}
           </div>
         ))}
       </div>
