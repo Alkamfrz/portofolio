@@ -117,6 +117,18 @@ import { experience, education, certifications, skills, projects } from '../data
           <div class="project-card-tech">
             {p.tech.map(t => <span class="tag">{t}</span>)}
           </div>
+          {p.overview && (
+            <div class="project-overview">
+              <div class="project-overview-item">
+                <span class="project-overview-label">Hosts</span>
+                <span>{p.overview.hosts}</span>
+              </div>
+              <div class="project-overview-item">
+                <span class="project-overview-label">Stacks</span>
+                <span>{p.overview.stacks}</span>
+              </div>
+            </div>
+          )}
           <div class="project-card-links">
             {p.github && <a href={p.github} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">GitHub</a>}
             {p.live && <a href={p.live} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Live ↗</a>}
