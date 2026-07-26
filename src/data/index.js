@@ -98,7 +98,7 @@ export const projects = [
     description: 'Production-grade homelab on Proxmox VE — 7 Docker Compose stacks, VLAN-segmented RouterOS networking, Cloudflare Tunnel ingress, CrowdSec IPS, and Tailscale VPN. Infrastructure-as-code with SOPS+Age encryption, full CI/CD pipeline (169 tests), and one-command deployment.',
     tech: ['Docker', 'Proxmox VE', 'Cloudflare Tunnel', 'CrowdSec', 'HAProxy', 'Tailscale', 'Bash', 'PowerShell'],
     github: 'https://github.com/alkamfrz/home-server-infrastructure',
-    live: 'https://alkamfrz.id',
+    live: 'https://home.alkamfrz.id',
     status: 'active',
   },
   {
