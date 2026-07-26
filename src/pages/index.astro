@@ -1,16 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { experience, education, certifications, skills, projects } from '../data/index.js';
-
-const navLinks = [
-  { num: '01', label: 'About', href: '/#about' },
-  { num: '02', label: 'Experience', href: '/#experience' },
-  { num: '03', label: 'Projects', href: '/#projects' },
-  { num: '04', label: 'Skills', href: '/#skills' },
-];
 ---
 
-<Layout title="Home" navLinks={navLinks} description="Muhammad Alkam Alfariz — Infrastructure Engineer specializing in IT automation, homelab systems, and computer vision.">
+<Layout title="Home" description="Muhammad Alkam Alfariz — Infrastructure Engineer specializing in IT automation, homelab systems, and computer vision.">
 
   <!-- ── Hero / About ── -->
   <section id="about" aria-labelledby="hero-title">

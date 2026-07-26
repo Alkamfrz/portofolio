@@ -4,20 +4,15 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
-  /** Override sidebar nav links when not on homepage */
-  navLinks?: Array<{ label: string; href: string; num: string }>;
 }
 
-const {
-  title,
-  description = 'Muhammad Alkam Alfariz — Infrastructure Engineer.',
-  navLinks = [
-    { num: '01', label: 'About', href: '/#about' },
-    { num: '02', label: 'Experience', href: '/#experience' },
-    { num: '03', label: 'Projects', href: '/#projects' },
-    { num: '04', label: 'Skills', href: '/#skills' },
-  ],
-} = Astro.props;
+const { title, description = 'Muhammad Alkam Alfariz — Infrastructure Engineer.' } = Astro.props;
+
+const navLinks = [
+  { label: 'Experience', href: '/#experience' },
+  { label: 'Projects', href: '/#projects' },
+  { label: 'Skills', href: '/#skills' },
+];
 ---
 
 <!doctype html>
@@ -44,53 +39,29 @@ const {
   </head>
   <body>
 
-    <!-- ── Sidebar ── -->
-    <aside class="sidebar" aria-label="Site navigation">
-      <div class="sidebar-inner">
-        <div class="sidebar-brand">
-          <a href="/" class="sidebar-name">Alkam<span class="accent">.</span></a>
-          <p class="sidebar-sub">Infrastructure Engineer<br>Tangerang, Indonesia</p>
-          <button id="theme-btn" class="theme-btn" aria-label="Toggle theme">
-            <svg id="icon-sun" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-            <svg id="icon-moon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-            <span id="theme-label">Light mode</span>
-          </button>
-        </div>
+    <!-- ── Top Navbar ── -->
+    <header class="navbar" role="banner">
+      <div class="navbar-inner">
+        <a href="/" class="navbar-brand">Alkam<span class="accent">.</span></a>
 
-        <nav class="sidebar-nav" aria-label="Main sections">
+        <nav class="navbar-links" aria-label="Main navigation">
           {navLinks.map(link => (
-            <a href={link.href} class="nav-item">
-              <span class="nav-num">{link.num}</span>{link.label}
-            </a>
+            <a href={link.href} class="navbar-link">{link.label}</a>
           ))}
         </nav>
 
-        <div class="sidebar-links">
-          <a href="https://github.com/alkamfrz" target="_blank" rel="noopener noreferrer" class="sidebar-link">GitHub</a>
-          <a href="https://linkedin.com/in/alkamfrz" target="_blank" rel="noopener noreferrer" class="sidebar-link">LinkedIn</a>
-          <a href="mailto:alkamfrz@gmail.com" class="sidebar-link">Email</a>
-          <a href="/CV_Muhammad_Alkam_Alfariz.pdf" class="sidebar-link accent" download>Download CV</a>
+        <div class="navbar-actions">
+          <a href="/CV_Muhammad_Alkam_Alfariz.pdf" class="navbar-link-btn" download>CV ↓</a>
+          <button id="theme-btn" class="navbar-link-btn" aria-label="Toggle theme">
+            <svg id="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
         </div>
       </div>
-    </aside>
+    </header>
 
-    <!-- ── Mobile top bar ── -->
-    <div class="mobile-bar" aria-label="Mobile navigation">
-      <a href="/" class="mobile-name">Alkam<span class="accent">.</span></a>
-      <div class="mobile-actions">
-        <a href="/blog/" class="mobile-link">Writing</a>
-        <a href="/CV_Muhammad_Alkam_Alfariz.pdf" class="mobile-link" download>CV</a>
-        <button id="mobile-theme-btn" class="mobile-theme-btn" aria-label="Toggle theme">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- ── Scroll progress ── -->
-    <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
-
-    <!-- ── Main ── -->
-    <div class="main-wrapper">
+    <!-- ── Page ── -->
+    <div class="page-wrapper">
       <main class="main-content" id="main-content">
         <slot />
       </main>
@@ -98,58 +69,45 @@ const {
 
     <script is:inline>
       (function() {
-        // ── Theme (proper closure — theme lives in closure, not outer scope) ──
-        function makeThemeToggle(btnId, mobileBtnId) {
-          function applyTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            var sun = document.getElementById('icon-sun');
-            var moon = document.getElementById('icon-moon');
-            var label = document.getElementById('theme-label');
-            if (sun && moon) {
-              sun.style.display = theme === 'dark' ? 'block' : 'none';
-              moon.style.display = theme === 'dark' ? 'none' : 'block';
-            }
-            if (label) label.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
-            // Update mobile icon too
-            var mbBtn = document.getElementById(mobileBtnId);
-            if (mbBtn) {
-              mbBtn.innerHTML = theme === 'dark'
-                ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>'
-                : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
-            }
+        // ── Theme toggle ──
+        var currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+
+        function applyTheme(theme) {
+          document.documentElement.setAttribute('data-theme', theme);
+          localStorage.setItem('theme', theme);
+          var sun = document.getElementById('icon-sun');
+          var moon = document.getElementById('icon-moon');
+          if (sun && moon) {
+            sun.style.display = theme === 'dark' ? 'block' : 'none';
+            moon.style.display = theme === 'dark' ? 'none' : 'block';
           }
+        }
 
-          var currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-          applyTheme(currentTheme);
+        applyTheme(currentTheme);
 
-          function toggle() {
+        var btn = document.getElementById('theme-btn');
+        if (btn) {
+          btn.addEventListener('click', function() {
             currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
             applyTheme(currentTheme);
-          }
-
-          var btn = document.getElementById(btnId);
-          if (btn) btn.addEventListener('click', toggle);
-          var mbBtn = document.getElementById(mobileBtnId);
-          if (mbBtn) mbBtn.addEventListener('click', toggle);
+          });
         }
-        makeThemeToggle('theme-btn', 'mobile-theme-btn');
 
-        // ── Active nav on scroll (homepage only — sections only exist there) ──
+        // ── Active nav on scroll ──
         var sections = document.querySelectorAll('section[id]');
-        var navItems = document.querySelectorAll('.nav-item');
-        if (sections.length > 0 && navItems.length > 0) {
+        var navLinks = document.querySelectorAll('.navbar-link');
+        if (sections.length > 0) {
           function updateNav() {
-            var scrollY = window.scrollY + 120;
+            var scrollY = window.scrollY + 100;
             var found = false;
             sections.forEach(function(sec) {
               if (found) return;
               var top = sec.offsetTop;
               var height = sec.offsetHeight;
               if (scrollY >= top && scrollY < top + height) {
-                navItems.forEach(function(n) {
+                navLinks.forEach(function(n) {
                   n.classList.remove('active');
-                  if (n.getAttribute('data-section') === sec.id) {
+                  if (n.getAttribute('href') === '#' + sec.id) {
                     n.classList.add('active');
                     found = true;
                   }
@@ -159,15 +117,6 @@ const {
           }
           window.addEventListener('scroll', updateNav, { passive: true });
           updateNav();
-        }
-
-        // ── Scroll progress bar ──
-        var bar = document.getElementById('scroll-progress');
-        if (bar) {
-          window.addEventListener('scroll', function() {
-            var h = document.documentElement.scrollHeight - window.innerHeight;
-            bar.style.width = h > 0 ? (window.scrollY / h * 100) + '%' : '0%';
-          }, { passive: true });
         }
       })();
     </script>
