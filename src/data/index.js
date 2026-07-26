@@ -103,7 +103,7 @@ export const certifications = [
     year: '2023',
   },
   {
-    name: 'CCNA',
+    name: 'CCNA: Scaling Networks',
     issuer: 'Cisco Networking Academy',
     url: 'https://drive.google.com/file/d/1aR2-EXcQ-ByvGxn_ADtM0yL48c9xkPLd/view',
     year: '2020',
