@@ -24,7 +24,7 @@ export const experience = [
     achievements: [
       'Deployed 50+ IoT devices, printers, and APs; resolved 20+ weekly connectivity incidents.',
       'Reduced network downtime from 8% to 6% (25% improvement) via monitoring scripts and VLAN segmentation.',
-      'Automated data audits with Python (BERT NLP, fuzzy search) — cut manual effort by 15 hrs/week (40%). Improved compliance accuracy from 85% to 98%.',
+      'Automated data audits with Python (BERT NLP, fuzzy search) — cut manual effort by 15 hrs/week (40%).',
       'Upgraded 30+ HDDs to SSDs (~3× faster boot); crimped 150+ Cat6 cables achieving 99% uptime during 500+ critical surgeries.',
       'Trained 40+ staff on Code White System via 8 workshops; reduced procedural errors by 50%.',
     ],
@@ -82,19 +82,21 @@ export const certifications = [
 ];
 
 export const skills = {
-  Languages: ['Python', 'JavaScript', 'TypeScript', 'C++', 'Java', 'PHP', 'Bash', 'PowerShell', 'SQL'],
-  Databases: ['MySQL', 'PostgreSQL', 'Oracle Database', 'Firebase'],
-  Infrastructure: ['Docker Compose', 'Proxmox VE', 'HAProxy', 'Cloudflare Tunnel', 'Technitium DNS', 'Active Directory', 'OpenVPN', 'Tailscale', 'NFS'],
-  Security: ['CrowdSec', 'Cloudflare WAF', 'Fail2ban', 'UFW', 'Jira', 'ZoneMinder'],
-  Systems: ['Linux (openSUSE, Ubuntu)', 'macOS Sequoia', 'Windows Server'],
+  Languages: ['Python', 'JavaScript', 'TypeScript', 'Bash', 'PowerShell', 'SQL', 'C++', 'Java'],
+  Databases: ['PostgreSQL', 'MySQL', 'Oracle Database', 'Firebase'],
+  Containers: ['Docker', 'Docker Compose', 'Proxmox VE'],
+  Networking: ['Cloudflare Tunnel', 'HAProxy', 'Tailscale', 'Unbound DNS', 'VLAN', 'nftables', 'RouterOS'],
+  Security: ['CrowdSec', 'Cloudflare WAF', 'Fail2ban', 'UFW'],
+  'Identity & Access': ['Active Directory', 'OpenVPN'],
+  Systems: ['Linux', 'macOS', 'Windows Server'],
 };
 
 export const projects = [
   {
     id: 'homelab',
-    title: 'Home Server Infrastructure',
-    description: 'Production-grade homelab on Proxmox VE with VLAN-segmented MikroTik networking. Runs 15+ Docker Compose stacks, Cloudflare Tunnel for zero-WAN ingress, Tailscale VPN.',
-    tech: ['Proxmox VE', 'Docker Compose', 'MikroTik', 'Cloudflare Tunnel', 'Tailscale'],
+    title: 'Homelab Infrastructure',
+    description: 'Production-grade homelab on Proxmox VE — 7 Docker Compose stacks, VLAN-segmented RouterOS networking, Cloudflare Tunnel ingress, CrowdSec IPS, and Tailscale VPN. Infrastructure-as-code with SOPS+Age encryption, full CI/CD pipeline (169 tests), and one-command deployment.',
+    tech: ['Docker', 'Proxmox VE', 'Cloudflare Tunnel', 'CrowdSec', 'HAProxy', 'Tailscale', 'Bash', 'PowerShell'],
     github: 'https://github.com/alkamfrz/home-server-infrastructure',
     live: 'https://alkamfrz.id',
     status: 'active',
@@ -121,16 +123,8 @@ export const projects = [
     title: 'Portfolio Website',
     description: 'This site — Astro static site, editorial top-nav layout, zero runtime framework. Google Fonts, pure CSS custom properties.',
     tech: ['Astro', 'TypeScript', 'CSS', 'Docker'],
-    github: 'https://github.com/Alkamfrz/portofolio',
+    github: 'https://github.com/alkamfrz/portofolio',
     live: 'https://alkamfrz.id',
-    status: 'active',
-  },
-  {
-    id: 'automation',
-    title: 'Homelab Automation Suite',
-    description: 'PowerShell + Bash pipeline for Proxmox backups, system updates, Docker Compose deployments. Telegram bot for real-time service health alerts.',
-    tech: ['PowerShell', 'Bash', 'Telegram API', 'Proxmox API'],
-    github: 'https://github.com/alkamfrz/homelab-automation',
     status: 'active',
   },
 ];
