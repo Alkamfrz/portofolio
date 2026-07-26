@@ -237,7 +237,7 @@ function fmtDate(d) {
             <textarea id="contact-message" name="message" class="form-textarea" placeholder="Your message..." required></textarea>
             <span class="form-error" id="message-error" aria-live="polite"></span>
           </div>
-          <div id="contact-status" class="form-status" role="status" aria-live="polite"></div>
+          <div id="contact-status" class="form-status" role="status" aria-live="polite" style="display:none;"></div>
           <button type="submit" id="contact-submit" class="btn btn-primary">Send message</button>
         </form>
       </div>
@@ -265,7 +265,14 @@ function fmtDate(d) {
 
     function clearErrors() {
       Object.values(errors).forEach(function(e) { if (e) e.textContent = ''; });
-      if (statusEl) { statusEl.textContent = ''; statusEl.className = 'form-status'; }
+      if (statusEl) { statusEl.style.display = 'none'; statusEl.textContent = ''; statusEl.className = 'form-status'; }
+    }
+
+    function showStatus(msg, type) {
+      if (!statusEl) return;
+      statusEl.textContent = msg;
+      statusEl.className = 'form-status ' + type;
+      statusEl.style.display = 'block';
     }
 
     function validate() {
@@ -305,15 +312,15 @@ function fmtDate(d) {
           }),
         });
         if (resp.ok) {
-          if (statusEl) { statusEl.textContent = "Message sent. I'll be in touch soon."; statusEl.className = 'form-status success'; }
+          showStatus("Message sent. I'll be in touch soon.", 'success');
           form.reset();
         } else if (resp.status === 429) {
-          if (statusEl) { statusEl.textContent = 'Too many requests. Please wait.'; statusEl.className = 'form-status error'; }
+          showStatus('Too many requests. Please wait.', 'error');
         } else {
-          if (statusEl) { statusEl.textContent = 'Something went wrong. Try again.'; statusEl.className = 'form-status error'; }
+          showStatus('Something went wrong. Try again.', 'error');
         }
       } catch(err) {
-        if (statusEl) { statusEl.textContent = 'Network error. Try emailing directly.'; statusEl.className = 'form-status error'; }
+        showStatus('Network error. Try emailing directly.', 'error');
       }
       if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send message'; }
     });

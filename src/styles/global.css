@@ -725,7 +725,7 @@ code {
 .form-textarea:focus { border-color: var(--accent); background: var(--bg-surface); }
 .form-textarea { min-height: 6rem; resize: vertical; line-height: 1.6; }
 .form-error { font-size: 0.75rem; color: var(--red); margin-top: 0.3rem; display: block; }
-.form-status { font-size: 0.875rem; padding: 0.6rem 0.875rem; margin-bottom: 0.75rem; border-radius: 5px; border: 1px solid; }
+.form-status { font-size: 0.875rem; padding: 0.6rem 0.875rem; border-radius: 5px; border: 1px solid; display: none; }
 .form-status.success { border-color: var(--green); color: var(--green); background: rgba(122, 170, 138, 0.08); }
 .form-status.error { border-color: var(--red); color: var(--red); background: rgba(196, 106, 90, 0.08); }
 

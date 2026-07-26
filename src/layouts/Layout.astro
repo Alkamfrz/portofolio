@@ -4,9 +4,21 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  /** Override sidebar nav links when not on homepage */
+  navLinks?: Array<{ label: string; href: string; num: string }>;
 }
 
-const { title, description = 'Muhammad Alkam Alfariz — Infrastructure Engineer.' } = Astro.props;
+const {
+  title,
+  description = 'Muhammad Alkam Alfariz — Infrastructure Engineer.',
+  navLinks = [
+    { num: '01', label: 'About', href: '/#about' },
+    { num: '02', label: 'Experience', href: '/#experience' },
+    { num: '03', label: 'Projects', href: '/#projects' },
+    { num: '04', label: 'Skills', href: '/#skills' },
+    { num: '05', label: 'Writing', href: '/blog/' },
+  ],
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -28,7 +40,6 @@ const { title, description = 'Muhammad Alkam Alfariz — Infrastructure Engineer
       (function() {
         var theme = localStorage.getItem('theme') || 'dark';
         document.documentElement.setAttribute('data-theme', theme);
-        window.__currentTheme = theme;
       })();
     </script>
   </head>
@@ -48,21 +59,11 @@ const { title, description = 'Muhammad Alkam Alfariz — Infrastructure Engineer
         </div>
 
         <nav class="sidebar-nav" aria-label="Main sections">
-          <a href="#about" class="nav-item" data-section="about">
-            <span class="nav-num">01</span>About
-          </a>
-          <a href="#experience" class="nav-item" data-section="experience">
-            <span class="nav-num">02</span>Experience
-          </a>
-          <a href="#projects" class="nav-item" data-section="projects">
-            <span class="nav-num">03</span>Projects
-          </a>
-          <a href="#skills" class="nav-item" data-section="skills">
-            <span class="nav-num">04</span>Skills
-          </a>
-          <a href="#writing" class="nav-item" data-section="writing">
-            <span class="nav-num">05</span>Writing
-          </a>
+          {navLinks.map(link => (
+            <a href={link.href} class="nav-item">
+              <span class="nav-num">{link.num}</span>{link.label}
+            </a>
+          ))}
         </nav>
 
         <div class="sidebar-links">
@@ -78,6 +79,7 @@ const { title, description = 'Muhammad Alkam Alfariz — Infrastructure Engineer
     <div class="mobile-bar" aria-label="Mobile navigation">
       <a href="/" class="mobile-name">Alkam<span class="accent">.</span></a>
       <div class="mobile-actions">
+        <a href="/blog/" class="mobile-link">Writing</a>
         <a href="/CV_Muhammad_Alkam_Alfariz.pdf" class="mobile-link" download>CV</a>
         <button id="mobile-theme-btn" class="mobile-theme-btn" aria-label="Toggle theme">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
@@ -97,51 +99,68 @@ const { title, description = 'Muhammad Alkam Alfariz — Infrastructure Engineer
 
     <script is:inline>
       (function() {
-        // ── Theme ──
-        function applyTheme(theme) {
-          document.documentElement.setAttribute('data-theme', theme);
-          localStorage.setItem('theme', theme);
-          window.__currentTheme = theme;
-          var sun = document.getElementById('icon-sun');
-          var moon = document.getElementById('icon-moon');
-          var label = document.getElementById('theme-label');
-          if (sun && moon) {
-            sun.style.display = theme === 'dark' ? 'block' : 'none';
-            moon.style.display = theme === 'dark' ? 'none' : 'block';
+        // ── Theme (proper closure — theme lives in closure, not outer scope) ──
+        function makeThemeToggle(btnId, mobileBtnId) {
+          function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            var sun = document.getElementById('icon-sun');
+            var moon = document.getElementById('icon-moon');
+            var label = document.getElementById('theme-label');
+            if (sun && moon) {
+              sun.style.display = theme === 'dark' ? 'block' : 'none';
+              moon.style.display = theme === 'dark' ? 'none' : 'block';
+            }
+            if (label) label.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
+            // Update mobile icon too
+            var mbBtn = document.getElementById(mobileBtnId);
+            if (mbBtn) {
+              mbBtn.innerHTML = theme === 'dark'
+                ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>'
+                : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+            }
           }
-          if (label) label.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
+
+          var currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+          applyTheme(currentTheme);
+
+          function toggle() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(currentTheme);
+          }
+
+          var btn = document.getElementById(btnId);
+          if (btn) btn.addEventListener('click', toggle);
+          var mbBtn = document.getElementById(mobileBtnId);
+          if (mbBtn) mbBtn.addEventListener('click', toggle);
         }
-        var theme = document.documentElement.getAttribute('data-theme') || 'dark';
-        applyTheme(theme);
+        makeThemeToggle('theme-btn', 'mobile-theme-btn');
 
-        var btn = document.getElementById('theme-btn');
-        if (btn) btn.addEventListener('click', function() { applyTheme(theme === 'dark' ? 'light' : 'dark'); });
-        var mb = document.getElementById('mobile-theme-btn');
-        if (mb) mb.addEventListener('click', function() { applyTheme(theme === 'dark' ? 'light' : 'dark'); });
-
-        // ── Active nav on scroll ──
+        // ── Active nav on scroll (homepage only — sections only exist there) ──
         var sections = document.querySelectorAll('section[id]');
         var navItems = document.querySelectorAll('.nav-item');
-        function updateNav() {
-          var scrollY = window.scrollY + 100;
-          var found = false;
-          sections.forEach(function(sec) {
-            if (found) return;
-            var top = sec.offsetTop;
-            var height = sec.offsetHeight;
-            if (scrollY >= top && scrollY < top + height) {
-              navItems.forEach(function(n) {
-                n.classList.remove('active');
-                if (n.getAttribute('data-section') === sec.id) {
-                  n.classList.add('active');
-                  found = true;
-                }
-              });
-            }
-          });
+        if (sections.length > 0 && navItems.length > 0) {
+          function updateNav() {
+            var scrollY = window.scrollY + 120;
+            var found = false;
+            sections.forEach(function(sec) {
+              if (found) return;
+              var top = sec.offsetTop;
+              var height = sec.offsetHeight;
+              if (scrollY >= top && scrollY < top + height) {
+                navItems.forEach(function(n) {
+                  n.classList.remove('active');
+                  if (n.getAttribute('data-section') === sec.id) {
+                    n.classList.add('active');
+                    found = true;
+                  }
+                });
+              }
+            });
+          }
+          window.addEventListener('scroll', updateNav, { passive: true });
+          updateNav();
         }
-        window.addEventListener('scroll', updateNav, { passive: true });
-        updateNav();
 
         // ── Scroll progress bar ──
         var bar = document.getElementById('scroll-progress');
