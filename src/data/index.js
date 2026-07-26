@@ -129,7 +129,7 @@ export const certifications = [
   {
     name: 'JavaScript Essentials 1',
     issuer: 'Cisco',
-    url: 'https://www.credly.com/badges/fc092e51-2a6d-4a5a-bf3d-a90712db0d30',
+    url: 'https://www.credly.com/badges/82190ef0-1788-4343-8bab-95067d452406',
     year: '2023',
   },
   {
