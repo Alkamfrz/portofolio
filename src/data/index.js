@@ -105,7 +105,7 @@ export const certifications = [
   {
     name: 'CCNA',
     issuer: 'Cisco Networking Academy',
-    url: null,
+    url: 'https://www.credly.com/badges/fc092e51-2a6d-4a5a-bf3d-a90712db0d30',
     year: '2020',
   },
   {
@@ -117,7 +117,7 @@ export const certifications = [
   {
     name: 'Oracle Database 11g: Program with PL/SQL',
     issuer: 'Oracle',
-    url: null,
+    url: 'https://drive.google.com/file/d/1pf-C3R_vwkTuvOUa5b9JtWOyVkVISTxT/view',
     year: '2022',
   },
   {
