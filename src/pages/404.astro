@@ -2,13 +2,13 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="404 — Not Found">
-<section class="min-h-[60vh]" flex items-center justify-center py-20">
-  <div class="text-center max-w-sm">
-    <div class="text-7xl font-bold mb-2" style="color: var(--color-text-muted);">404</div>
-    <h1 id="error-title" class="text-xl font-semibold mb-2" style="color: var(--color-text-primary);">Page not found</h1>
+<Layout title="Not Found">
+<section class="section-hidden" style="min-height: 50vh;" aria-labelledby="error-title">
+  <div class="measure">
+    <div class="text-6xl mb-2" style="color: var(--color-text-muted); font-family: var(--font-serif);">404</div>
+    <h1 id="error-title" class="text-2xl mb-2">Page not found</h1>
     <p class="text-sm mb-6" style="color: var(--color-text-secondary);">The page you're looking for doesn't exist or has been moved.</p>
-    <a href="/" id="go-home-link" class="btn btn-primary">Go Home</a>
+    <a href="/" class="btn btn-primary">Back home</a>
   </div>
 </section>
 </Layout>

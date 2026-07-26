@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { projects } from '../data/projects.js';
-import { skills } from '../data/skills.js';
+import { experience, education, organizations, certifications, skills } from '../data/experience.js';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog');
@@ -10,8 +10,7 @@ const recentPosts = [...allPosts]
   .slice(0, 2);
 
 const featured = projects.filter(p => p.featured).slice(0, 3);
-const skillList = Object.values(skills).flat();
-const allTags = [...new Set(projects.flatMap(p => p.techStack))].sort();
+const allExperience = [...experience, ...organizations];
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -25,99 +24,108 @@ const jsonLd = {
 function fmt(d) { try { return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }); } catch { return d; } }
 ---
 
-<Layout title="Home" description="Muhammad Alkam Alfariz – Informatics Engineering graduate specializing in IT infrastructure, automation, and systems.">
-<script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script><!-- Hero -->
-<section class="py-20 sm:py-28 md:py-36" aria-labelledby="hero-name">
-  <div class="max-w-3xl">
-    <p class="text-sm font-medium mb-4" style="color: var(--color-accent);">Hi, I'm</p>
-    <h1 id="hero-name" class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.1] mb-4" style="color: var(--color-text-primary);">
-      Muhammad Alkam<br>
-      <span style="color: var(--color-text-secondary);">Alfariz</span>
-    </h1>
-    <p class="text-lg sm:text-xl mb-8 max-w-xl" style="color: var(--color-text-secondary); line-height: 1.6;">
-      Informatics engineer building infrastructure, automation, and computer vision systems.
-      Graduated with a GPA of 3.90/4.00 from Universitas Mercu Buana.
-    </p>
-    <div class="flex flex-wrap gap-3">
-      <a href="#projects" class="btn btn-primary">View Projects</a>
-      <a href="/CV_Muhammad_Alkam_Alfariz.pdf" class="btn btn-secondary" download>Download CV</a>
-      <a href="#contact" class="btn btn-ghost">Get in Touch</a>
-    </div>
-  </div>
+<Layout title="Home" description={jsonLd['@graph'][1].description}>
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
 
-  <!-- Metrics -->
-  <div class="flex flex-wrap gap-6 sm:gap-10 mt-12">
-    <div>
-      <div class="text-2xl font-bold metric-value" style="color: var(--color-text-primary);">{projects.length}</div>
-      <div class="text-sm" style="color: var(--color-text-muted);">Projects</div>
-    </div>
-    <div>
-      <div class="text-2xl font-bold metric-value" style="color: var(--color-text-primary);">{projects.filter(p => p.status === 'active').length}</div>
-      <div class="text-sm" style="color: var(--color-text-muted);">Active</div>
-    </div>
-    <div>
-      <div class="text-2xl font-bold metric-value" style="color: var(--color-text-primary);">{skillList.length}</div>
-      <div class="text-sm" style="color: var(--color-text-muted);">Skills</div>
-    </div>
-    <div>
-      <div class="text-2xl font-bold metric-value" style="color: var(--color-text-primary);">{allTags.length}</div>
-      <div class="text-sm" style="color: var(--color-text-muted);">Technologies</div>
-    </div>
+<!-- Hero — editorial statement -->
+<section aria-labelledby="hero-title" class="section-hidden">
+  <span class="section-label">Muhammad Alkam Alfariz</span>
+  <h1 id="hero-title" class="article-title mb-4">
+    Infrastructure engineer,<br>
+    <span style="color: var(--color-text-secondary);">automation builder.</span>
+  </h1>
+  <p class="dek mb-8">
+    Informatics Engineering graduate (GPA 3.90/4.00) specializing in IT infrastructure, 
+    system automation, and computer vision. I build resilient systems at the intersection 
+    of ops and software. Currently at Sinarmas Multifinance.
+  </p>
+  <div class="flex flex-wrap gap-3">
+    <a href="/CV_Muhammad_Alkam_Alfariz.pdf" class="btn btn-primary" download>Download CV</a>
+    <a href="#contact" class="btn btn-outline">Get in touch</a>
+    <a href="#projects" class="btn btn-ghost">View projects →</a>
   </div>
 </section>
 
-<div style="height: 1px; background: var(--color-border-subtle);"></div>
+<hr class="rule my-16">
 
-<!-- About -->
-<section id="about" class="py-16 sm:py-20 section-hidden" aria-labelledby="about-title">
-  <h2 id="about-title" class="text-sm font-semibold tracking-widest uppercase mb-2" style="color: var(--color-accent);">About</h2>
-  <p class="text-2xl sm:text-3xl font-bold mb-6" style="color: var(--color-text-primary);">
-    Infrastructure meets innovation.
-  </p>
-  <div class="grid md:grid-cols-2 gap-8">
-    <div>
-      <p class="mb-4" style="color: var(--color-text-secondary); line-height: 1.7;">
-        Informatics Engineering graduate from Universitas Mercu Buana (GPA 3.90/4.00) with proven expertise in IT infrastructure, system automation, and cross-platform development. Experienced with homelab deployments, Docker Compose stacks, computer vision research, and CI/CD pipelines.
-      </p>
-      <p style="color: var(--color-text-secondary); line-height: 1.7;">
-        <span class="font-semibold" style="color: var(--color-text-primary);">Education:</span> S.Kom. — Informatics Engineering<br />
-        <span class="font-semibold" style="color: var(--color-text-primary);">Focus:</span> IT Infrastructure, Automation, AI
-      </p>
+<!-- About / Bio essay -->
+<section id="about" class="section-hidden measure-wide" aria-labelledby="about-title">
+  <span class="section-label">About</span>
+  <h2 id="about-title" class="text-3xl mb-6">Infrastructure meets innovation</h2>
+  <div class="flex flex-col gap-4" style="color: var(--color-text-secondary);">
+    <p>
+      I'm an Informatics Engineering graduate from Universitas Mercu Buana with a proven 
+      track record in IT infrastructure, system automation, and cross-platform development. 
+      My experience spans healthtech (Halodoc), healthcare facilities (EMTEK Group), 
+      and financial services (Sinarmas Multifinance).
+    </p>
+    <p>
+      I build things that work — Docker Compose stacks, computer vision pipelines, 
+      automated audit scripts, and zero-WAN homelab deployments. Every project is 
+      an opportunity to reduce friction and increase reliability.
+    </p>
+  </div>
+
+  <div class="grid-2 mt-8 gap-6">
+    <div class="card">
+      <h4 class="text-base mb-3 font-semibold" style="font-family: var(--font-sans);">Education</h4>
+      {education.map(e => (
+        <div class="mb-4 last:mb-0">
+          <div class="text-sm font-medium" style="color: var(--color-text);">{e.degree}</div>
+          <div class="text-sm" style="color: var(--color-accent);">{e.school}</div>
+          <div class="text-xs" style="color: var(--color-text-muted);">{e.period} — GPA {e.gpa}</div>
+        </div>
+      ))}
     </div>
-    <div>
-      <p class="font-semibold mb-3 text-sm" style="color: var(--color-text-primary);">Certifications</p>
-      <ul class="space-y-2">
-        <li class="flex items-start gap-2 text-sm" style="color: var(--color-text-secondary);">
-          <span style="color: var(--color-accent);">→</span> Google IT Automation with Python
-        </li>
-        <li class="flex items-start gap-2 text-sm" style="color: var(--color-text-secondary);">
-          <span style="color: var(--color-accent);">→</span> Networking for Beginners (Codepolitan)
-        </li>
-        <li class="flex items-start gap-2 text-sm" style="color: var(--color-text-secondary);">
-          <span style="color: var(--color-accent);">→</span> Programming with Python (Dicoding)
-        </li>
-        <li class="flex items-start gap-2 text-sm" style="color: var(--color-text-secondary);">
-          <span style="color: var(--color-accent);">→</span> DevOps Fundamentals (Dicoding)
-        </li>
+    <div class="card">
+      <h4 class="text-base mb-3 font-semibold" style="font-family: var(--font-sans);">Certifications</h4>
+      <ul class="flex flex-col gap-2">
+        {certifications.map(c => (
+          <li class="text-sm" style="color: var(--color-text-secondary);">→ {c}</li>
+        ))}
       </ul>
     </div>
   </div>
 </section>
 
-<div style="height: 1px; background: var(--color-border-subtle);"></div>
+<hr class="rule my-16">
+
+<!-- Experience Timeline -->
+<section id="experience" class="section-hidden" aria-labelledby="exp-title">
+  <span class="section-label">Experience</span>
+  <h2 id="exp-title" class="text-3xl mb-8">Career &amp; Organizations</h2>
+  <div class="flex flex-col gap-0">
+    {allExperience.map((job, i) => (
+      <div class="flex flex-col sm:flex-row sm:gap-6 py-5" style="border-bottom: 1px solid var(--color-border-light);">
+        <div class="text-sm shrink-0 mb-1 sm:mb-0 sm:w-36" style="color: var(--color-text-muted); font-family: var(--font-mono);">{job.period}</div>
+        <div>
+          <div class="font-medium" style="font-family: var(--font-serif); font-size: var(--text-lg);">{job.role}</div>
+          <div class="text-sm mb-1" style="color: var(--color-accent);">{job.organization} — <span style="color: var(--color-text-muted);">{job.location}</span></div>
+          <div class="text-sm mb-2" style="color: var(--color-text-secondary);">{job.description}</div>
+          <ul class="flex flex-col gap-1">
+            {job.achievements.slice(0, 3).map(a => (
+              <li class="text-sm" style="color: var(--color-text-secondary);">&nbsp;→ {a}</li>
+            ))}
+            {job.achievements.length > 3 && (
+              <li class="text-xs" style="color: var(--color-text-muted);">+{job.achievements.length - 3} more</li>
+            )}
+          </ul>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<hr class="rule my-16">
 
 <!-- Skills -->
-<section id="skills" class="py-16 sm:py-20 section-hidden" aria-labelledby="skills-title">
-  <div class="flex items-center justify-between mb-6">
-    <div>
-      <h2 id="skills-title" class="text-sm font-semibold tracking-widest uppercase" style="color: var(--color-accent);">Skills</h2>
-      <p class="text-2xl sm:text-3xl font-bold mt-1" style="color: var(--color-text-primary);">Tech Stack</p>
-    </div>
-  </div>
-  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+<section id="skills" class="section-hidden" aria-labelledby="skills-title">
+  <span class="section-label">Skills</span>
+  <h2 id="skills-title" class="text-3xl mb-8">Toolkit</h2>
+  <div class="grid-3">
     {Object.entries(skills).map(([category, items]) => (
-      <div class="card skill-category">
-        <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color: var(--color-accent);">{category}</p>
+      <div class="card">
+        <div class="text-xs uppercase tracking-wider mb-3" style="color: var(--color-accent);">{category}</div>
         <div class="flex flex-wrap gap-1.5">
           {items.map(item => <span class="tag">{item}</span>)}
         </div>
@@ -126,142 +134,168 @@ function fmt(d) { try { return new Date(d).toLocaleDateString('en-US', { year: '
   </div>
 </section>
 
-<div style="height: 1px; background: var(--color-border-subtle);"></div>
-
-<!-- Experience -->
-<section id="experience" class="py-16 sm:py-20 section-hidden" aria-labelledby="exp-title">
-  <h2 id="exp-title" class="text-sm font-semibold tracking-widest uppercase mb-2" style="color: var(--color-accent);">Experience</h2>
-  <p class="text-2xl sm:text-3xl font-bold mb-8" style="color: var(--color-text-primary);">Career History</p>
-  <div class="space-y-0">
-    {[
-      { period: '2025 — Present', title: 'Infrastructure Engineer', org: 'Homelab & Self-Hosted', desc: 'Proxmox VE, Docker Compose, HAProxy, Cloudflare Tunnel, Tailscale, MikroTik — 15+ production services.' },
-      { period: '2024 — 2025', title: 'Computer Vision Researcher', org: 'Universitas Mercu Buana', desc: 'RetinaNet-based oil palm ripeness detection. Published on Garuda. PyTorch, OpenCV.' },
-      { period: '2024', title: 'Network Engineer Intern', org: 'IT Services', desc: 'MikroTik routing, VLAN segmentation, firewall policy, CCTV infrastructure, DHCP/DNS management.' },
-      { period: '2023 — 2024', title: 'Freelance IT Support', org: 'Various Clients', desc: 'Active Directory, network troubleshooting, hardware provisioning, technical documentation.' },
-    ].map(job => (
-      <div class="flex flex-col sm:flex-row sm:gap-6 py-5" style="border-bottom: 1px solid var(--color-border-subtle);">
-        <div class="text-sm shrink-0 mb-1 sm:mb-0 sm:w-36" style="color: var(--color-text-muted); font-family: var(--font-mono);">{job.period}</div>
-        <div>
-          <div class="font-semibold" style="color: var(--color-text-primary);">{job.title}</div>
-          <div class="text-sm mb-1" style="color: var(--color-accent);">{job.org}</div>
-          <div class="text-sm" style="color: var(--color-text-secondary);">{job.desc}</div>
-        </div>
-      </div>
-    ))}
-  </div>
-</section>
-
-<div style="height: 1px; background: var(--color-border-subtle);"></div>
+<hr class="rule my-16">
 
 <!-- Featured Projects -->
-<section id="projects" class="py-16 sm:py-20 section-hidden" aria-labelledby="projects-title">
+<section id="projects" class="section-hidden" aria-labelledby="projects-title">
   <div class="flex items-center justify-between mb-6">
     <div>
-      <h2 id="projects-title" class="text-sm font-semibold tracking-widest uppercase" style="color: var(--color-accent);">Projects</h2>
-      <p class="text-2xl sm:text-3xl font-bold mt-1" style="color: var(--color-text-primary);">Featured Work</p>
+      <span class="section-label">Projects</span>
+      <h2 id="projects-title" class="text-3xl mt-2">Featured Work</h2>
     </div>
-    <a href="/projects/" class="btn btn-ghost text-sm hidden sm:inline-flex">View all →</a>
+    <a href="/projects/" class="btn btn-ghost text-sm hidden sm:flex">All projects →</a>
   </div>
 
   {featured.length === 0 ? (
-    <p class="text-sm" style="color: var(--color-text-muted);">No featured projects yet.</p>
+    <p style="color: var(--color-text-muted);" class="text-sm">No featured projects yet.</p>
   ) : (
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="grid-3">
       {featured.map(p => (
-        <article class="card flex flex-col" data-tags={p.techStack.join(',')}>
+        <article class="card flex flex-col">
           <div class="flex items-start justify-between gap-2 mb-2">
-            <h3 class="font-semibold text-sm" style="color: var(--color-text-primary);">{p.title}</h3>
-            {p.status && <span class={`status-led ${p.status}`}>{p.status}</span>}
+            <h3 class="font-semibold" style="font-family: var(--font-serif); font-size: var(--text-lg);">{p.title}</h3>
+            {p.status && <span class={`status ${p.status}`}>{p.status}</span>}
           </div>
           {p.date && <div class="text-xs mb-2" style="color: var(--color-text-muted); font-family: var(--font-mono);">{p.date}</div>}
-          <p class="text-sm flex-1 mb-3" style="color: var(--color-text-secondary); line-height: 1.6;">{p.description}</p>
+          <p class="text-sm flex-1 mb-3" style="color: var(--color-text-secondary);">{p.description}</p>
           <div class="flex flex-wrap gap-1.5 mb-3">
             {p.techStack.map(t => <span class="tag">{t}</span>)}
           </div>
-          <div class="flex flex-wrap gap-2 pt-3" style="border-top: 1px solid var(--color-border-subtle);">
-            {p.githubUrl && <a href={p.githubUrl} class="btn btn-ghost !px-2.5 !py-1 !text-xs github-link" target="_blank" rel="noopener noreferrer">GitHub</a>}
-            {p.journalUrl && <a href={p.journalUrl} class="btn btn-ghost !px-2.5 !py-1 !text-xs journal-link" target="_blank" rel="noopener noreferrer">Journal</a>}
-            {p.liveUrl && <a href={p.liveUrl} class="btn btn-ghost !px-2.5 !py-1 !text-xs live-link" target="_blank" rel="noopener noreferrer">Live</a>}
+          <div class="flex flex-wrap gap-2 pt-3" style="border-top: 1px solid var(--color-border-light);">
+            {p.githubUrl && <a href={p.githubUrl} class="btn btn-ghost" style="padding:0.2rem 0.625rem; font-size:var(--text-xs);" target="_blank" rel="noopener noreferrer">GitHub</a>}
+            {p.journalUrl && <a href={p.journalUrl} class="btn btn-ghost" style="padding:0.2rem 0.625rem; font-size:var(--text-xs);" target="_blank" rel="noopener noreferrer">Journal</a>}
+            {p.liveUrl && <a href={p.liveUrl} class="btn btn-ghost" style="padding:0.2rem 0.625rem; font-size:var(--text-xs);" target="_blank" rel="noopener noreferrer">Live</a>}
           </div>
         </article>
       ))}
     </div>
   )}
-  <a href="/projects/" class="btn btn-ghost text-sm mt-4 sm:hidden inline-flex">View all projects →</a>
+  <a href="/projects/" class="btn btn-ghost text-sm mt-4 sm:hidden inline-flex">All projects →</a>
 </section>
 
-<div style="height: 1px; background: var(--color-border-subtle);"></div>
+<hr class="rule my-16">
 
 <!-- Blog Preview -->
-<section id="blog" class="py-16 sm:py-20 section-hidden blog-preview-section" aria-labelledby="blog-title">
+<section id="blog" class="section-hidden" aria-labelledby="blog-title">
   <div class="flex items-center justify-between mb-6">
     <div>
-      <h2 id="blog-title" class="text-sm font-semibold tracking-widest uppercase" style="color: var(--color-accent);">Blog</h2>
-      <p class="text-2xl sm:text-3xl font-bold mt-1" style="color: var(--color-text-primary);">Latest Posts</p>
+      <span class="section-label">Blog</span>
+      <h2 id="blog-title" class="text-3xl mt-2">Latest Writing</h2>
     </div>
-    <a href="/blog/" class="btn btn-ghost text-sm hidden sm:inline-flex">View all →</a>
+    <a href="/blog/" class="btn btn-ghost text-sm hidden sm:flex">All posts →</a>
   </div>
 
   {recentPosts.length === 0 ? (
-    <p class="text-sm" style="color: var(--color-text-muted);">No posts yet.</p>
+    <p style="color: var(--color-text-muted);" class="text-sm">No posts yet.</p>
   ) : (
-    <div class="grid sm:grid-cols-2 gap-4">
+    <div class="grid-2">
       {recentPosts.map(post => {
         const wc = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
         const rt = Math.max(1, Math.ceil(wc / 200));
         return (
-          <a href={`/blog/${post.id}`} class="card blog-post-card no-underline flex flex-col" style="text-decoration: none;" data-title={post.data.title.toLowerCase()}>
-            <h3 class="font-semibold text-sm mb-1" style="color: var(--color-text-primary);">{post.data.title}</h3>
-            <div class="flex gap-3 text-xs mb-2" style="color: var(--color-text-muted); font-family: var(--font-mono);">
-              <span>{fmt(post.data.date)}</span>
-              <span>{rt} min read</span>
+          <a href={`/blog/${post.id}`} class="card no-underline flex flex-col" style="text-decoration: none;">
+            <div class="text-xs mb-2" style="color: var(--color-text-muted); font-family: var(--font-mono);">
+              {fmt(post.data.date)} · {rt} min read
             </div>
+            <h3 class="font-semibold mb-1" style="font-family: var(--font-serif); font-size: var(--text-lg);">{post.data.title}</h3>
             <p class="text-sm flex-1 mb-2" style="color: var(--color-text-secondary);">{post.data.description}</p>
-            <span class="text-xs font-medium" style="color: var(--color-accent);">Read more →</span>
+            <span class="text-xs font-medium" style="color: var(--color-accent);">Read →</span>
           </a>
         );
       })}
     </div>
   )}
-  <a href="/blog/" class="btn btn-ghost text-sm mt-4 sm:hidden inline-flex">View all posts →</a>
+  <a href="/blog/" class="btn btn-ghost text-sm mt-4 sm:hidden inline-flex">All posts →</a>
 </section>
 
-<div style="height: 1px; background: var(--color-border-subtle);"></div>
+<hr class="rule my-16">
 
 <!-- Contact -->
-<section id="contact" class="py-16 sm:py-20 section-hidden" aria-labelledby="contact-title">
-  <h2 id="contact-title" class="text-sm font-semibold tracking-widest uppercase mb-2" style="color: var(--color-accent);">Contact</h2>
-  <p class="text-2xl sm:text-3xl font-bold mb-8" style="color: var(--color-text-primary);">Get in Touch</p>
+<section id="contact" class="section-hidden" aria-labelledby="contact-title">
+  <span class="section-label">Contact</span>
+  <h2 class="text-3xl mb-8">Get in Touch</h2>
 
-  <div class="max-w-md">
+  <div class="measure">
     <form id="contact-form" novalidate>
       <div class="mb-4">
-        <label for="contact-name" class="block text-sm font-medium mb-1.5" style="color: var(--color-text-secondary);">Name</label>
+        <label for="contact-name" class="block text-sm font-medium mb-1" style="color: var(--color-text-secondary);">Name</label>
         <input type="text" id="contact-name" name="name" class="form-input" placeholder="Your name" required />
         <small class="form-error" id="name-error" data-error="name"></small>
       </div>
       <div class="mb-4">
-        <label for="contact-email" class="block text-sm font-medium mb-1.5" style="color: var(--color-text-secondary);">Email</label>
+        <label for="contact-email" class="block text-sm font-medium mb-1" style="color: var(--color-text-secondary);">Email</label>
         <input type="email" id="contact-email" name="email" class="form-input" placeholder="you@example.com" required />
         <small class="form-error" id="email-error" data-error="email"></small>
       </div>
       <div class="mb-4">
-        <label for="contact-message" class="block text-sm font-medium mb-1.5" style="color: var(--color-text-secondary);">Message</label>
+        <label for="contact-message" class="block text-sm font-medium mb-1" style="color: var(--color-text-secondary);">Message</label>
         <textarea id="contact-message" name="message" class="form-textarea" placeholder="Your message..." required></textarea>
         <small class="form-error" id="message-error" data-error="message"></small>
       </div>
       <div id="contact-status" class="form-status"></div>
-      <button type="submit" id="contact-submit" class="btn btn-primary w-full justify-center">Send</button>
+      <button type="submit" id="contact-submit" class="btn btn-primary w-full justify-center">Send message</button>
     </form>
   </div>
 </section>
 
-<script>import('../components/contact-form.js');</script>
+<!-- Contact form script -->
+<script>
+  (function() {
+    var form = document.getElementById('contact-form');
+    if (!form) return;
+    var fields = {
+      name: form.querySelector('[name="name"]'),
+      email: form.querySelector('[name="email"]'),
+      message: form.querySelector('[name="message"]'),
+    };
+    var errors = {
+      name: document.getElementById('name-error'),
+      email: document.getElementById('email-error'),
+      message: document.getElementById('message-error'),
+    };
+    var statusEl = document.getElementById('contact-status');
+    var submitBtn = form.querySelector('[type="submit"]');
+
+    function clear() { Object.values(errors).forEach(function(e) { if (e) e.textContent = ''; }); if (statusEl) { statusEl.textContent = ''; statusEl.className = 'form-status'; } }
+
+    function validate() {
+      clear(); var v = true;
+      if (!fields.name.value.trim()) { if (errors.name) errors.name.textContent = 'Name is required.'; v = false; }
+      if (!fields.email.value.trim()) { if (errors.email) errors.email.textContent = 'Email is required.'; v = false; }
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.value.trim())) { if (errors.email) errors.email.textContent = 'Invalid email format.'; v = false; }
+      if (!fields.message.value.trim()) { if (errors.message) errors.message.textContent = 'Message is required.'; v = false; }
+      return v;
+    }
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      if (!validate()) return;
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending...'; }
+
+      try {
+        var resp = await fetch('https://formspree.io/f/meoegore', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: fields.name.value.trim(), email: fields.email.value.trim(), message: fields.message.value.trim() }),
+        });
+        if (resp.ok) {
+          if (statusEl) { statusEl.textContent = 'Message sent!'; statusEl.className = 'form-status success'; }
+          form.reset();
+        } else if (resp.status === 429) {
+          if (statusEl) { statusEl.textContent = 'Too many requests.'; statusEl.className = 'form-status error'; }
+        } else {
+          if (statusEl) { statusEl.textContent = 'Server error.'; statusEl.className = 'form-status error'; }
+        }
+      } catch(e2) {
+        if (statusEl) { statusEl.textContent = 'Network error. Try again later.'; statusEl.className = 'form-status error'; }
+      }
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send message'; }
+    });
+  })();
+</script>
 
 <!-- Counter animations -->
 <script is:inline>
   (function() {
-    // Metrics counter — animate numbers from 0 to final
     document.querySelectorAll('.metric-value').forEach(function(el) {
       var observer = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
@@ -273,7 +307,6 @@ function fmt(d) { try { return new Date(d).toLocaleDateString('en-US', { year: '
           var duration = 1000;
           function tick(now) {
             var p = Math.min((now - start) / duration, 1);
-            // ease-out cubic
             var ease = 1 - Math.pow(1 - p, 3);
             el.textContent = Math.round(ease * final);
             if (p < 1) requestAnimationFrame(tick);
@@ -284,26 +317,6 @@ function fmt(d) { try { return new Date(d).toLocaleDateString('en-US', { year: '
       }, { threshold: 0.5 });
       observer.observe(el);
     });
-
-    // Cards stagger reveal via IntersectionObserver
-    document.querySelectorAll('.card').forEach(function(el) {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(12px)';
-      var observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (!entry.isIntersecting) return;
-          observer.unobserve(entry.target);
-          var delay = Array.from(document.querySelectorAll('.card')).indexOf(el) * 40;
-          setTimeout(function() {
-            el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-            el.style.opacity = '1';
-            el.style.transform = 'translateY(0)';
-          }, delay);
-        });
-      }, { threshold: 0.1 });
-      observer.observe(el);
-    });
   })();
 </script>
-
 </Layout>

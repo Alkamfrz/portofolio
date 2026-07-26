@@ -15,128 +15,75 @@ const readingTime = Math.max(1, Math.ceil(words / 200));
 function fmt(d) { try { return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }); } catch { return d; } }
 
 const otherPosts = allPosts.filter(p => p.id !== post.id).sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()).slice(0, 2);
-const blogJsonLd = { "@context": "https://schema.org", "@type": "BlogPosting", "headline": post.data.title, "datePublished": post.data.date, "author": { "@type": "Person", "name": "Alkam Fariz" }, "description": post.data.description, "url": `https://alkamfrz.id/blog/${post.id}` };
+const blogJsonLd = { "@context": "https://schema.org", "@type": "BlogPosting", "headline": post.data.title, "datePublished": post.data.date, "author": { "@type": "Person", "name": "Muhammad Alkam Alfariz" }, "description": post.data.description, "url": `https://alkamfrz.id/blog/${post.id}` };
 ---
 
 <script type="application/ld+json" set:html={JSON.stringify(blogJsonLd)}></script>
 
 <Layout title={post.data.title} description={post.data.description}>
-<article class="py-16 sm:py-20" aria-labelledby="post-title">
-  <div class="max-w-3xl mx-auto">
-    <nav class="flex items-center gap-1.5 text-sm mb-6" style="color: var(--color-text-muted);">
-      <a href="/" style="color: var(--color-accent);">Home</a>
-      <span>/</span>
-      <a href="/blog/" style="color: var(--color-accent);">Blog</a>
-      <span>/</span>
-      <span style="color: var(--color-text-secondary);">{post.data.title}</span>
-    </nav>
+<article class="section-hidden measure" aria-labelledby="post-title">
+  <nav class="flex items-center gap-1.5 text-sm mb-6" style="color: var(--color-text-muted);">
+    <a href="/" style="color: var(--color-accent);">Home</a>
+    <span>/</span>
+    <a href="/blog/" style="color: var(--color-accent);">Blog</a>
+    <span>/</span>
+    <span style="color: var(--color-text-secondary);">{post.data.title}</span>
+  </nav>
 
-    <article class="card blog-post-card">
-      <div class="flex items-start justify-between gap-4 mb-3 flex-wrap">
-        <h1 id="post-title" class="text-2xl sm:text-3xl font-bold" style="color: var(--color-text-primary);">{post.data.title}</h1>
-        <div class="flex gap-1 shrink-0" style="font-family: var(--font-mono);">
-          <button class="btn btn-ghost !px-2 !py-1 !text-xs" id="fs-sm">A-</button>
-          <button class="btn btn-primary !px-2 !py-1 !text-xs" id="fs-md">A</button>
-          <button class="btn btn-ghost !px-2 !py-1 !text-xs" id="fs-lg">A+</button>
-        </div>
-      </div>
+  <div class="mb-6 pb-5" style="border-bottom: 1px solid var(--color-border-light);">
+    <h1 id="post-title" class="text-3xl mb-2">{post.data.title}</h1>
+    <div class="flex gap-3 text-xs" style="color: var(--color-text-muted); font-family: var(--font-mono);">
+      <span>{fmt(post.data.date)}</span>
+      <span>{readingTime} min read</span>
+      <span>{words} words</span>
+    </div>
+  </div>
 
-      <div class="flex gap-4 text-xs mb-6 pb-5" style="color: var(--color-text-muted); font-family: var(--font-mono); border-bottom: 1px solid var(--color-border-subtle);">
-        <span>{fmt(post.data.date)}</span>
-        <span>{readingTime} min read</span>
-        <span style="color: var(--color-text-muted); opacity: 0.5;">{words} words</span>
-      </div>
+  <div class="prose">
+    <Content />
+  </div>
 
-      <div class="prose-blog" id="post-content-body">
-        <Content />
-      </div>
-
-      <!-- Social share -->
-      <div class="flex items-center gap-2 mt-8 pt-5" style="border-top: 1px solid var(--color-border-subtle);">
-        <span class="text-xs" style="color: var(--color-text-muted);">Share:</span>
-        <button class="btn btn-ghost !px-2.5 !py-1 !text-xs" id="share-twitter" aria-label="Share on X">X</button>
-        <button class="btn btn-ghost !px-2.5 !py-1 !text-xs" id="share-linkedin" aria-label="Share on LinkedIn">LinkedIn</button>
-        <button class="btn btn-ghost !px-2.5 !py-1 !text-xs" id="share-copy" aria-label="Copy link">Copy</button>
-      </div>
-    </article>
-
-    <!-- Related posts -->
-    {otherPosts.length > 0 && (
-      <div class="mt-10">
-        <h3 class="text-sm font-semibold mb-4" style="color: var(--color-text-primary);">Continue Reading</h3>
-        <div class="grid sm:grid-cols-2 gap-4">
-          {otherPosts.map(rel => {
-            const rw = rel.body ? rel.body.trim().split(/\s+/).filter(Boolean).length : 0;
-            const rr = Math.max(1, Math.ceil(rw / 200));
-            return (
-              <a href={`/blog/${rel.id}`} class="card blog-post-card no-underline" style="text-decoration: none;">
-                <h4 class="font-semibold text-sm mb-1" style="color: var(--color-text-primary);">{rel.data.title}</h4>
-                <div class="flex gap-3 text-xs mb-2" style="color: var(--color-text-muted); font-family: var(--font-mono);">
-                  <span>{fmt(rel.data.date)}</span>
-                  <span>{rr} min read</span>
-                </div>
-                <p class="text-sm" style="color: var(--color-text-secondary);">{rel.data.description}</p>
-              </a>
-            );
-          })}
-        </div>
-      </div>
-    )}
+  <div class="flex items-center gap-2 mt-8 pt-5" style="border-top: 1px solid var(--color-border-light);">
+    <span class="text-xs" style="color: var(--color-text-muted);">Share:</span>
+    <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.data.title)}&url=https://alkamfrz.id/blog/${post.id}`} class="btn btn-ghost" style="padding:0.2rem 0.625rem; font-size:var(--text-xs);" target="_blank" rel="noopener noreferrer">X</a>
+    <a href={`https://linkedin.com/sharing/share-offsite/?url=https://alkamfrz.id/blog/${post.id}`} class="btn btn-ghost" style="padding:0.2rem 0.625rem; font-size:var(--text-xs);" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    <button class="btn btn-ghost" style="padding:0.2rem 0.625rem; font-size:var(--text-xs);" id="share-copy" aria-label="Copy link">Copy</button>
   </div>
 </article>
 
-<script>
+<!-- Related posts -->
+{otherPosts.length > 0 && (
+  <section class="mt-16 section-hidden" aria-labelledby="related-title">
+    <div class="rule mb-8"></div>
+    <h2 id="related-title" class="text-xl mb-6" style="font-family: var(--font-serif);">Related reading</h2>
+    <div class="flex flex-col gap-4">
+      {otherPosts.map(rp => {
+        const rwc = rp.body ? rp.body.trim().split(/\s+/).filter(Boolean).length : 0;
+        const rrt = Math.max(1, Math.ceil(rwc / 200));
+        return (
+          <a href={`/blog/${rp.id}`} class="card no-underline flex flex-col" style="text-decoration: none;">
+            <div class="text-xs mb-1" style="color: var(--color-text-muted); font-family: var(--font-mono);">{fmt(rp.data.date)} · {rrt} min read</div>
+            <div class="font-medium" style="font-family: var(--font-serif);">{rp.data.title}</div>
+            <p class="text-sm" style="color: var(--color-text-secondary);">{rp.data.description}</p>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+)}
+
+<script is:inline>
   (function() {
-    function init() {
-      var content = document.getElementById('post-content-body');
-      if (!content) return;
-
-      // Font size
-      var sizes = [
-        { id: 'fs-sm', cls: 'text-sm' },
-        { id: 'fs-md', cls: 'text-base' },
-        { id: 'fs-lg', cls: 'text-lg' },
-      ];
-      sizes.forEach(function(s) {
-        var btn = document.getElementById(s.id);
-        if (!btn) return;
-        btn.addEventListener('click', function() {
-          sizes.forEach(function(x) {
-            var b = document.getElementById(x.id);
-            if (b) { b.className = 'btn btn-ghost !px-2 !py-1 !text-xs'; }
-          });
-          content.style.fontSize = '';
-          if (s.cls === 'text-sm') content.style.fontSize = '0.875rem';
-          else if (s.cls === 'text-lg') content.style.fontSize = '1.125rem';
-          else content.style.fontSize = '';
-          btn.className = 'btn btn-primary !px-2 !py-1 !text-xs';
-        });
-      });
-
-      // Social
-      var url = encodeURIComponent(window.location.href);
-      var title = encodeURIComponent(document.title.replace(/ —.*$/, ''));
-      document.getElementById('share-twitter')?.addEventListener('click', function() { window.open('https://twitter.com/intent/tweet?text=' + title + '&url=' + url, '_blank', 'noopener,width=600,height=400'); });
-      document.getElementById('share-linkedin')?.addEventListener('click', function() { window.open('https://linkedin.com/sharing/share-offsite/?url=' + url, '_blank', 'noopener,width=600,height=400'); });
-      document.getElementById('share-copy')?.addEventListener('click', async function() {
-        try { await navigator.clipboard.writeText(window.location.href); this.textContent = 'Done!'; setTimeout(function() { this.textContent = 'Copy'; }.bind(this), 2000); } catch { this.textContent = 'Fail'; }
-      });
-
-      // Mac code copy
-      document.querySelectorAll('.code-block-wrapper').forEach(function(w) {
-        var btn = w.querySelector('.code-block-copy');
-        if (!btn) return;
-        var nb = btn.cloneNode(true);
-        btn.parentNode.replaceChild(nb, btn);
-        nb.addEventListener('click', function() {
-          var code = w.querySelector('code');
-          navigator.clipboard.writeText(code ? code.textContent : w.textContent).then(function() { nb.textContent = 'Copied!'; setTimeout(function() { nb.textContent = 'Copy'; }, 2000); });
+    var copyBtn = document.getElementById('share-copy');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function() {
+        navigator.clipboard.writeText(window.location.href).then(function() {
+          var t = copyBtn.textContent;
+          copyBtn.textContent = 'Copied!';
+          setTimeout(function() { copyBtn.textContent = t; }, 2000);
         });
       });
     }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-    else init();
-    document.addEventListener('astro:page-load', init);
   })();
 </script>
 </Layout>

@@ -8,120 +8,30 @@ const sortedPosts = allPosts.sort((a, b) => new Date(b.data.date).getTime() - ne
 function fmt(d) { try { return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }); } catch { return d; } }
 ---
 
-<Layout title="Blog" description="Thoughts, tutorials, and deep dives into tech I care about.">
-<section class="py-16 sm:py-20" aria-labelledby="blog-index-title">
-  <div>
-    <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color: var(--color-accent);">Blog</p>
-    <h1 id="blog-index-title" class="text-3xl sm:text-4xl font-bold mb-6" style="color: var(--color-text-primary);">All Posts</h1>
+<Layout title="Blog" description="Writing on infrastructure, automation, and self-hosting.">
+<section aria-labelledby="blog-title">
+  <span class="section-label">Blog</span>
+  <h1 id="blog-title" class="text-3xl mb-6">All Posts</h1>
 
-    <div class="max-w-xs mb-8">
-      <input type="search" id="blog-search" class="form-input" placeholder="Search posts..." aria-label="Search blog posts" />
+  {sortedPosts.length === 0 ? (
+    <p class="text-sm" style="color: var(--color-text-muted);">No posts yet.</p>
+  ) : (
+    <div class="flex flex-col gap-4">
+      {sortedPosts.map(post => {
+        const wc = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
+        const rt = Math.max(1, Math.ceil(wc / 200));
+        return (
+          <a href={`/blog/${post.id}`} class="card no-underline flex flex-col" style="text-decoration: none;">
+            <div class="text-xs mb-1" style="color: var(--color-text-muted); font-family: var(--font-mono);">
+              {fmt(post.data.date)} · {rt} min read
+            </div>
+            <h2 class="font-semibold mb-1" style="font-family: var(--font-serif); font-size: var(--text-xl);">{post.data.title}</h2>
+            <p class="text-sm mb-2" style="color: var(--color-text-secondary);">{post.data.description}</p>
+            <span class="text-xs font-medium" style="color: var(--color-accent);">Read →</span>
+          </a>
+        );
+      })}
     </div>
-
-    <p id="no-search-results" class="text-sm" style="color: var(--color-text-muted); display: none;">No matching posts found.</p>
-
-    {sortedPosts.length === 0 ? (
-      <p id="no-posts" class="text-sm" style="color: var(--color-text-muted);">No posts yet.</p>
-    ) : (
-      <div id="blog-grid" class="grid sm:grid-cols-2 gap-4">
-        {sortedPosts.map(post => {
-          const wc = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
-          const rt = Math.max(1, Math.ceil(wc / 200));
-          return (
-            <a href={`/blog/${post.id}`} class="card blog-post-card no-underline flex flex-col" style="text-decoration: none;" data-title={post.data.title.toLowerCase()}>
-              <h3 class="font-semibold text-sm mb-1" style="color: var(--color-text-primary);">{post.data.title}</h3>
-              <div class="flex gap-3 text-xs mb-2" style="color: var(--color-text-muted); font-family: var(--font-mono);">
-                <span>{fmt(post.data.date)}</span>
-                <span>{rt} min read</span>
-              </div>
-              <p class="text-sm flex-1 mb-2" style="color: var(--color-text-secondary);">{post.data.description}</p>
-              <span class="text-xs font-medium" style="color: var(--color-accent);">Read more →</span>
-            </a>
-          );
-        })}
-      </div>
-    )}
-  </div>
+  )}
 </section>
-
-<!-- Playwright test hooks -->
-<script is:inline>
-  if (navigator.webdriver) {
-  (function() {
-    const params = new URLSearchParams(window.location.search);
-    const count = params.get('count');
-    if (count === null) return;
-    const grid = document.getElementById('blog-grid');
-    const noPosts = document.getElementById('no-posts') || (function() {
-      const p = document.createElement('p'); p.id = 'no-posts'; p.textContent = 'No posts found'; p.style.display = 'none';
-      grid?.parentNode?.insertBefore(p, grid); return p;
-    })();
-    const target = parseInt(count, 10);
-    if (target === 0) {
-      if (grid) grid.style.display = 'none';
-      noPosts.style.display = 'block'; noPosts.textContent = 'No posts found';
-      document.querySelectorAll('.blog-post-card').forEach(function(c) { c.remove(); });
-    } else {
-      if (grid) grid.style.display = 'grid'; noPosts.style.display = 'none';
-      var cards = Array.from(document.querySelectorAll('.blog-post-card'));
-      if (cards.length > 0) {
-        var data = [
-          { title: 'Setting up a Secure Home Server', date: 'June 1, 2026', desc: 'Learn how to deploy secure Docker setups locally.' },
-          { title: 'Why I love Playwright for E2E Testing', date: 'May 15, 2026', desc: 'Playwright brings speed and reliability.' },
-          { title: 'Introduction to Astro Framework', date: 'April 10, 2026', desc: 'Astro allows shipping less client-side JS.' },
-          { title: 'Docker Containers 101', date: 'March 5, 2026', desc: 'Get started with docker containers easily.' },
-          { title: 'Tailwind CSS Secrets', date: 'February 20, 2026', desc: 'Advanced Tailwind styling methodologies.' }
-        ];
-        grid.innerHTML = '';
-        var n = Math.min(target, data.length);
-        for (var i = 0; i < n; i++) {
-          var clone = cards[0].cloneNode(true);
-          var t = clone.querySelector('.font-semibold') || clone.querySelector('h3');
-          var d = clone.querySelector('.flex.gap-3 span:first-child') || clone.querySelector('[class*="gap-3"] span:first-child');
-          var desc = clone.querySelector('.text-sm.flex-1') || clone.querySelector('p');
-          var link = clone.querySelector('.text-xs.font-medium');
-          if (t) t.textContent = data[i].title;
-          if (d) d.textContent = data[i].date;
-          if (desc) desc.textContent = data[i].desc;
-          if (link) link.setAttribute('href', '/blog/' + data[i].title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''));
-          grid.appendChild(clone);
-        }
-      }
-    }
-  })();
-  }
-</script>
-
-<!-- Search script -->
-<script>
-  function initSearch() {
-    var input = document.getElementById('blog-search');
-    var cards = document.querySelectorAll('.blog-post-card');
-    if (!input) return;
-    cards.forEach(function(c) {
-      var t = c.querySelector('.font-semibold') || c.querySelector('h3');
-      if (t && !c.dataset.originalTitle) c.dataset.originalTitle = t.textContent || '';
-    });
-    input.addEventListener('input', function() {
-      var q = input.value.toLowerCase().trim();
-      var visible = 0;
-      cards.forEach(function(c) {
-        var orig = c.dataset.originalTitle || '';
-        var t = c.querySelector('.font-semibold') || c.querySelector('h3');
-        if (!q || orig.toLowerCase().indexOf(q) !== -1) {
-          c.style.display = 'flex'; visible++;
-          if (t) {
-            if (q) { var r = new RegExp('(' + q.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + ')', 'gi'); t.innerHTML = orig.replace(r, '<mark style="background:rgba(99,102,241,0.2);color:var(--color-accent);padding:0.1rem 0.2rem;border-radius:2px;">$1</mark>'); }
-            else t.textContent = orig;
-          }
-        } else { c.style.display = 'none'; }
-      });
-      var ns = document.getElementById('no-search-results');
-      if (ns) ns.style.display = (visible === 0 && cards.length > 0) ? 'block' : 'none';
-    });
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initSearch);
-  else initSearch();
-  document.addEventListener('astro:page-load', initSearch);
-</script>
 </Layout>
