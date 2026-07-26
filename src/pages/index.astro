@@ -1,244 +1,236 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { projects } from '../data/projects.js';
-import { experience, education, organizations, certifications, skills } from '../data/experience.js';
+import { experience, education, certifications, skills, projects } from '../data/index.js';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog');
 const recentPosts = [...allPosts]
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
-  .slice(0, 2);
+  .slice(0, 3);
 
-const featured = projects.filter(p => p.featured).slice(0, 3);
-const allExperience = [...experience, ...organizations];
+function fmtDate(d) {
+  try {
+    return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  } catch { return d; }
+}
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    { "@type": "WebSite", "name": "Alkamfrz", "url": "https://alkamfrz.id", "author": { "@type": "Person", "name": "Muhammad Alkam Alfariz" } },
-    { "@type": "Person", "@id": "https://alkamfrz.id/#person", "name": "Muhammad Alkam Alfariz", "givenName": "Muhammad Alkam", "familyName": "Alfariz", "url": "https://alkamfrz.id", "sameAs": ["https://github.com/alkamfrz", "https://linkedin.com/in/alkamfrz"] },
-    { "@type": "ProfilePage", "@id": "https://alkamfrz.id/#profilepage", "url": "https://alkamfrz.id", "mainEntity": { "@id": "https://alkamfrz.id/#person" } }
-  ]
-};
-
-function fmt(d) { try { return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }); } catch { return d; } }
+function fmtYear(d) {
+  try {
+    return new Date(d).toLocaleDateString('en-US', { year: 'numeric' });
+  } catch { return d; }
+}
 ---
 
-<Layout title="Home" description={jsonLd['@graph'][1].description}>
-<script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+<Layout title="Home" description="Muhammad Alkam Alfariz — Infrastructure Engineer specializing in IT automation, homelab systems, and computer vision.">
 
-<!-- Hero — editorial statement -->
-<section aria-labelledby="hero-title" class="section-hidden">
-  <span class="section-label">Muhammad Alkam Alfariz</span>
-  <h1 id="hero-title" class="article-title mb-4">
-    Infrastructure engineer,<br>
-    <span style="color: var(--color-text-secondary);">automation builder.</span>
-  </h1>
-  <p class="dek mb-8">
-    Informatics Engineering graduate (GPA 3.90/4.00) specializing in IT infrastructure, 
-    system automation, and computer vision. I build resilient systems at the intersection 
-    of ops and software. Currently at Sinarmas Multifinance.
-  </p>
-  <div class="flex flex-wrap gap-3">
-    <a href="/CV_Muhammad_Alkam_Alfariz.pdf" class="btn btn-primary" download>Download CV</a>
-    <a href="#contact" class="btn btn-outline">Get in touch</a>
-    <a href="#projects" class="btn btn-ghost">View projects →</a>
-  </div>
-</section>
-
-<hr class="rule my-16">
-
-<!-- About / Bio essay -->
-<section id="about" class="section-hidden measure-wide" aria-labelledby="about-title">
-  <span class="section-label">About</span>
-  <h2 id="about-title" class="text-3xl mb-6">Infrastructure meets innovation</h2>
-  <div class="flex flex-col gap-4" style="color: var(--color-text-secondary);">
-    <p>
-      I'm an Informatics Engineering graduate from Universitas Mercu Buana with a proven 
-      track record in IT infrastructure, system automation, and cross-platform development. 
-      My experience spans healthtech (Halodoc), healthcare facilities (EMTEK Group), 
-      and financial services (Sinarmas Multifinance).
+  <!-- ── Hero ── -->
+  <section id="about" aria-labelledby="hero-title">
+    <p class="hero-eyebrow">Infrastructure Engineer · Tangerang, Indonesia</p>
+    <h1 class="hero-title" id="hero-title">
+      Building systems<br>that last.
+    </h1>
+    <p class="hero-lede">
+      Informatics Engineering graduate (GPA&nbsp;3.90/4.00) specializing in IT infrastructure,
+      system automation, and computer vision. Currently at Sinarmas Multifinance —
+      previously at Halodoc and EMTEK Group. I build homelabs, write automation scripts,
+      and publish research on deep learning for agriculture.
     </p>
-    <p>
-      I build things that work — Docker Compose stacks, computer vision pipelines, 
-      automated audit scripts, and zero-WAN homelab deployments. Every project is 
-      an opportunity to reduce friction and increase reliability.
-    </p>
-  </div>
-
-  <div class="grid-2 mt-8 gap-6">
-    <div class="card">
-      <h4 class="text-base mb-3 font-semibold" style="font-family: var(--font-sans);">Education</h4>
-      {education.map(e => (
-        <div class="mb-4">
-          <div class="text-sm font-medium" style="color: var(--color-text);">{e.degree}</div>
-          <div class="text-sm" style="color: var(--color-accent);">{e.school}</div>
-          <div class="text-xs" style="color: var(--color-text-muted);">{e.period} — GPA {e.gpa}</div>
-        </div>
-      ))}
+    <div class="hero-actions">
+      <a href="/CV_Muhammad_Alkam_Alfariz.pdf" class="btn btn-primary" download>Download CV</a>
+      <a href="#experience" class="btn btn-outline">View experience</a>
+      <a href="#projects" class="btn btn-ghost">See projects →</a>
     </div>
-    <div class="card">
-      <h4 class="text-base mb-3 font-semibold" style="font-family: var(--font-sans);">Certifications</h4>
-      <ul class="flex flex-col gap-2">
-        {certifications.map(c => (
-          <li class="text-sm" style="color: var(--color-text-secondary);">→ {c}</li>
+  </section>
+
+  <!-- ── About quick facts ── -->
+  <section aria-labelledby="about-title">
+    <header class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title" id="about-title">About</span>
+    </header>
+
+    <div class="about-grid">
+      <div>
+        <p>
+          I approach infrastructure as software — repeatable, version-controlled,
+          and observable. My work spans from bare-metal Proxmox deployments
+          to CNN-based computer vision pipelines, unified by a focus on reliability
+          and operational simplicity.
+        </p>
+        <p>
+          Outside of work I maintain a homelab that runs 15+ services, contribute
+          to open tooling for homelab automation, and write about self-hosting on this blog.
+        </p>
+      </div>
+      <div>
+        {education.map(e => (
+          <div class="about-stat">
+            <div class="about-stat-value">{e.gpa}</div>
+            <div class="about-stat-label">{e.degree}</div>
+            <div style="font-size: var(--text-xs); color: var(--text-muted);">{e.school} · {e.location}</div>
+          </div>
         ))}
-      </ul>
-    </div>
-  </div>
-</section>
-
-<hr class="rule my-16">
-
-<!-- Experience Timeline -->
-<section id="experience" class="section-hidden" aria-labelledby="exp-title">
-  <span class="section-label">Experience</span>
-  <h2 id="exp-title" class="text-3xl mb-8">Career &amp; Organizations</h2>
-  <div class="flex flex-col gap-0">
-    {allExperience.map((job, i) => (
-      <div class="flex flex-col sm:flex-row sm:gap-6 py-5" style="border-bottom: 1px solid var(--color-border-light);">
-        <div class="text-sm shrink-0 mb-1 sm:mb-0 sm:w-36" style="color: var(--color-text-muted); font-family: var(--font-mono);">{job.period}</div>
-        <div>
-          <div class="font-medium" style="font-family: var(--font-serif); font-size: var(--text-lg);">{job.role}</div>
-          <div class="text-sm mb-1" style="color: var(--color-accent);">{job.organization} — <span style="color: var(--color-text-muted);">{job.location}</span></div>
-          <div class="text-sm mb-2" style="color: var(--color-text-secondary);">{job.description}</div>
-          <ul class="flex flex-col gap-1">
-            {job.achievements.slice(0, 3).map(a => (
-              <li class="text-sm" style="color: var(--color-text-secondary);">&nbsp;→ {a}</li>
-            ))}
-            {job.achievements.length > 3 && (
-              <li class="text-xs" style="color: var(--color-text-muted);">+{job.achievements.length - 3} more</li>
-            )}
+        <div class="about-stat">
+          <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: 0.5rem;">Certifications</div>
+          <ul class="cert-list">
+            {certifications.map(c => <li>{c}</li>)}
           </ul>
         </div>
       </div>
-    ))}
-  </div>
-</section>
-
-<hr class="rule my-16">
-
-<!-- Skills -->
-<section id="skills" class="section-hidden" aria-labelledby="skills-title">
-  <span class="section-label">Skills</span>
-  <h2 id="skills-title" class="text-3xl mb-8">Toolkit</h2>
-  <div class="grid-3">
-    {Object.entries(skills).map(([category, items]) => (
-      <div class="card">
-        <div class="text-xs uppercase tracking-wider mb-3" style="color: var(--color-accent);">{category}</div>
-        <div class="flex flex-wrap gap-1.5">
-          {items.map(item => <span class="tag">{item}</span>)}
-        </div>
-      </div>
-    ))}
-  </div>
-</section>
-
-<hr class="rule my-16">
-
-<!-- Featured Projects -->
-<section id="projects" class="section-hidden" aria-labelledby="projects-title">
-  <div class="flex items-center justify-between mb-6">
-    <div>
-      <span class="section-label">Projects</span>
-      <h2 id="projects-title" class="text-3xl mt-2">Featured Work</h2>
     </div>
-    <a href="/projects/" class="btn btn-ghost text-sm hidden sm:flex">All projects →</a>
-  </div>
+  </section>
 
-  {featured.length === 0 ? (
-    <p style="color: var(--color-text-muted);" class="text-sm">No featured projects yet.</p>
-  ) : (
-    <div class="grid-3">
-      {featured.map(p => (
-        <article class="card flex flex-col">
-          <div class="flex items-start justify-between gap-2 mb-2">
-            <h3 class="font-semibold" style="font-family: var(--font-serif); font-size: var(--text-lg);">{p.title}</h3>
-            {p.status && <span class={`status ${p.status}`}>{p.status}</span>}
+  <!-- ── Experience ── -->
+  <section id="experience" aria-labelledby="exp-title">
+    <header class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title" id="exp-title">Experience</span>
+    </header>
+
+    {experience.map(job => (
+      <article class="entry" aria-label={job.role}>
+        <div class="entry-header">
+          <div>
+            <div class="entry-meta">
+              <span class="entry-org">{job.org}</span>
+              <span class="entry-period">{job.period}</span>
+            </div>
+            <h3 class="entry-title">{job.role}</h3>
           </div>
-          {p.date && <div class="text-xs mb-2" style="color: var(--color-text-muted); font-family: var(--font-mono);">{p.date}</div>}
-          <p class="text-sm flex-1 mb-3" style="color: var(--color-text-secondary);">{p.description}</p>
-          <div class="flex flex-wrap gap-1.5 mb-3">
-            {p.techStack.map(t => <span class="tag">{t}</span>)}
+          <span class="status-dot active">Current</span>
+        </div>
+        <p class="entry-desc">{job.description}</p>
+        <ul class="entry-achievements">
+          {job.achievements.map(a => <li>{a}</li>)}
+        </ul>
+      </article>
+    ))}
+  </section>
+
+  <!-- ── Projects ── -->
+  <section id="projects" aria-labelledby="proj-title">
+    <header class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title" id="proj-title">Projects</span>
+    </header>
+
+    <div class="project-grid">
+      {projects.map((p, i) => (
+        <div class="project-card">
+          <div class="project-card-num">0{i + 1}</div>
+          <div class="project-card-header">
+            <h3 class="project-card-title">{p.title}</h3>
+            <span class={`status-dot ${p.status}`}>{p.status}</span>
           </div>
-          <div class="flex flex-wrap gap-2 pt-3" style="border-top: 1px solid var(--color-border-light);">
-            {p.githubUrl && <a href={p.githubUrl} class="btn btn-ghost" style="padding:0.2rem 0.625rem; font-size:var(--text-xs);" target="_blank" rel="noopener noreferrer">GitHub</a>}
-            {p.journalUrl && <a href={p.journalUrl} class="btn btn-ghost" style="padding:0.2rem 0.625rem; font-size:var(--text-xs);" target="_blank" rel="noopener noreferrer">Journal</a>}
-            {p.liveUrl && <a href={p.liveUrl} class="btn btn-ghost" style="padding:0.2rem 0.625rem; font-size:var(--text-xs);" target="_blank" rel="noopener noreferrer">Live</a>}
+          <p class="project-card-desc">{p.description}</p>
+          <div class="entry-tags">
+            {p.tech.map(t => <span class="tag">{t}</span>)}
           </div>
-        </article>
+          <div class="project-card-links">
+            {p.github && <a href={p.github} class="btn btn-ghost btn-sm" target="_blank" rel="noopener noreferrer">GitHub</a>}
+            {p.live && <a href={p.live} class="btn btn-ghost btn-sm" target="_blank" rel="noopener noreferrer">Live →</a>}
+          </div>
+        </div>
       ))}
     </div>
-  )}
-  <a href="/projects/" class="btn btn-ghost text-sm mt-4 sm:hidden inline-flex">All projects →</a>
-</section>
+  </section>
 
-<hr class="rule my-16">
+  <!-- ── Skills ── -->
+  <section id="skills" aria-labelledby="skills-title">
+    <header class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title" id="skills-title">Skills</span>
+    </header>
 
-<!-- Blog Preview -->
-<section id="blog" class="section-hidden" aria-labelledby="blog-title">
-  <div class="flex items-center justify-between mb-6">
     <div>
-      <span class="section-label">Blog</span>
-      <h2 id="blog-title" class="text-3xl mt-2">Latest Writing</h2>
+      {Object.entries(skills).map(([group, items]) => (
+        <div class="skills-group">
+          <div class="skills-group-label">{group}</div>
+          <div class="skills-tags">
+            {items.map(item => <span class="tag">{item}</span>)}
+          </div>
+        </div>
+      ))}
     </div>
-    <a href="/blog/" class="btn btn-ghost text-sm hidden sm:flex">All posts →</a>
-  </div>
+  </section>
 
-  {recentPosts.length === 0 ? (
-    <p style="color: var(--color-text-muted);" class="text-sm">No posts yet.</p>
-  ) : (
-    <div class="grid-2">
-      {recentPosts.map(post => {
-        const wc = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
-        const rt = Math.max(1, Math.ceil(wc / 200));
-        return (
-          <a href={`/blog/${post.id}`} class="card no-underline flex flex-col" style="text-decoration: none;">
-            <div class="text-xs mb-2" style="color: var(--color-text-muted); font-family: var(--font-mono);">
-              {fmt(post.data.date)} · {rt} min read
-            </div>
-            <h3 class="font-semibold mb-1" style="font-family: var(--font-serif); font-size: var(--text-lg);">{post.data.title}</h3>
-            <p class="text-sm flex-1 mb-2" style="color: var(--color-text-secondary);">{post.data.description}</p>
-            <span class="text-xs font-medium" style="color: var(--color-accent);">Read →</span>
-          </a>
-        );
-      })}
+  <!-- ── Writing ── -->
+  <section id="writing" aria-labelledby="writing-title">
+    <header class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title" id="writing-title">Writing</span>
+    </header>
+
+    {recentPosts.length === 0 ? (
+      <p style="color: var(--text-muted);">No posts yet.</p>
+    ) : (
+      <div class="writing-list" role="list">
+        {recentPosts.map(post => {
+          const wc = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
+          const rt = Math.max(1, Math.ceil(wc / 200));
+          return (
+            <a href={`/blog/${post.id}`} class="writing-item" role="listitem">
+              <div class="writing-date">{fmtDate(post.data.date)}</div>
+              <div>
+                <h3 class="writing-title">{post.data.title}</h3>
+                <div class="writing-meta">{rt} min read</div>
+                <p class="writing-excerpt">{post.data.description}</p>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    )}
+
+    <div style="margin-top: 1.5rem;">
+      <a href="/blog/" class="btn btn-outline">All posts →</a>
     </div>
-  )}
-  <a href="/blog/" class="btn btn-ghost text-sm mt-4 sm:hidden inline-flex">All posts →</a>
-</section>
+  </section>
 
-<hr class="rule my-16">
+  <!-- ── Contact ── -->
+  <section id="contact" aria-labelledby="contact-title">
+    <header class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-title" id="contact-title">Contact</span>
+    </header>
 
-<!-- Contact -->
-<section id="contact" class="section-hidden" aria-labelledby="contact-title">
-  <span class="section-label">Contact</span>
-  <h2 class="text-3xl mb-8">Get in Touch</h2>
-
-  <div class="measure">
-    <form id="contact-form" novalidate>
-      <div class="mb-4">
-        <label for="contact-name" class="block text-sm font-medium mb-1" style="color: var(--color-text-secondary);">Name</label>
-        <input type="text" id="contact-name" name="name" class="form-input" placeholder="Your name" required />
-        <small class="form-error" id="name-error" data-error="name"></small>
+    <div class="contact-grid">
+      <div>
+        <p>
+          Open to infrastructure, DevOps, and automation roles.
+          Feel free to reach out — I typically respond within 48 hours.
+        </p>
+        <p>
+          <a href="mailto:alkamfrz@gmail.com">alkamfrz@gmail.com</a><br>
+          <a href="https://linkedin.com/in/alkamfrz" target="_blank" rel="noopener noreferrer">linkedin.com/in/alkamfrz</a><br>
+          <a href="https://github.com/alkamfrz" target="_blank" rel="noopener noreferrer">github.com/alkamfrz</a>
+        </p>
       </div>
-      <div class="mb-4">
-        <label for="contact-email" class="block text-sm font-medium mb-1" style="color: var(--color-text-secondary);">Email</label>
-        <input type="email" id="contact-email" name="email" class="form-input" placeholder="you@example.com" required />
-        <small class="form-error" id="email-error" data-error="email"></small>
-      </div>
-      <div class="mb-4">
-        <label for="contact-message" class="block text-sm font-medium mb-1" style="color: var(--color-text-secondary);">Message</label>
-        <textarea id="contact-message" name="message" class="form-textarea" placeholder="Your message..." required></textarea>
-        <small class="form-error" id="message-error" data-error="message"></small>
-      </div>
-      <div id="contact-status" class="form-status"></div>
-      <button type="submit" id="contact-submit" class="btn btn-primary w-full justify-center">Send message</button>
-    </form>
-  </div>
-</section>
 
-<!-- Contact form script -->
+      <form id="contact-form" novalidate aria-label="Contact form">
+        <div class="form-group">
+          <label for="contact-name" class="form-label">Name</label>
+          <input type="text" id="contact-name" name="name" class="form-input" placeholder="Your name" required autocomplete="name" />
+          <span class="form-error" id="name-error"></span>
+        </div>
+        <div class="form-group">
+          <label for="contact-email" class="form-label">Email</label>
+          <input type="email" id="contact-email" name="email" class="form-input" placeholder="you@example.com" required autocomplete="email" />
+          <span class="form-error" id="email-error"></span>
+        </div>
+        <div class="form-group">
+          <label for="contact-message" class="form-label">Message</label>
+          <textarea id="contact-message" name="message" class="form-textarea" placeholder="Your message..." required></textarea>
+          <span class="form-error" id="message-error"></span>
+        </div>
+        <div id="contact-status" class="form-status" role="status" aria-live="polite"></div>
+        <button type="submit" id="contact-submit" class="btn btn-primary">Send message</button>
+      </form>
+    </div>
+  </section>
+
+</Layout>
+
 <script>
   (function() {
     var form = document.getElementById('contact-form');
@@ -256,15 +248,30 @@ function fmt(d) { try { return new Date(d).toLocaleDateString('en-US', { year: '
     var statusEl = document.getElementById('contact-status');
     var submitBtn = form.querySelector('[type="submit"]');
 
-    function clear() { Object.values(errors).forEach(function(e) { if (e) e.textContent = ''; }); if (statusEl) { statusEl.textContent = ''; statusEl.className = 'form-status'; } }
+    function clearErrors() {
+      Object.values(errors).forEach(function(e) { if (e) e.textContent = ''; });
+      if (statusEl) { statusEl.textContent = ''; statusEl.className = 'form-status'; }
+    }
 
     function validate() {
-      clear(); var v = true;
-      if (!fields.name.value.trim()) { if (errors.name) errors.name.textContent = 'Name is required.'; v = false; }
-      if (!fields.email.value.trim()) { if (errors.email) errors.email.textContent = 'Email is required.'; v = false; }
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.value.trim())) { if (errors.email) errors.email.textContent = 'Invalid email format.'; v = false; }
-      if (!fields.message.value.trim()) { if (errors.message) errors.message.textContent = 'Message is required.'; v = false; }
-      return v;
+      clearErrors();
+      var valid = true;
+      if (!fields.name.value.trim()) {
+        if (errors.name) errors.name.textContent = 'Name is required.';
+        valid = false;
+      }
+      if (!fields.email.value.trim()) {
+        if (errors.email) errors.email.textContent = 'Email is required.';
+        valid = false;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.value.trim())) {
+        if (errors.email) errors.email.textContent = 'Enter a valid email address.';
+        valid = false;
+      }
+      if (!fields.message.value.trim()) {
+        if (errors.message) errors.message.textContent = 'Message is required.';
+        valid = false;
+      }
+      return valid;
     }
 
     form.addEventListener('submit', async function(e) {
@@ -274,49 +281,26 @@ function fmt(d) { try { return new Date(d).toLocaleDateString('en-US', { year: '
 
       try {
         var resp = await fetch('https://formspree.io/f/meoegore', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: fields.name.value.trim(), email: fields.email.value.trim(), message: fields.message.value.trim() }),
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: fields.name.value.trim(),
+            email: fields.email.value.trim(),
+            message: fields.message.value.trim(),
+          }),
         });
         if (resp.ok) {
-          if (statusEl) { statusEl.textContent = 'Message sent!'; statusEl.className = 'form-status success'; }
+          if (statusEl) { statusEl.textContent = 'Message sent. I\'ll be in touch soon.'; statusEl.className = 'form-status success'; }
           form.reset();
         } else if (resp.status === 429) {
-          if (statusEl) { statusEl.textContent = 'Too many requests.'; statusEl.className = 'form-status error'; }
+          if (statusEl) { statusEl.textContent = 'Too many requests. Please wait.'; statusEl.className = 'form-status error'; }
         } else {
-          if (statusEl) { statusEl.textContent = 'Server error.'; statusEl.className = 'form-status error'; }
+          if (statusEl) { statusEl.textContent = 'Something went wrong. Try again.'; statusEl.className = 'form-status error'; }
         }
-      } catch(e2) {
-        if (statusEl) { statusEl.textContent = 'Network error. Try again later.'; statusEl.className = 'form-status error'; }
+      } catch(err) {
+        if (statusEl) { statusEl.textContent = 'Network error. Try emailing directly.'; statusEl.className = 'form-status error'; }
       }
       if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send message'; }
     });
   })();
 </script>
-
-<!-- Counter animations -->
-<script is:inline>
-  (function() {
-    document.querySelectorAll('.metric-value').forEach(function(el) {
-      var observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (!entry.isIntersecting) return;
-          observer.unobserve(el);
-          var final = parseInt(el.textContent.trim());
-          if (isNaN(final) || final === 0) return;
-          var start = performance.now();
-          var duration = 1000;
-          function tick(now) {
-            var p = Math.min((now - start) / duration, 1);
-            var ease = 1 - Math.pow(1 - p, 3);
-            el.textContent = Math.round(ease * final);
-            if (p < 1) requestAnimationFrame(tick);
-          }
-          el.textContent = '0';
-          requestAnimationFrame(tick);
-        });
-      }, { threshold: 0.5 });
-      observer.observe(el);
-    });
-  })();
-</script>
-</Layout>

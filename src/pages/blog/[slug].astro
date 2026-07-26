@@ -4,7 +4,10 @@ import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
-  return posts.map(post => ({ params: { slug: post.id }, props: { post, allPosts: posts } }));
+  return posts.map(post => ({
+    params: { slug: post.id },
+    props: { post, allPosts: posts },
+  }));
 }
 
 const { post, allPosts } = Astro.props;
@@ -12,78 +15,66 @@ const { Content } = await render(post);
 const words = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
 const readingTime = Math.max(1, Math.ceil(words / 200));
 
-function fmt(d) { try { return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }); } catch { return d; } }
+const related = allPosts
+  .filter(p => p.id !== post.id)
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 2);
 
-const otherPosts = allPosts.filter(p => p.id !== post.id).sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()).slice(0, 2);
-const blogJsonLd = { "@context": "https://schema.org", "@type": "BlogPosting", "headline": post.data.title, "datePublished": post.data.date, "author": { "@type": "Person", "name": "Muhammad Alkam Alfariz" }, "description": post.data.description, "url": `https://alkamfrz.id/blog/${post.id}` };
+function fmtDate(d) {
+  try {
+    return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  } catch { return d; }
+}
 ---
 
-<script type="application/ld+json" set:html={JSON.stringify(blogJsonLd)}></script>
-
 <Layout title={post.data.title} description={post.data.description}>
-<article class="section-hidden measure" aria-labelledby="post-title">
-  <nav class="flex items-center gap-1.5 text-sm mb-6" style="color: var(--color-text-muted);">
-    <a href="/" style="color: var(--color-accent);">Home</a>
-    <span>/</span>
-    <a href="/blog/" style="color: var(--color-accent);">Blog</a>
-    <span>/</span>
-    <span style="color: var(--color-text-secondary);">{post.data.title}</span>
+
+  <nav aria-label="Breadcrumb" style="margin-bottom: 2rem;">
+    <ol style="display:flex;align-items:center;gap:0.5rem;list-style:none;font-size:var(--text-xs);color:var(--text-subtle);">
+      <li><a href="/" style="color:var(--accent);text-decoration:none;">Home</a></li>
+      <li aria-hidden="true">/</li>
+      <li><a href="/blog/" style="color:var(--accent);text-decoration:none;">Blog</a></li>
+      <li aria-hidden="true">/</li>
+      <li aria-current="page">{post.data.title}</li>
+    </ol>
   </nav>
 
-  <div class="mb-6 pb-5" style="border-bottom: 1px solid var(--color-border-light);">
-    <h1 id="post-title" class="text-3xl mb-2">{post.data.title}</h1>
-    <div class="flex gap-3 text-xs" style="color: var(--color-text-muted); font-family: var(--font-mono);">
-      <span>{fmt(post.data.date)}</span>
-      <span>{readingTime} min read</span>
-      <span>{words} words</span>
+  <header class="post-header">
+    <div class="post-meta">
+      <time class="post-date" datetime={post.data.date}>{fmtDate(post.data.date)}</time>
+      <span class="post-readtime">{readingTime} min read</span>
+      <span class="post-readtime">{words.toLocaleString()} words</span>
     </div>
-  </div>
+    <h1>{post.data.title}</h1>
+  </header>
 
-  <div class="prose">
+  <article class="post-body">
     <Content />
-  </div>
+  </article>
 
-  <div class="flex items-center gap-2 mt-8 pt-5" style="border-top: 1px solid var(--color-border-light);">
-    <span class="text-xs" style="color: var(--color-text-muted);">Share:</span>
-    <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.data.title)}&url=https://alkamfrz.id/blog/${post.id}`} class="btn btn-ghost" style="padding:0.2rem 0.625rem; font-size:var(--text-xs);" target="_blank" rel="noopener noreferrer">X</a>
-    <a href={`https://linkedin.com/sharing/share-offsite/?url=https://alkamfrz.id/blog/${post.id}`} class="btn btn-ghost" style="padding:0.2rem 0.625rem; font-size:var(--text-xs);" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-    <button class="btn btn-ghost" style="padding:0.2rem 0.625rem; font-size:var(--text-xs);" id="share-copy" aria-label="Copy link">Copy</button>
-  </div>
-</article>
+  {related.length > 0 && (
+    <section aria-label="More writing" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-light);">
+      <div class="section-header" style="margin-bottom: 1.5rem;">
+        <span class="section-num">→</span>
+        <span class="section-title">More reading</span>
+      </div>
+      <div class="writing-list">
+        {related.map(rp => {
+          const rwc = rp.body ? rp.body.trim().split(/\s+/).filter(Boolean).length : 0;
+          const rrt = Math.max(1, Math.ceil(rwc / 200));
+          return (
+            <a href={`/blog/${rp.id}`} class="writing-item">
+              <div class="writing-date">{fmtDate(rp.data.date)}</div>
+              <div>
+                <h3 class="writing-title">{rp.data.title}</h3>
+                <div class="writing-meta">{rrt} min read</div>
+                <p class="writing-excerpt">{rp.data.description}</p>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+  )}
 
-<!-- Related posts -->
-{otherPosts.length > 0 && (
-  <section class="mt-16 section-hidden" aria-labelledby="related-title">
-    <div class="rule mb-8"></div>
-    <h2 id="related-title" class="text-xl mb-6" style="font-family: var(--font-serif);">Related reading</h2>
-    <div class="flex flex-col gap-4">
-      {otherPosts.map(rp => {
-        const rwc = rp.body ? rp.body.trim().split(/\s+/).filter(Boolean).length : 0;
-        const rrt = Math.max(1, Math.ceil(rwc / 200));
-        return (
-          <a href={`/blog/${rp.id}`} class="card no-underline flex flex-col" style="text-decoration: none;">
-            <div class="text-xs mb-1" style="color: var(--color-text-muted); font-family: var(--font-mono);">{fmt(rp.data.date)} · {rrt} min read</div>
-            <div class="font-medium" style="font-family: var(--font-serif);">{rp.data.title}</div>
-            <p class="text-sm" style="color: var(--color-text-secondary);">{rp.data.description}</p>
-          </a>
-        );
-      })}
-    </div>
-  </section>
-)}
-
-<script is:inline>
-  (function() {
-    var copyBtn = document.getElementById('share-copy');
-    if (copyBtn) {
-      copyBtn.addEventListener('click', function() {
-        navigator.clipboard.writeText(window.location.href).then(function() {
-          var t = copyBtn.textContent;
-          copyBtn.textContent = 'Copied!';
-          setTimeout(function() { copyBtn.textContent = t; }, 2000);
-        });
-      });
-    }
-  })();
-</script>
 </Layout>

@@ -3,35 +3,47 @@ import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog');
-const sortedPosts = allPosts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+const posts = [...allPosts].sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
 
-function fmt(d) { try { return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }); } catch { return d; } }
+function fmtDate(d) {
+  try {
+    return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  } catch { return d; }
+}
 ---
 
-<Layout title="Blog" description="Writing on infrastructure, automation, and self-hosting.">
-<section aria-labelledby="blog-title">
-  <span class="section-label">Blog</span>
-  <h1 id="blog-title" class="text-3xl mb-6">All Posts</h1>
+<Layout title="Blog" description="Writing on homelab infrastructure, automation, self-hosting, and computer vision.">
 
-  {sortedPosts.length === 0 ? (
-    <p class="text-sm" style="color: var(--color-text-muted);">No posts yet.</p>
+  <header class="blog-header">
+    <p class="hero-eyebrow">Notes &amp; tutorials</p>
+    <h1>Writing</h1>
+    <p style="color: var(--text-muted); max-width: 36em; margin-top: 0.5rem;">
+      Deep dives into homelab infrastructure, automation patterns, and self-hosting.
+      {posts.length} {posts.length === 1 ? 'post' : 'posts'} published.
+    </p>
+  </header>
+
+  {posts.length === 0 ? (
+    <p style="color: var(--text-muted);">Nothing published yet.</p>
   ) : (
-    <div class="flex flex-col gap-4">
-      {sortedPosts.map(post => {
+    <div class="writing-list" role="list">
+      {posts.map(post => {
         const wc = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
         const rt = Math.max(1, Math.ceil(wc / 200));
         return (
-          <a href={`/blog/${post.id}`} class="card no-underline flex flex-col" style="text-decoration: none;">
-            <div class="text-xs mb-1" style="color: var(--color-text-muted); font-family: var(--font-mono);">
-              {fmt(post.data.date)} · {rt} min read
+          <a href={`/blog/${post.id}`} class="writing-item" role="listitem">
+            <div class="writing-date">{fmtDate(post.data.date)}</div>
+            <div>
+              <h2 class="writing-title">{post.data.title}</h2>
+              <div class="writing-meta">{rt} min read</div>
+              <p class="writing-excerpt">{post.data.description}</p>
             </div>
-            <h2 class="font-semibold mb-1" style="font-family: var(--font-serif); font-size: var(--text-xl);">{post.data.title}</h2>
-            <p class="text-sm mb-2" style="color: var(--color-text-secondary);">{post.data.description}</p>
-            <span class="text-xs font-medium" style="color: var(--color-accent);">Read →</span>
           </a>
         );
       })}
     </div>
   )}
-</section>
+
 </Layout>
