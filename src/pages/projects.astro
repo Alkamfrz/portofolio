@@ -5,33 +5,32 @@ import { projects } from '../data/index.js';
 
 <Layout title="Projects" description="Selected projects — homelab infrastructure, computer vision, and automation.">
 
-  <header class="projects-header">
-    <p class="hero-eyebrow">Selected work</p>
-    <h1>Projects</h1>
-    <p style="color: var(--text-muted); max-width: 36em; margin-top: 0.5rem;">
-      Production systems, published research, and open-source tooling.
-      Each project reflects a problem worth solving.
+  <div class="projects-header">
+    <p class="section-label" style="margin-bottom: 0.5rem;">
+      <span class="section-label-num">03</span>Projects
     </p>
-  </header>
-
-  <div class="project-grid">
-    {projects.map((p, i) => (
-      <div class="project-card">
-        <div class="project-card-num">0{i + 1}</div>
-        <div class="project-card-header">
-          <h2 class="project-card-title">{p.title}</h2>
-          <span class={`status-dot ${p.status}`}>{p.status}</span>
-        </div>
-        <p class="project-card-desc">{p.description}</p>
-        <div class="entry-tags">
-          {p.tech.map(t => <span class="tag">{t}</span>)}
-        </div>
-        <div class="project-card-links">
-          {p.github && <a href={p.github} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">GitHub</a>}
-          {p.live && <a href={p.live} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Live ↗</a>}
-        </div>
-      </div>
-    ))}
+    <h1>All Projects</h1>
+    <p>Production systems, published research, and open-source tooling.</p>
   </div>
+
+  {projects.map((p, i) => (
+    <div class="project-card" style="margin-bottom: 1rem;">
+      <div class="project-card-header">
+        <div>
+          <div class="project-card-num">0{i + 1}</div>
+          <h2 class="project-card-title">{p.title}</h2>
+        </div>
+        <span class={`status-dot ${p.status}`}>{p.status}</span>
+      </div>
+      <p class="project-card-desc">{p.description}</p>
+      <div class="project-card-tech">
+        {p.tech.map(t => <span class="tag">{t}</span>)}
+      </div>
+      <div class="project-card-links">
+        {p.github && <a href={p.github} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">GitHub</a>}
+        {p.live && <a href={p.live} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Live ↗</a>}
+      </div>
+    </div>
+  ))}
 
 </Layout>

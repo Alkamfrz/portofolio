@@ -29,16 +29,16 @@ function fmtDate(d) {
 
 <Layout title={post.data.title} description={post.data.description}>
 
-  <nav aria-label="Breadcrumb" style="margin-bottom: 2rem;">
-    <ol style="display:flex;align-items:center;gap:0.5rem;list-style:none;font-size:var(--text-xs);color:var(--text-subtle);">
-      <li><a href="/" style="color:var(--accent);text-decoration:none;">Home</a></li>
-      <li aria-hidden="true">/</li>
-      <li><a href="/blog/" style="color:var(--accent);text-decoration:none;">Blog</a></li>
-      <li aria-hidden="true">/</li>
-      <li aria-current="page">{post.data.title}</li>
-    </ol>
+  <!-- Breadcrumb -->
+  <nav class="post-breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a>
+    <span>›</span>
+    <a href="/blog/">Writing</a>
+    <span>›</span>
+    <span style="color: var(--text-secondary);">{post.data.title}</span>
   </nav>
 
+  <!-- Header -->
   <header class="post-header">
     <div class="post-meta">
       <time class="post-date" datetime={post.data.date}>{fmtDate(post.data.date)}</time>
@@ -48,32 +48,31 @@ function fmtDate(d) {
     <h1>{post.data.title}</h1>
   </header>
 
+  <!-- Body -->
   <article class="post-body">
     <Content />
   </article>
 
+  <!-- Related -->
   {related.length > 0 && (
-    <section aria-label="More writing" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-light);">
-      <div class="section-header" style="margin-bottom: 1.5rem;">
-        <span class="section-num">→</span>
-        <span class="section-title">More reading</span>
-      </div>
-      <div class="writing-list">
-        {related.map(rp => {
-          const rwc = rp.body ? rp.body.trim().split(/\s+/).filter(Boolean).length : 0;
-          const rrt = Math.max(1, Math.ceil(rwc / 200));
-          return (
-            <a href={`/blog/${rp.id}`} class="writing-item">
-              <div class="writing-date">{fmtDate(rp.data.date)}</div>
-              <div>
-                <h3 class="writing-title">{rp.data.title}</h3>
-                <div class="writing-meta">{rrt} min read</div>
-                <p class="writing-excerpt">{rp.data.description}</p>
-              </div>
-            </a>
-          );
-        })}
-      </div>
+    <section style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-light);">
+      <p class="section-label" style="margin-bottom: 1.25rem;">
+        <span class="section-label-num">→</span>More reading
+      </p>
+      {related.map(rp => {
+        const rwc = rp.body ? rp.body.trim().split(/\s+/).filter(Boolean).length : 0;
+        const rrt = Math.max(1, Math.ceil(rwc / 200));
+        return (
+          <a href={`/blog/${rp.id}`} class="writing-item">
+            <div class="writing-date">{fmtDate(rp.data.date)}</div>
+            <div>
+              <h2 class="writing-title">{rp.data.title}</h2>
+              <div class="writing-meta">{rrt} min read</div>
+              <p class="writing-excerpt">{rp.data.description}</p>
+            </div>
+          </a>
+        );
+      })}
     </section>
   )}
 
