@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0f0e0c"/>
+  <line x1="100" y1="315" x2="350" y2="315" stroke="#d4a05a" stroke-width="2" opacity="0.35"/>
+  <text x="100" y="255" font-family="Georgia, 'Times New Roman', serif" font-size="76" font-weight="400" fill="#ece8e0" letter-spacing="-0.03">Alkamfrz</text>
+  <text x="100" y="370" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#c0b8a8" letter-spacing="0.01">Infrastructure Engineer</text>
+  <text x="100" y="415" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#8a8078">Homelabs · Automation · Computer Vision</text>
+</svg>

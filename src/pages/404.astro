@@ -3,12 +3,17 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Not Found">
-  <div class="Error-page" style="padding: 3rem 0;">
-    <div class="Error-code">404</div>
-    <h1 style="margin-top: 0.5rem; margin-bottom: 0.75rem;">Page not found</h1>
-    <p style="color: var(--text-secondary); max-width: 24em; margin-bottom: 1.5rem;">
+  <div class="error-page">
+    <div class="error-code">404</div>
+    <h1>Page not found</h1>
+    <p class="text-muted" style="max-width: 24em; margin-bottom: 1.5rem;">
       The page you're looking for doesn't exist or has been moved.
     </p>
-    <a href="/" class="btn btn-primary">Back home</a>
+    <div class="error-links">
+      <a href="/#projects" class="btn btn-outline btn-sm">Projects</a>
+      <a href="/#skills" class="btn btn-outline btn-sm">Skills</a>
+      <a href="/#contact" class="btn btn-outline btn-sm">Contact</a>
+    </div>
+    <a href="/" class="btn btn-primary" style="margin-top: 1.25rem;">Back home</a>
   </div>
 </Layout>

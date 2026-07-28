@@ -1,3 +1,8 @@
+export const currentlyBuilding = {
+  title: 'Homelab Expansion',
+  description: 'Adding VLAN-segmented GPU node for local LLM inference and distributed storage with Ceph.',
+};
+
 export const experience = [
   {
     id: 'mekari',
@@ -13,6 +18,7 @@ export const experience = [
       'Delivered 3+ client-specific demonstrations and requirement-gathering sessions for custom CRM workflows.',
       'Supported post-implementation adoption, reducing client churn through proactive engagement and training.',
     ],
+    stats: ['10+ enterprise clients', '3+ custom demos'],
   },
   {
     id: 'smf',
@@ -28,6 +34,7 @@ export const experience = [
       'Managed Active Directory and OpenVPN for 200+ employees on Windows Server.',
       'Standardized 50+ applications across workstations; reduced security vulnerabilities by 40%.',
     ],
+    stats: ['99% deploy success', '95% first-call resolution', '-40% vulnerabilities'],
   },
   {
     id: 'emtek',
@@ -43,6 +50,7 @@ export const experience = [
       'Upgraded 30+ HDDs to SSDs (~3× faster boot); crimped 150+ Cat6 cables achieving 99% uptime during 500+ critical surgeries.',
       'Trained 40+ staff on Code White System via 8 workshops; reduced procedural errors by 50%.',
     ],
+    stats: ['25% less downtime', '-15 hrs/week manual', '500+ surgeries covered'],
   },
   {
     id: 'halodoc',
@@ -50,12 +58,13 @@ export const experience = [
     org: 'Halodoc',
     location: 'South Jakarta',
     period: 'Feb 2024 – Jun 2024',
-    description: "Indonesia's #1 healthtech platform serving millions of users.",
+    description: 'Indonesia\'s #1 healthtech platform serving millions of users.',
     achievements: [
       'Resolved 15–20 weekly HW/SW incidents; slashed resolution time from 2.5h to 1.6h (35% faster) via RCA templates and tiered prioritization.',
       'Integrated Zabbix–Jira to auto-generate 10–15 pharmacy router tickets/week; reduced manual reporting from 4h to 2h with 100% SLA compliance.',
       'Built PowerShell script to purge 50–100 non-compliant files/week on reboot — saving 6h weekly, aligned with ISO 27001 retention policies.',
     ],
+    stats: ['35% faster resolution', '100% SLA compliance', '-6 hrs/week scripts'],
   },
   {
     id: 'aslab',
@@ -69,6 +78,7 @@ export const experience = [
       'Revamped hiring with Python and network sim assessments — 90% pass rate, reduced onboarding from 4 to 2.8 weeks (30%).',
       'Built KPI dashboard tracking 5+ metrics (1.2h avg resolution time); cut recurring complaints by 25%.',
     ],
+    stats: ['100% event coverage', '30% faster onboarding', '-25% complaints'],
   },
 ];
 
@@ -171,13 +181,51 @@ export const certifications = [
 ];
 
 export const skills = {
-  Languages: ['Python', 'JavaScript', 'TypeScript', 'Bash', 'PowerShell', 'SQL', 'C++', 'Java'],
-  Databases: ['PostgreSQL', 'MySQL', 'Oracle Database', 'Firebase'],
-  Containers: ['Docker', 'Docker Compose', 'Proxmox VE'],
-  Networking: ['Cloudflare Tunnel', 'HAProxy', 'Tailscale', 'Unbound DNS', 'VLAN', 'nftables', 'RouterOS'],
-  Security: ['CrowdSec', 'Cloudflare WAF', 'Fail2ban', 'UFW'],
-  'Identity & Access': ['Active Directory', 'OpenVPN'],
-  Systems: ['Linux', 'macOS', 'Windows Server'],
+  Languages: [
+    { name: 'Python', core: true },
+    { name: 'JavaScript', core: true },
+    { name: 'TypeScript', core: true },
+    { name: 'Bash', core: true },
+    { name: 'PowerShell', core: true },
+    { name: 'SQL', core: true },
+    { name: 'C++', core: false },
+    { name: 'Java', core: false },
+  ],
+  Databases: [
+    { name: 'PostgreSQL', core: true },
+    { name: 'MySQL', core: false },
+    { name: 'Oracle Database', core: false },
+    { name: 'Firebase', core: false },
+  ],
+  Containers: [
+    { name: 'Docker', core: true },
+    { name: 'Docker Compose', core: true },
+    { name: 'Proxmox VE', core: true },
+  ],
+  Networking: [
+    { name: 'Cloudflare Tunnel', core: true },
+    { name: 'HAProxy', core: true },
+    { name: 'Tailscale', core: true },
+    { name: 'Unbound DNS', core: false },
+    { name: 'VLAN', core: true },
+    { name: 'nftables', core: false },
+    { name: 'RouterOS', core: false },
+  ],
+  Security: [
+    { name: 'CrowdSec', core: true },
+    { name: 'Cloudflare WAF', core: true },
+    { name: 'Fail2ban', core: false },
+    { name: 'UFW', core: false },
+  ],
+  'Identity & Access': [
+    { name: 'Active Directory', core: false },
+    { name: 'OpenVPN', core: false },
+  ],
+  Systems: [
+    { name: 'Linux', core: true },
+    { name: 'macOS', core: false },
+    { name: 'Windows Server', core: false },
+  ],
 };
 
 export const projects = [
@@ -193,6 +241,7 @@ export const projects = [
       stacks: 'Jellyfin · qBittorrent/arr · Homepage · UptimeKuma · Upsnap · CrowdSec · Watchtower',
     },
     status: 'active',
+    scope: 'major',
   },
   {
     id: 'cfo-retinanet',
@@ -202,6 +251,7 @@ export const projects = [
     github: 'https://github.com/Alkamfrz/Retinanet-Oil-Palm-Bunch-Ripeness-Detection',
     journal: 'https://garuda.kemdiktisaintek.go.id/documents/detail/5253843',
     status: 'published',
+    scope: 'major',
   },
   {
     id: 'brain-tumor',
@@ -210,6 +260,7 @@ export const projects = [
     tech: ['Python', 'TensorFlow', 'CNN', 'ResNet50'],
     journal: 'https://ijicom.respati.ac.id/index.php/ijicom/article/view/80',
     status: 'published',
+    scope: 'major',
   },
   {
     id: 'portfolio',
@@ -219,5 +270,6 @@ export const projects = [
     github: 'https://github.com/alkamfrz/portofolio',
     live: 'https://alkamfrz.id',
     status: 'active',
+    scope: 'simple',
   },
 ];

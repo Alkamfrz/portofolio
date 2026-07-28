@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { experience, education, certifications, skills, projects } from '../data/index.js';
+import { experience, education, certifications, skills, projects, currentlyBuilding } from '../data/index.js';
 ---
 
 <Layout title="Home" description="Muhammad Alkam Alfariz — Infrastructure Engineer specializing in IT automation, homelab systems, and computer vision.">
@@ -10,11 +10,18 @@ import { experience, education, certifications, skills, projects } from '../data
     <div class="hero">
       <p class="hero-eyebrow">Activation Specialist · Mekari Qontak · Tangerang, Indonesia</p>
       <h1 class="hero-title" id="hero-title">Building systems<br>that last.</h1>
+      <div class="hero-line" aria-hidden="true"></div>
       <p class="hero-lede">
         Infrastructure Engineer who builds homelabs, automates pipelines, and deploys
         production systems — from bare metal to zero-trust VPN. Published researcher in
         computer vision for agriculture and medical imaging.
       </p>
+      <div class="hero-meta">
+        <span class="hero-tag">
+          <span class="hero-tag-dot"></span>
+          {currentlyBuilding.title}
+        </span>
+      </div>
       <div class="hero-actions">
         <a href="/CV_Muhammad_Alkam_Alfariz.pdf" class="btn btn-primary" download>
           Download CV
@@ -31,9 +38,9 @@ import { experience, education, certifications, skills, projects } from '../data
     <!-- ── About grid ── -->
     <div class="section">
       <div class="section-header">
-        <p class="section-label">
+        <h2 class="section-label">
           <span class="section-label-num">About</span>
-        </p>
+        </h2>
       </div>
       <div class="about-grid">
         <div>
@@ -66,9 +73,9 @@ import { experience, education, certifications, skills, projects } from '../data
   <section id="experience" aria-labelledby="exp-title">
     <div class="section">
       <div class="section-header">
-        <p class="section-label">
+        <h2 class="section-label">
           <span class="section-label-num">Experience</span>
-        </p>
+        </h2>
       </div>
       {experience.map(job => (
         <article class="exp-entry">
@@ -82,6 +89,11 @@ import { experience, education, certifications, skills, projects } from '../data
             </div>
           </div>
           <p class="exp-desc">{job.description}</p>
+          {job.stats && (
+            <div class="exp-stats">
+              {job.stats.map(s => <span class="exp-stat-pill">{s}</span>)}
+            </div>
+          )}
           <ul class="exp-achievements">
             {job.achievements.map(a => <li>{a}</li>)}
           </ul>
@@ -94,18 +106,21 @@ import { experience, education, certifications, skills, projects } from '../data
   <section id="projects" aria-labelledby="proj-title">
     <div class="section">
       <div class="section-header">
-        <p class="section-label">
+        <h2 class="section-label">
           <span class="section-label-num">Projects</span>
-        </p>
+        </h2>
       </div>
       {projects.map((p, i) => (
-        <div class="project-card">
+        <div class={`project-card ${p.scope === 'major' ? 'project-card-major' : ''}`}>
           <div class="project-card-header">
             <div>
               <div class="project-card-num">0{i + 1}</div>
               <h3 class="project-card-title">{p.title}</h3>
             </div>
-            <span class={`status-dot ${p.status}`}>{p.status}</span>
+            <div class="project-card-badges">
+              {p.scope === 'major' && <span class="scope-badge">Flagship</span>}
+              <span class={`status-dot ${p.status}`}>{p.status}</span>
+            </div>
           </div>
           <p class="project-card-desc">{p.description}</p>
           <div class="project-card-tech">
@@ -137,16 +152,16 @@ import { experience, education, certifications, skills, projects } from '../data
   <section id="skills" aria-labelledby="skills-title">
     <div class="section">
       <div class="section-header">
-        <p class="section-label">
+        <h2 class="section-label">
           <span class="section-label-num">Skills</span>
-        </p>
+        </h2>
       </div>
       <div>
         {Object.entries(skills).map(([group, items]) => (
           <div class="skills-group">
             <div class="skills-group-label">{group}</div>
             <div class="skills-tags">
-              {items.map(item => <span class="tag">{item}</span>)}
+              {items.map(item => <span class={`tag ${item.core ? 'tag-core' : ''}`}>{item.name}</span>)}
             </div>
           </div>
         ))}
@@ -158,9 +173,9 @@ import { experience, education, certifications, skills, projects } from '../data
   <section id="certifications" aria-labelledby="cert-title">
     <div class="section">
       <div class="section-header">
-        <p class="section-label">
+        <h2 class="section-label">
           <span class="section-label-num">Certifications</span>
-        </p>
+        </h2>
       </div>
       <div class="cert-grid">
         {certifications.map(c => (
@@ -185,9 +200,9 @@ import { experience, education, certifications, skills, projects } from '../data
   <section id="contact" aria-labelledby="contact-title">
     <div class="section">
       <div class="section-header">
-        <p class="section-label">
+        <h2 class="section-label">
           <span class="section-label-num">Contact</span>
-        </p>
+        </h2>
       </div>
       <div class="contact-grid">
         <div class="contact-text">
@@ -197,7 +212,7 @@ import { experience, education, certifications, skills, projects } from '../data
           </p>
           <div class="contact-links">
             <a href="mailto:alkamfrz@gmail.com" class="contact-link">
-              <span class="contact-link-icon">✉</span> alkamfrz@gmail.com
+              <span class="contact-link-icon">✉</span><span class="contact-link-wrap"> alkamfrz@gmail.com<button class="copy-email-btn" id="copy-email-btn" aria-label="Copy email" title="Copy email">⎘</button></span>
             </a>
             <a href="https://linkedin.com/in/alkamfrz" target="_blank" rel="noopener noreferrer" class="contact-link">
               <span class="contact-link-icon">in</span> linkedin.com/in/alkamfrz
@@ -209,6 +224,11 @@ import { experience, education, certifications, skills, projects } from '../data
         </div>
 
         <form id="contact-form" novalidate aria-label="Contact form">
+          <!-- honeypot: invisible to humans -->
+          <div style="position:absolute;left:-9999px" aria-hidden="true">
+            <label for="website">Website</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+          </div>
           <div class="form-group">
             <label for="contact-name" class="form-label">Name</label>
             <input type="text" id="contact-name" name="name" class="form-input" placeholder="Your name" required autocomplete="name" />
@@ -281,6 +301,27 @@ import { experience, education, certifications, skills, projects } from '../data
         valid = false;
       }
       return valid;
+    }
+
+    // ── Copy email ──
+    var copyBtn = document.getElementById('copy-email-btn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText('alkamfrz@gmail.com').then(function() {
+            copyBtn.textContent = '✓';
+            copyBtn.style.color = 'var(--green)';
+            copyBtn.style.borderColor = 'var(--green)';
+            setTimeout(function() {
+              copyBtn.textContent = '⎘';
+              copyBtn.style.color = '';
+              copyBtn.style.borderColor = '';
+            }, 2000);
+          });
+        }
+      });
     }
 
     form.addEventListener('submit', async function(e) {
