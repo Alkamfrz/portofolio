@@ -28,6 +28,7 @@ const navLinks = [
     <meta property="og:type" content="website" />
     <meta property="og:image" content="https://alkamfrz.id/og-image.svg" />
     <meta name="theme-color" content="#0f0e0c" />
+    <meta name="keywords" content="Muhammad Alkam Alfariz, infrastructure engineer, homelab, Proxmox VE, DevOps, automation, computer vision, Jakarta" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -146,6 +147,10 @@ const navLinks = [
             });
           }
           window.addEventListener('scroll', updateNav, { passive: true });
+          // Set first nav link active on page load (before any scroll)
+          if (navLinks.length > 0) {
+            navLinks[0].classList.add('active');
+          }
           updateNav();
         }
 

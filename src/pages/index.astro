@@ -161,7 +161,7 @@ import { experience, education, certifications, skills, projects, currentlyBuild
           <div class="skills-group">
             <div class="skills-group-label">{group}</div>
             <div class="skills-tags">
-              {items.map(item => <span class={`tag ${item.core ? 'tag-core' : ''}`}>{item.name}</span>)}
+              {items.map(item => <span class={`tag ${item.core ? 'tag-core' : ''}`}>{item.name}{item.core ? <span class="core-suffix"> core</span> : ''}</span>)}
             </div>
           </div>
         ))}
@@ -180,7 +180,10 @@ import { experience, education, certifications, skills, projects, currentlyBuild
       <div class="cert-grid">
         {certifications.map(c => (
           <div class="cert-item">
-            <div class="cert-name">{c.name}</div>
+            <div class="cert-name">
+              <span class={`cert-type-dot cert-type-${c.issuer_type}`}></span>
+              {c.name}
+            </div>
             <div class="cert-meta">
               <span class="cert-issuer">{c.issuer}</span>
               <span class="cert-year">{c.year}</span>
