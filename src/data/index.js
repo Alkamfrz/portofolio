@@ -246,7 +246,7 @@ export const projects = [
     live: 'https://home.alkamfrz.id',
     arch: '/homelab-architecture/',
     overview: {
-      hosts: 'pve-tng · docker-tng · haproxy-tng · unbound-tng · cfd-tng · tailscale-tng',
+      hosts: 'Hypervisor · Docker Host · Reverse Proxy · DNS · Tunnel · VPN',
       stacks: 'Jellyfin · qBittorrent/arr · Homepage · UptimeKuma · Upsnap · CrowdSec · Watchtower',
     },
     status: 'active',
