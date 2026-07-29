@@ -1,13 +1,7 @@
 export const currentlyBuilding = {
   title: 'Homelab Expansion',
-  description: 'Adding VLAN-segmented GPU node for local LLM inference and distributed storage with Ceph.',
+  description: 'Adding VLAN-separated GPU node for local LLM inference and distributed storage with Ceph.',
   url: 'https://github.com/alkamfrz/home-server-infrastructure',
-};
-
-export const currentlyReading = {
-  title: 'The Phoenix Project',
-  author: 'Gene Kim',
-  type: 'book',
 };
 
 export const experience = [

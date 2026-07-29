@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { experience, education, certifications, skills, projects, currentlyBuilding, currentlyReading } from '../data/index.js';
+import { experience, education, certifications, skills, projects, currentlyBuilding } from '../data/index.js';
 ---
 
 <Layout title="Home" description="Muhammad Alkam Alfariz — Infrastructure Engineer specializing in IT automation, homelab systems, and computer vision.">
@@ -33,16 +33,6 @@ import { experience, education, certifications, skills, projects, currentlyBuild
           See projects →
         </a>
       </div>
-      {currentlyReading && (
-      <div class="reading-widget">
-        <span class="reading-icon">{currentlyReading.type === 'book' ? '📖' : '📄'}</span>
-        <div>
-          <div class="reading-label">Now reading</div>
-          <div><span class="reading-title">{currentlyReading.title}</span> <span class="reading-author">· {currentlyReading.author}</span></div>
-        </div>
-        <a href="https://www.goodreads.com" target="_blank" rel="noopener noreferrer" class="reading-link">What's this? →</a>
-      </div>
-      )}
     </div>
 
     <!-- ── About grid ── -->
