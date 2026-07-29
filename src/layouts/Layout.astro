@@ -31,6 +31,9 @@ const navLinks = [
     <meta name="keywords" content="Muhammad Alkam Alfariz, infrastructure engineer, homelab, Proxmox VE, DevOps, automation, computer vision, Jakarta" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=DM+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=DM+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=DM+Mono:wght@400;500&display=swap" /></noscript>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <title>{title} — Alkamfrz</title>
@@ -75,7 +78,7 @@ const navLinks = [
     <div id="mobile-overlay" class="mobile-overlay" aria-hidden="true">
       <nav class="mobile-nav" aria-label="Mobile navigation">
         {navLinks.map(link => (
-          <a href={link.href} class="mobile-nav-link">{link.label}</a>
+          <a href={link.href} class="mobile-nav-link" tabindex="-1">{link.label}</a>
         ))}
       </nav>
     </div>
@@ -158,12 +161,23 @@ const navLinks = [
         var menuBtn = document.getElementById('menu-btn');
         var overlay = document.getElementById('mobile-overlay');
         if (menuBtn && overlay) {
-          menuBtn.addEventListener('click', function() {
-            var expanded = menuBtn.getAttribute('aria-expanded') === 'true' ? false : true;
-            menuBtn.setAttribute('aria-expanded', expanded);
-            overlay.setAttribute('aria-hidden', !expanded);
-            document.body.classList.toggle('menu-open');
+        // ── Toggle tabindex on overlay focusables ──
+        function setMobileTabindex(enabled) {
+          overlay.querySelectorAll('.mobile-nav-link').forEach(function(link) {
+            link.setAttribute('tabindex', enabled ? '0' : '-1');
           });
+        }
+
+        // Start hidden — force tabindex=-1
+        setMobileTabindex(false);
+
+        menuBtn.addEventListener('click', function() {
+          var expanded = menuBtn.getAttribute('aria-expanded') === 'true' ? false : true;
+          menuBtn.setAttribute('aria-expanded', expanded);
+          overlay.setAttribute('aria-hidden', !expanded);
+          document.body.classList.toggle('menu-open');
+          setMobileTabindex(expanded);
+        });
 
           overlay.querySelectorAll('.mobile-nav-link').forEach(function(link) {
             link.addEventListener('click', function() {

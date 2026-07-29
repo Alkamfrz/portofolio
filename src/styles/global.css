@@ -4,7 +4,7 @@
    ═══════════════════════════════════════ */
 
 /* ─── Fonts ─── */
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=DM+Mono:wght@400;500&display=swap');
+/* Fonts loaded via <link> in Layout.astro for non-render-blocking */
 
 /* ─── Theme Tokens ─── */
 :root {
@@ -47,6 +47,7 @@
   --accent-hover: #b08840;
   --accent-dim: rgba(160, 120, 48, 0.1);
   --accent-dim2: rgba(160, 120, 48, 0.06);
+  --text-muted: #696765;
   --green: #4a8a6a;
 }
 
@@ -274,6 +275,7 @@ code {
   height: 6px;
   border-radius: 50%;
   background: var(--green);
+  will-change: opacity;
   animation: pulse-dot 2s ease-in-out infinite;
 }
 @keyframes pulse-dot {
