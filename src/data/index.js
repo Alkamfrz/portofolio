@@ -244,7 +244,7 @@ export const projects = [
     tech: ['Docker', 'Proxmox VE', 'Cloudflare Tunnel', 'CrowdSec', 'HAProxy', 'Tailscale', 'Bash', 'PowerShell'],
     github: 'https://github.com/alkamfrz/home-server-infrastructure',
     live: 'https://home.alkamfrz.id',
-    arch: '/homelab-architecture.html',
+    arch: '/homelab-architecture/',
     overview: {
       hosts: 'pve-tng · docker-tng · haproxy-tng · unbound-tng · cfd-tng · tailscale-tng',
       stacks: 'Jellyfin · qBittorrent/arr · Homepage · UptimeKuma · Upsnap · CrowdSec · Watchtower',
