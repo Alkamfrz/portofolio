@@ -8,7 +8,7 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:'DM Sans',system-ui,sans-serif;background:#0f0e0c;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;color:#ece8e0}
-    .container{max-width:1150px;width:100%}
+    .container{max-width:1350px;width:100%}
     .header{margin-bottom:1.5rem}
     .header-row{display:flex;align-items:center;gap:1rem;margin-bottom:.5rem}
     .pulse-dot{width:14px;height:14px;background:#d4a05a;border-radius:50%;animation:pulse 2s infinite;flex-shrink:0}
@@ -16,7 +16,7 @@
     h1{font-family:'Instrument Serif',Georgia,serif;font-size:1.65rem;font-weight:400;letter-spacing:-.025em;color:#ece8e0}
     .subtitle{color:#8a8078;font-size:1rem;margin-left:1.75rem}
     .diagram{background:#17150f;border:1px solid #2d2920;border-radius:1rem;padding:2rem;overflow-x:auto}
-    svg{width:100%;min-width:1050px;display:block}
+    svg{width:100%;min-width:1250px;display:block}
     .cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1.5rem}
     .card{background:#17150f;border-radius:.75rem;border:1px solid #2d2920;padding:1.25rem}
     .card-hdr{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem}
@@ -38,7 +38,7 @@
     </div>
 
     <div class="diagram">
-      <svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 1400 700" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <marker id="arr" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
             <polygon points="0 0 12 4 0 8" fill="#8a8078"/>
@@ -51,7 +51,7 @@
           </marker>
         </defs>
 
-        <rect width="1200" height="700" fill="#17150f" rx="12"/>
+        <rect width="1400" height="700" fill="#17150f" rx="12"/>
 
         <!-- ─── Legend ─── -->
         <text x="30" y="24" fill="#ece8e0" font-size="13" font-family="'Instrument Serif',Georgia,serif" font-weight="400">Legend</text>
@@ -59,17 +59,17 @@
         <text x="52" y="42" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Proxmox LXC / VM</text>
         <rect x="190" y="33" width="14" height="10" rx="2" fill="rgba(122,170,138,.12)" stroke="#7aaa8a" stroke-width="1.5"/>
         <text x="212" y="42" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Docker compose</text>
-        <rect x="350" y="33" width="14" height="10" rx="2" fill="rgba(196,106,90,.2)" stroke="#c46a5a" stroke-width="1.5"/>
-        <text x="372" y="42" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Physical / security</text>
-        <rect x="520" y="33" width="14" height="10" rx="2" fill="rgba(212,160,90,.05)" stroke="#d4a05a" stroke-width="1.5" stroke-dasharray="3,2"/>
-        <text x="542" y="42" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Cloudflare</text>
+        <rect x="340" y="33" width="14" height="10" rx="2" fill="rgba(196,106,90,.2)" stroke="#c46a5a" stroke-width="1.5"/>
+        <text x="362" y="42" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Physical / security</text>
+        <rect x="500" y="33" width="14" height="10" rx="2" fill="rgba(212,160,90,.05)" stroke="#d4a05a" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <text x="522" y="42" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Cloudflare</text>
 
-        <line x1="640" y1="38" x2="660" y2="38" stroke="#7aaa8a" stroke-width="2" marker-end="url(#arr-g)"/>
-        <text x="668" y="42" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Traffic</text>
-        <line x1="740" y1="38" x2="760" y2="38" stroke="#c46a5a" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arr-r)"/>
-        <text x="768" y="42" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Security</text>
-        <line x1="860" y1="38" x2="880" y2="38" stroke="#8a8078" stroke-width="1.5" stroke-dasharray="3,3"/>
-        <text x="888" y="42" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Network</text>
+        <line x1="650" y1="38" x2="680" y2="38" stroke="#7aaa8a" stroke-width="2" marker-end="url(#arr-g)"/>
+        <text x="690" y="42" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Traffic flow</text>
+        <line x1="810" y1="38" x2="840" y2="38" stroke="#c46a5a" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arr-r)"/>
+        <text x="850" y="42" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Security signal</text>
+        <line x1="990" y1="38" x2="1020" y2="38" stroke="#8a8078" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <text x="1030" y="42" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Network</text>
 
         <!-- ═══ COL 0: Physical ═══ -->
         <rect x="50" y="85" width="180" height="55" rx="8" fill="rgba(30,25,20,.6)" stroke="#2d2920" stroke-width="2"/>
@@ -95,105 +95,114 @@
         <text x="45" y="435" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">99 · Management</text>
 
         <!-- ═══ COL 1: Cloudflare + Proxmox ═══ -->
-        <rect x="290" y="60" width="280" height="75" rx="8" fill="rgba(212,160,90,.03)" stroke="#d4a05a" stroke-width="1.5" stroke-dasharray="6,3"/>
-        <text x="300" y="80" fill="#d4a05a" font-size="11" font-family="'Instrument Serif',Georgia,serif" font-weight="400">Cloudflare Edge</text>
+        <rect x="300" y="60" width="310" height="75" rx="8" fill="rgba(212,160,90,.03)" stroke="#d4a05a" stroke-width="1.5" stroke-dasharray="6,3"/>
+        <text x="310" y="80" fill="#d4a05a" font-size="11" font-family="'Instrument Serif',Georgia,serif" font-weight="400">Cloudflare Edge</text>
 
-        <rect x="300" y="95" width="125" height="30" rx="5" fill="rgba(212,160,90,.12)" stroke="#d4a05a" stroke-width="1.5"/>
-        <text x="362" y="112" fill="#ece8e0" font-size="10" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Cloudflare DNS</text>
-        <text x="362" y="123" fill="#8a8078" font-size="8" text-anchor="middle">alkamfrz.id</text>
+        <rect x="310" y="95" width="140" height="30" rx="5" fill="rgba(212,160,90,.12)" stroke="#d4a05a" stroke-width="1.5"/>
+        <text x="380" y="112" fill="#ece8e0" font-size="10" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Cloudflare DNS</text>
+        <text x="380" y="123" fill="#8a8078" font-size="8" text-anchor="middle">alkamfrz.id</text>
 
-        <rect x="435" y="95" width="125" height="30" rx="5" fill="rgba(212,160,90,.12)" stroke="#d4a05a" stroke-width="1.5"/>
-        <text x="497" y="112" fill="#ece8e0" font-size="10" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Cloudflare Tunnel</text>
+        <rect x="460" y="95" width="140" height="30" rx="5" fill="rgba(212,160,90,.12)" stroke="#d4a05a" stroke-width="1.5"/>
+        <text x="530" y="112" fill="#ece8e0" font-size="10" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Cloudflare Tunnel</text>
 
         <line x1="230" y1="110" x2="293" y2="110" stroke="#8a8078" stroke-width="2" marker-end="url(#arr)"/>
         <text x="265" y="104" fill="#8a8078" font-size="10" text-anchor="middle">HTTPS</text>
 
-        <line x1="425" y1="110" x2="433" y2="110" stroke="#d4a05a" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="450" y1="110" x2="458" y2="110" stroke="#d4a05a" stroke-width="1.5" marker-end="url(#arr)"/>
 
         <!-- Proxmox -->
-        <rect x="290" y="170" width="280" height="40" rx="6" fill="rgba(212,160,90,.08)" stroke="#d4a05a" stroke-width="2"/>
-        <text x="430" y="195" fill="#ece8e0" font-size="13" font-family="'Instrument Serif',Georgia,serif" text-anchor="middle">Proxmox VE Hypervisor</text>
+        <rect x="300" y="170" width="310" height="40" rx="6" fill="rgba(212,160,90,.08)" stroke="#d4a05a" stroke-width="2"/>
+        <text x="455" y="195" fill="#ece8e0" font-size="13" font-family="'Instrument Serif',Georgia,serif" text-anchor="middle">Proxmox VE Hypervisor</text>
 
-        <line x1="230" y1="207" x2="285" y2="190" stroke="#8a8078" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="230" y1="207" x2="295" y2="190" stroke="#8a8078" stroke-width="1.5" marker-end="url(#arr)"/>
 
         <!-- LXCs -->
-        <rect x="290" y="235" width="280" height="38" rx="4" fill="rgba(212,160,90,.08)" stroke="#d4a05a" stroke-width="1.5"/>
-        <text x="430" y="255" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Cloudflare Tunnel · LXC 102</text>
-        <text x="430" y="268" fill="#8a8078" font-size="9" text-anchor="middle">cloudflared daemon, tunnel ingress</text>
+        <rect x="300" y="235" width="310" height="38" rx="4" fill="rgba(212,160,90,.08)" stroke="#d4a05a" stroke-width="1.5"/>
+        <text x="455" y="255" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Cloudflare Tunnel · LXC 102</text>
+        <text x="455" y="268" fill="#8a8078" font-size="9" text-anchor="middle">cloudflared daemon, tunnel ingress</text>
 
-        <rect x="290" y="285" width="280" height="38" rx="4" fill="rgba(212,160,90,.08)" stroke="#d4a05a" stroke-width="1.5"/>
-        <text x="430" y="305" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Reverse Proxy · LXC 101</text>
-        <text x="430" y="318" fill="#8a8078" font-size="9" text-anchor="middle">HAProxy · SSL termination (Let's Encrypt)</text>
+        <rect x="300" y="285" width="310" height="38" rx="4" fill="rgba(212,160,90,.08)" stroke="#d4a05a" stroke-width="1.5"/>
+        <text x="455" y="305" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Reverse Proxy · LXC 101</text>
+        <text x="455" y="318" fill="#8a8078" font-size="9" text-anchor="middle">HAProxy · SSL termination (Let's Encrypt)</text>
 
-        <rect x="290" y="335" width="280" height="38" rx="4" fill="rgba(212,160,90,.08)" stroke="#d4a05a" stroke-width="1.5"/>
-        <text x="430" y="355" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">DNS Resolver · LXC 100</text>
-        <text x="430" y="368" fill="#8a8078" font-size="9" text-anchor="middle">Unbound · DNSSEC · Adblock · Local zones</text>
+        <rect x="300" y="335" width="310" height="38" rx="4" fill="rgba(212,160,90,.08)" stroke="#d4a05a" stroke-width="1.5"/>
+        <text x="455" y="355" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">DNS Resolver · LXC 100</text>
+        <text x="455" y="368" fill="#8a8078" font-size="9" text-anchor="middle">Unbound · DNSSEC · Adblock · Local zones</text>
 
-        <rect x="290" y="385" width="280" height="38" rx="4" fill="rgba(212,160,90,.08)" stroke="#d4a05a" stroke-width="1.5"/>
-        <text x="430" y="405" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">VPN Gateway · LXC 103</text>
-        <text x="430" y="418" fill="#8a8078" font-size="9" text-anchor="middle">Tailscale mesh · Remote admin access</text>
+        <rect x="300" y="385" width="310" height="38" rx="4" fill="rgba(212,160,90,.08)" stroke="#d4a05a" stroke-width="1.5"/>
+        <text x="455" y="405" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">VPN Gateway · LXC 103</text>
+        <text x="455" y="418" fill="#8a8078" font-size="9" text-anchor="middle">Tailscale mesh · Remote admin access</text>
 
-        <rect x="290" y="435" width="280" height="38" rx="4" fill="rgba(212,160,90,.08)" stroke="#d4a05a" stroke-width="1.5"/>
-        <text x="430" y="455" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">AI Worker · LXC 104</text>
-        <text x="430" y="468" fill="#8a8078" font-size="9" text-anchor="middle">9Router · OpenCode CLI</text>
+        <rect x="300" y="435" width="310" height="38" rx="4" fill="rgba(212,160,90,.08)" stroke="#d4a05a" stroke-width="1.5"/>
+        <text x="455" y="455" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">AI Worker · LXC 104</text>
+        <text x="455" y="468" fill="#8a8078" font-size="9" text-anchor="middle">9Router · OpenCode CLI</text>
 
         <!-- docker host -->
-        <rect x="290" y="488" width="280" height="55" rx="5" fill="rgba(212,160,90,.1)" stroke="#d4a05a" stroke-width="2"/>
-        <text x="430" y="512" fill="#ece8e0" font-size="13" font-family="'Instrument Serif',Georgia,serif" text-anchor="middle">Docker Host · VM 200</text>
-        <text x="430" y="532" fill="#8a8078" font-size="10" text-anchor="middle">Docker engine · TLS · NFS-backed storage</text>
+        <rect x="300" y="488" width="310" height="55" rx="5" fill="rgba(212,160,90,.1)" stroke="#d4a05a" stroke-width="2"/>
+        <text x="455" y="512" fill="#ece8e0" font-size="13" font-family="'Instrument Serif',Georgia,serif" text-anchor="middle">Docker Host · VM 200</text>
+        <text x="455" y="532" fill="#8a8078" font-size="10" text-anchor="middle">Docker engine · TLS · NFS-backed storage</text>
 
         <!-- ═══ ROUTING ═══ -->
-        <polyline points="497,125 497,170 430,170 430,228" fill="none" stroke="#7aaa8a" stroke-width="2" marker-end="url(#arr-g)"/>
-        <text x="437" y="166" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Tunnel</text>
-        <line x1="430" y1="273" x2="430" y2="278" stroke="#7aaa8a" stroke-width="2" marker-end="url(#arr-g)"/>
-        <polyline points="570,304 600,304 600,515 572,515" fill="none" stroke="#7aaa8a" stroke-width="2" marker-end="url(#arr-g)"/>
-        <text x="608" y="415" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Proxy</text>
-        <polyline points="230,302 260,302 260,515 285,515" fill="none" stroke="#c46a5a" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arr-r)"/>
-        <text x="270" y="415" fill="#c46a5a" font-size="10" font-family="'DM Mono',monospace" text-anchor="middle">NFS</text>
+        <!-- Tunnel -> Cloudflare Tunnel LXC (down-right, short) -->
+        <polyline points="530,125 530,160 455,160 455,228" fill="none" stroke="#7aaa8a" stroke-width="2" marker-end="url(#arr-g)"/>
+        <text x="460" y="156" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Tunnel</text>
+
+        <!-- CF Tunnel LXC -> HAProxy (down 5px) -->
+        <line x1="455" y1="273" x2="455" y2="278" stroke="#7aaa8a" stroke-width="2" marker-end="url(#arr-g)"/>
+
+        <!-- HAProxy -> Docker Host (right 30px, down, left) -->
+        <polyline points="610,304 655,304 655,515 617,515" fill="none" stroke="#7aaa8a" stroke-width="2" marker-end="url(#arr-g)"/>
+        <text x="663" y="414" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Proxy</text>
+
+        <!-- NFS: NAS -> Docker Host (right, down, right) -->
+        <polyline points="230,302 275,302 275,525 293,525" fill="none" stroke="#c46a5a" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arr-r)"/>
+        <text x="285" y="420" fill="#c46a5a" font-size="10" font-family="'DM Mono',monospace" text-anchor="middle">NFS</text>
 
         <!-- ═══ COL 2: Docker stacks ═══ -->
-        <rect x="640" y="60" width="530" height="610" rx="8" fill="rgba(122,170,138,.02)" stroke="#7aaa8a" stroke-width="1.5" stroke-dasharray="6,3"/>
-        <text x="650" y="80" fill="#7aaa8a" font-size="12" font-family="'Instrument Serif',Georgia,serif" font-weight="400">Docker Compose Stacks</text>
-        <text x="650" y="96" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Run on Docker Host · Local intranet (VLAN 30)</text>
+        <rect x="710" y="60" width="660" height="610" rx="8" fill="rgba(122,170,138,.02)" stroke="#7aaa8a" stroke-width="1.5" stroke-dasharray="6,3"/>
+        <text x="720" y="80" fill="#7aaa8a" font-size="12" font-family="'Instrument Serif',Georgia,serif" font-weight="400">Docker Compose Stacks</text>
+        <text x="720" y="96" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Run on Docker Host · Local intranet (VLAN 30)</text>
 
-        <rect x="655" y="115" width="500" height="65" rx="6" fill="rgba(122,170,138,.1)" stroke="#7aaa8a" stroke-width="2"/>
-        <text x="905" y="138" fill="#ece8e0" font-size="13" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">ArrSuite</text>
-        <text x="905" y="158" fill="#c0b8a8" font-size="10" text-anchor="middle">qBittorrent · Radarr · Sonarr · Prowlarr · Bazarr · flaresolverr</text>
-        <text x="905" y="174" fill="#8a8078" font-size="9" font-family="'DM Mono',monospace" text-anchor="middle">Media automation</text>
+        <rect x="725" y="115" width="630" height="65" rx="6" fill="rgba(122,170,138,.1)" stroke="#7aaa8a" stroke-width="2"/>
+        <text x="1040" y="138" fill="#ece8e0" font-size="13" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">ArrSuite</text>
+        <text x="1040" y="158" fill="#c0b8a8" font-size="10" text-anchor="middle">qBittorrent · Radarr · Sonarr · Prowlarr · Bazarr · flaresolverr</text>
+        <text x="1040" y="174" fill="#8a8078" font-size="9" font-family="'DM Mono',monospace" text-anchor="middle">Media automation</text>
 
-        <rect x="655" y="195" width="500" height="60" rx="6" fill="rgba(122,170,138,.1)" stroke="#7aaa8a" stroke-width="2"/>
-        <text x="905" y="218" fill="#ece8e0" font-size="13" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Jellyfin + Seerr</text>
-        <text x="905" y="238" fill="#c0b8a8" font-size="10" text-anchor="middle">Media server · Request management</text>
-        <text x="905" y="252" fill="#8a8078" font-size="9" font-family="'DM Mono',monospace" text-anchor="middle">Local streaming</text>
+        <rect x="725" y="195" width="630" height="60" rx="6" fill="rgba(122,170,138,.1)" stroke="#7aaa8a" stroke-width="2"/>
+        <text x="1040" y="218" fill="#ece8e0" font-size="13" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Jellyfin + Seerr</text>
+        <text x="1040" y="238" fill="#c0b8a8" font-size="10" text-anchor="middle">Media server · Request management</text>
+        <text x="1040" y="252" fill="#8a8078" font-size="9" font-family="'DM Mono',monospace" text-anchor="middle">Local streaming</text>
 
-        <rect x="655" y="270" width="500" height="60" rx="6" fill="rgba(196,106,90,.15)" stroke="#c46a5a" stroke-width="2"/>
-        <text x="905" y="293" fill="#ece8e0" font-size="13" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">CrowdSec IPS</text>
-        <text x="905" y="313" fill="#c0b8a8" font-size="10" text-anchor="middle">Intrusion prevention · Lua bouncer → HAProxy</text>
-        <text x="905" y="327" fill="#8a8078" font-size="9" font-family="'DM Mono',monospace" text-anchor="middle">Security</text>
+        <rect x="725" y="270" width="630" height="60" rx="6" fill="rgba(196,106,90,.15)" stroke="#c46a5a" stroke-width="2"/>
+        <text x="1040" y="293" fill="#ece8e0" font-size="13" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">CrowdSec IPS</text>
+        <text x="1040" y="313" fill="#c0b8a8" font-size="10" text-anchor="middle">Intrusion prevention · Lua bouncer → HAProxy</text>
+        <text x="1040" y="327" fill="#8a8078" font-size="9" font-family="'DM Mono',monospace" text-anchor="middle">Security</text>
 
-        <rect x="655" y="350" width="240" height="60" rx="6" fill="rgba(122,170,138,.1)" stroke="#7aaa8a" stroke-width="2"/>
-        <text x="775" y="373" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Homepage</text>
-        <text x="775" y="393" fill="#c0b8a8" font-size="9" text-anchor="middle">Dashboard</text>
+        <rect x="725" y="350" width="300" height="60" rx="6" fill="rgba(122,170,138,.1)" stroke="#7aaa8a" stroke-width="2"/>
+        <text x="875" y="373" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Homepage</text>
+        <text x="875" y="393" fill="#c0b8a8" font-size="9" text-anchor="middle">Dashboard</text>
 
-        <rect x="920" y="350" width="235" height="60" rx="6" fill="rgba(122,170,138,.1)" stroke="#7aaa8a" stroke-width="2"/>
-        <text x="1037" y="373" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">UptimeKuma</text>
-        <text x="1037" y="393" fill="#c0b8a8" font-size="9" text-anchor="middle">Uptime monitoring</text>
+        <rect x="1055" y="350" width="300" height="60" rx="6" fill="rgba(122,170,138,.1)" stroke="#7aaa8a" stroke-width="2"/>
+        <text x="1205" y="373" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">UptimeKuma</text>
+        <text x="1205" y="393" fill="#c0b8a8" font-size="9" text-anchor="middle">Uptime monitoring</text>
 
-        <rect x="655" y="425" width="240" height="60" rx="6" fill="rgba(122,170,138,.1)" stroke="#7aaa8a" stroke-width="2"/>
-        <text x="775" y="448" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Upsnap</text>
-        <text x="775" y="468" fill="#c0b8a8" font-size="9" text-anchor="middle">Wake-on-LAN</text>
+        <rect x="725" y="425" width="300" height="60" rx="6" fill="rgba(122,170,138,.1)" stroke="#7aaa8a" stroke-width="2"/>
+        <text x="875" y="448" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Upsnap</text>
+        <text x="875" y="468" fill="#c0b8a8" font-size="9" text-anchor="middle">Wake-on-LAN</text>
 
-        <rect x="920" y="425" width="235" height="60" rx="6" fill="rgba(122,170,138,.08)" stroke="#7aaa8a" stroke-width="2"/>
-        <text x="1037" y="448" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Watchtower</text>
-        <text x="1037" y="468" fill="#c0b8a8" font-size="9" text-anchor="middle">Auto-updater</text>
+        <rect x="1055" y="425" width="300" height="60" rx="6" fill="rgba(122,170,138,.08)" stroke="#7aaa8a" stroke-width="2"/>
+        <text x="1205" y="448" fill="#ece8e0" font-size="11" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Watchtower</text>
+        <text x="1205" y="468" fill="#c0b8a8" font-size="9" text-anchor="middle">Auto-updater</text>
 
-        <polyline points="570,515 620,515 620,145 648,145" fill="none" stroke="#7aaa8a" stroke-width="2.5" marker-end="url(#arr-g)"/>
-        <text x="625" y="340" fill="#8a8078" font-size="11" font-family="'DM Mono',monospace">docker compose</text>
+        <!-- Docker Host -> stacks (right, up, right) -->
+        <polyline points="610,515 685,515 685,145 703,145" fill="none" stroke="#7aaa8a" stroke-width="2.5" marker-end="url(#arr-g)"/>
+        <text x="693" y="340" fill="#8a8078" font-size="11" font-family="'DM Mono',monospace">docker compose</text>
 
-        <polyline points="655,300 615,300 615,304 575,304" fill="none" stroke="#c46a5a" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arr-r)"/>
-        <text x="630" y="296" fill="#c46a5a" font-size="10" font-family="'DM Mono',monospace" text-anchor="end">Lua bouncer</text>
+        <!-- CrowdSec -> HAProxy (left 105px, down, left) -->
+        <polyline points="725,300 660,300 660,304 617,304" fill="none" stroke="#c46a5a" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arr-r)"/>
+        <text x="670" y="296" fill="#c46a5a" font-size="10" font-family="'DM Mono',monospace" text-anchor="end">Lua bouncer</text>
 
-        <text x="655" y="530" fill="#8a8078" font-size="9" font-family="'DM Mono',monospace">Stacks share NAS volumes: configs, media, databases</text>
+        <text x="725" y="530" fill="#8a8078" font-size="9" font-family="'DM Mono',monospace">Stacks share NAS volumes: configs, media, databases</text>
       </svg>
     </div>
 
