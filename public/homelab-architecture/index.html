@@ -8,12 +8,12 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:'JetBrains Mono',monospace;background:#020617;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;color:white}
-    .container{max-width:1200px;width:100%}
+    .container{max-width:1150px;width:100%}
     .header{margin-bottom:1.5rem}
-    .header-row{display:flex;align-items:center;gap:1rem;margin-bottom:0.5rem}
+    .header-row{display:flex;align-items:center;gap:1rem;margin-bottom:.5rem}
     .pulse-dot{width:12px;height:12px;background:#22d3ee;border-radius:50%;animation:pulse 2s infinite;flex-shrink:0}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-    h1{font-size:1.5rem;font-weight:700;letter-spacing:-0.025em}
+    h1{font-size:1.5rem;font-weight:700;letter-spacing:-.025em}
     .subtitle{color:#94a3b8;font-size:.875rem;margin-left:1.75rem}
     .diagram{background:rgba(15,23,42,.5);border:1px solid #1e293b;border-radius:1rem;padding:2rem;overflow-x:auto}
     svg{width:100%;min-width:950px;display:block}
@@ -39,7 +39,7 @@
     </div>
 
     <div class="diagram">
-      <svg viewBox="0 0 1100 700" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 1100 680" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
             <polygon points="0 0 10 3.5 0 7" fill="#64748b"/>
@@ -52,18 +52,9 @@
           </marker>
         </defs>
 
-        <rect width="1100" height="700" fill="#0f172a" rx="12"/>
+        <rect width="1100" height="680" fill="#0f172a" rx="12"/>
 
-        <!-- grid lines -->
-        <g stroke="#1e293b" stroke-width="0.5" opacity="0.4">
-          <line x1="0" y1="70" x2="1100" y2="70"/><line x1="0" y1="140" x2="1100" y2="140"/>
-          <line x1="0" y1="210" x2="1100" y2="210"/><line x1="0" y1="280" x2="1100" y2="280"/>
-          <line x1="0" y1="350" x2="1100" y2="350"/><line x1="0" y1="420" x2="1100" y2="420"/>
-          <line x1="0" y1="490" x2="1100" y2="490"/><line x1="0" y1="560" x2="1100" y2="560"/>
-          <line x1="0" y1="630" x2="1100" y2="630"/>
-        </g>
-
-        <!-- Legend bar -->
+        <!-- ─── Legend ─── -->
         <text x="30" y="22" fill="white" font-size="11" font-weight="700">Legend</text>
         <rect x="30" y="30" width="12" height="8" rx="2" fill="rgba(8,51,68,.4)" stroke="#22d3ee" stroke-width="1"/>
         <text x="48" y="37" fill="#94a3b8" font-size="8">Proxmox LXC/VM</text>
@@ -79,157 +70,158 @@
         <line x1="680" y1="34" x2="696" y2="34" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-r)"/>
         <text x="702" y="37" fill="#94a3b8" font-size="8">Security flow</text>
         <line x1="800" y1="34" x2="816" y2="34" stroke="#64748b" stroke-width="1" stroke-dasharray="3,3"/>
-        <text x="822" y="37" fill="#94a3b8" font-size="8">Network link</text>
+        <text x="822" y="37" fill="#94a3b8" font-size="8">Network</text>
 
-        <!-- ──────────── COL 0: Physical (x=30..270) ──────────── -->
-        <rect x="55" y="80" width="160" height="50" rx="8" fill="rgba(30,41,59,.6)" stroke="#94a3b8" stroke-width="1.5"/>
-        <text x="135" y="103" fill="white" font-size="12" font-weight="600" text-anchor="middle">Internet</text>
-        <text x="135" y="120" fill="#94a3b8" font-size="9" text-anchor="middle">Clients</text>
+        <!-- ═══════════ COL 0: Internet + Physical (x=35..260) ═══════════ -->
+        <rect x="60" y="80" width="160" height="50" rx="8" fill="rgba(30,41,59,.6)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="140" y="103" fill="white" font-size="12" font-weight="600" text-anchor="middle">Internet</text>
+        <text x="140" y="120" fill="#94a3b8" font-size="9" text-anchor="middle">Clients</text>
 
-        <rect x="55" y="160" width="160" height="55" rx="8" fill="rgba(136,19,55,.35)" stroke="#fb7185" stroke-width="1.5"/>
-        <text x="135" y="182" fill="white" font-size="11" font-weight="600" text-anchor="middle">RT-TNG</text>
-        <text x="135" y="198" fill="#fb7185" font-size="8" text-anchor="middle">MikroTik RB450Gx4</text>
-        <text x="135" y="210" fill="#94a3b8" font-size="7" text-anchor="middle">VLAN gw · Firewall · NAT</text>
+        <rect x="60" y="170" width="160" height="50" rx="8" fill="rgba(136,19,55,.35)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="140" y="192" fill="white" font-size="11" font-weight="600" text-anchor="middle">RT-TNG</text>
+        <text x="140" y="208" fill="#fb7185" font-size="8" text-anchor="middle">MikroTik RB450Gx4</text>
+        <text x="140" y="216" fill="#94a3b8" font-size="7" text-anchor="middle">VLAN gw · Firewall · NAT</text>
 
-        <line x1="135" y1="130" x2="135" y2="155" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="140" y1="130" x2="140" y2="165" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
 
-        <rect x="55" y="240" width="160" height="55" rx="8" fill="rgba(136,19,55,.35)" stroke="#fb7185" stroke-width="1.5"/>
-        <text x="135" y="262" fill="white" font-size="11" font-weight="600" text-anchor="middle">NAS-TNG</text>
-        <text x="135" y="278" fill="#fb7185" font-size="8" text-anchor="middle">Ugreen DH2300</text>
-        <text x="135" y="290" fill="#94a3b8" font-size="7" text-anchor="middle">NFS storage</text>
+        <rect x="60" y="260" width="160" height="50" rx="8" fill="rgba(136,19,55,.35)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="140" y="282" fill="white" font-size="11" font-weight="600" text-anchor="middle">NAS-TNG</text>
+        <text x="140" y="298" fill="#fb7185" font-size="8" text-anchor="middle">Ugreen DH2300 · NFS</text>
 
-        <line x1="135" y1="215" x2="135" y2="235" stroke="#64748b" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="140" y1="220" x2="140" y2="255" stroke="#64748b" stroke-width="1" stroke-dasharray="3,3"/>
 
-        <rect x="35" y="325" width="200" height="80" rx="6" fill="rgba(15,23,42,.4)" stroke="#64748b" stroke-width="1"/>
-        <text x="135" y="343" fill="#fbbf24" font-size="9" font-weight="600" text-anchor="middle">VLAN Segments</text>
-        <text x="45" y="359" fill="#94a3b8" font-size="8">10 · User / 20 · IoT</text>
-        <text x="45" y="373" fill="#94a3b8" font-size="8">30 · Server (services)</text>
-        <text x="45" y="387" fill="#94a3b8" font-size="8">40 · Guest / 99 · Mgmt</text>
-        <text x="135" y="399" fill="#64748b" font-size="7" text-anchor="middle">Trunk via RT-TNG</text>
+        <!-- VLAN -->
+        <rect x="40" y="345" width="200" height="78" rx="6" fill="rgba(15,23,42,.4)" stroke="#64748b" stroke-width="1"/>
+        <text x="140" y="363" fill="#fbbf24" font-size="9" font-weight="600" text-anchor="middle">VLAN Segments</text>
+        <text x="50" y="379" fill="#94a3b8" font-size="8">10 · User / 20 · IoT</text>
+        <text x="50" y="393" fill="#94a3b8" font-size="8">30 · Server (services)</text>
+        <text x="50" y="407" fill="#94a3b8" font-size="8">40 · Guest / 99 · Mgmt</text>
+        <text x="140" y="418" fill="#64748b" font-size="7" text-anchor="middle">Trunk via RT-TNG</text>
 
-        <!-- ──────────── COL 1: Cloudflare + Proxmox (x=310..640) ──────────── -->
+        <!-- ═══════════ COL 1: CF + Proxmox (x=300..550) ═══════════ -->
+        <rect x="300" y="60" width="250" height="70" rx="8" fill="rgba(120,53,15,.03)" stroke="#fbbf24" stroke-width="1" stroke-dasharray="6,3"/>
+        <text x="310" y="77" fill="#fbbf24" font-size="9" font-weight="600">Cloudflare Edge</text>
 
-        <!-- Cloudflare -->
-        <rect x="310" y="55" width="290" height="70" rx="8" fill="rgba(120,53,15,.03)" stroke="#fbbf24" stroke-width="1" stroke-dasharray="6,3"/>
-        <text x="320" y="72" fill="#fbbf24" font-size="9" font-weight="600">Cloudflare Edge</text>
+        <rect x="310" y="90" width="110" height="30" rx="5" fill="rgba(120,53,15,.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="365" y="106" fill="white" font-size="9" font-weight="600" text-anchor="middle">Cloudflare DNS</text>
+        <text x="365" y="117" fill="#94a3b8" font-size="7" text-anchor="middle">alkamfrz.id</text>
 
-        <rect x="320" y="85" width="130" height="30" rx="5" fill="rgba(120,53,15,.3)" stroke="#fbbf24" stroke-width="1.5"/>
-        <text x="385" y="101" fill="white" font-size="9" font-weight="600" text-anchor="middle">Cloudflare DNS</text>
-        <text x="385" y="112" fill="#94a3b8" font-size="7" text-anchor="middle">alkamfrz.id</text>
-
-        <rect x="460" y="85" width="130" height="30" rx="5" fill="rgba(120,53,15,.3)" stroke="#fbbf24" stroke-width="1.5"/>
-        <text x="525" y="101" fill="white" font-size="9" font-weight="600" text-anchor="middle">Cloudflare Tunnel</text>
-        <text x="525" y="112" fill="#94a3b8" font-size="7" text-anchor="middle">Occasional public ingress</text>
-
-        <line x1="450" y1="100" x2="458" y2="100" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arr)"/>
+        <rect x="430" y="90" width="110" height="30" rx="5" fill="rgba(120,53,15,.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="485" y="106" fill="white" font-size="9" font-weight="600" text-anchor="middle">Cloudflare Tunnel</text>
+        <text x="485" y="117" fill="#94a3b8" font-size="7" text-anchor="middle">Occasional public ingress</text>
 
         <!-- Internet -> CF DNS -->
-        <line x1="215" y1="105" x2="315" y2="105" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="220" y1="105" x2="305" y2="105" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
         <text x="265" y="99" fill="#94a3b8" font-size="9" text-anchor="middle">HTTPS</text>
 
-        <!-- Proxmox hdr -->
-        <rect x="310" y="155" width="290" height="35" rx="6" fill="rgba(8,51,68,.4)" stroke="#22d3ee" stroke-width="1.5"/>
-        <text x="455" y="177" fill="white" font-size="11" font-weight="600" text-anchor="middle">pve-tng — Proxmox VE</text>
+        <!-- CF DNS -> CF Tunnel -->
+        <line x1="420" y1="105" x2="428" y2="105" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- Proxmox -->
+        <rect x="300" y="165" width="250" height="35" rx="6" fill="rgba(8,51,68,.4)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="425" y="187" fill="white" font-size="11" font-weight="600" text-anchor="middle">pve-tng — Proxmox VE</text>
 
         <!-- RT-TNG -> pve-tng -->
-        <line x1="215" y1="187" x2="305" y2="172" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="220" y1="195" x2="295" y2="182" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
 
-        <!-- LXC cluster -->
-        <rect x="310" y="205" width="200" height="35" rx="4" fill="rgba(8,51,68,.4)" stroke="#22d3ee" stroke-width="1"/>
-        <text x="410" y="223" fill="white" font-size="9" font-weight="600" text-anchor="middle">unbound-tng · LXC 100</text>
-        <text x="410" y="235" fill="#94a3b8" font-size="7" text-anchor="middle">Unbound DNS · DNSSEC · Adblock</text>
+        <!-- ─── LXCs ordered by traffic flow ─── -->
+        <rect x="300" y="225" width="250" height="35" rx="4" fill="rgba(8,51,68,.4)" stroke="#22d3ee" stroke-width="1"/>
+        <text x="425" y="244" fill="white" font-size="9" font-weight="600" text-anchor="middle">cfd-tng · LXC 102</text>
+        <text x="425" y="256" fill="#94a3b8" font-size="7" text-anchor="middle">Cloudflare Tunnel daemon</text>
 
-        <rect x="310" y="248" width="200" height="35" rx="4" fill="rgba(8,51,68,.4)" stroke="#22d3ee" stroke-width="1"/>
-        <text x="410" y="266" fill="white" font-size="9" font-weight="600" text-anchor="middle">haproxy-tng · LXC 101</text>
-        <text x="410" y="278" fill="#94a3b8" font-size="7" text-anchor="middle">Reverse proxy · SSL (Let's Encrypt)</text>
+        <rect x="300" y="275" width="250" height="35" rx="4" fill="rgba(8,51,68,.4)" stroke="#22d3ee" stroke-width="1"/>
+        <text x="425" y="294" fill="white" font-size="9" font-weight="600" text-anchor="middle">haproxy-tng · LXC 101</text>
+        <text x="425" y="306" fill="#94a3b8" font-size="7" text-anchor="middle">Reverse proxy · SSL (Let's Encrypt)</text>
 
-        <rect x="310" y="291" width="200" height="35" rx="4" fill="rgba(8,51,68,.4)" stroke="#22d3ee" stroke-width="1"/>
-        <text x="410" y="309" fill="white" font-size="9" font-weight="600" text-anchor="middle">cfd-tng · LXC 102</text>
-        <text x="410" y="321" fill="#94a3b8" font-size="7" text-anchor="middle">Cloudflare Tunnel daemon</text>
+        <rect x="300" y="325" width="250" height="35" rx="4" fill="rgba(8,51,68,.4)" stroke="#22d3ee" stroke-width="1"/>
+        <text x="425" y="344" fill="white" font-size="9" font-weight="600" text-anchor="middle">unbound-tng · LXC 100</text>
+        <text x="425" y="356" fill="#94a3b8" font-size="7" text-anchor="middle">Unbound DNS · DNSSEC · Adblock</text>
 
-        <rect x="310" y="334" width="200" height="35" rx="4" fill="rgba(8,51,68,.4)" stroke="#22d3ee" stroke-width="1"/>
-        <text x="410" y="352" fill="white" font-size="9" font-weight="600" text-anchor="middle">tailscale-tng · LXC 103</text>
-        <text x="410" y="364" fill="#94a3b8" font-size="7" text-anchor="middle">Tailscale VPN mesh</text>
+        <rect x="300" y="375" width="250" height="35" rx="4" fill="rgba(8,51,68,.4)" stroke="#22d3ee" stroke-width="1"/>
+        <text x="425" y="394" fill="white" font-size="9" font-weight="600" text-anchor="middle">tailscale-tng · LXC 103</text>
+        <text x="425" y="406" fill="#94a3b8" font-size="7" text-anchor="middle">Tailscale VPN mesh</text>
 
-        <rect x="310" y="377" width="200" height="35" rx="4" fill="rgba(8,51,68,.4)" stroke="#22d3ee" stroke-width="1"/>
-        <text x="410" y="395" fill="white" font-size="9" font-weight="600" text-anchor="middle">ai-tng · LXC 104</text>
-        <text x="410" y="407" fill="#94a3b8" font-size="7" text-anchor="middle">9Router · OpenCode CLI</text>
+        <rect x="300" y="425" width="250" height="35" rx="4" fill="rgba(8,51,68,.4)" stroke="#22d3ee" stroke-width="1"/>
+        <text x="425" y="444" fill="white" font-size="9" font-weight="600" text-anchor="middle">ai-tng · LXC 104</text>
+        <text x="425" y="456" fill="#94a3b8" font-size="7" text-anchor="middle">9Router · OpenCode CLI</text>
 
         <!-- docker-tng -->
-        <rect x="310" y="425" width="290" height="50" rx="5" fill="rgba(8,51,68,.5)" stroke="#22d3ee" stroke-width="1.5"/>
-        <text x="455" y="447" fill="white" font-size="11" font-weight="600" text-anchor="middle">docker-tng · VM 200</text>
-        <text x="455" y="464" fill="#94a3b8" font-size="8" text-anchor="middle">Docker engine · TLS · NFS-backed</text>
+        <rect x="300" y="475" width="250" height="50" rx="5" fill="rgba(8,51,68,.5)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="425" y="497" fill="white" font-size="11" font-weight="600" text-anchor="middle">docker-tng · VM 200</text>
+        <text x="425" y="514" fill="#94a3b8" font-size="8" text-anchor="middle">Docker engine · TLS · NFS-backed</text>
+
+        <!-- ═══════════ ROUTING CORRIDOR (x=550..610) ═══════════ -->
+        <!-- This corridor is where all vertical lines run — no boxes here -->
+
+        <!-- Tunnel -> cfd-tng: orthogonal only -->
+        <!-- CF Tunnel bottom center = (485, 120). cfd-tng top center = (425, 225) -->
+        <!-- Path: CF Tunnel bottom → straight down to y=160 → left to x=425 → down to cfd-tng -->
+        <polyline points="485,120 485,160 425,160 425,220" fill="none" stroke="#34d399" stroke-width="1.5" marker-end="url(#arr-g)"/>
+        <text x="430" y="156" fill="#94a3b8" font-size="8">Tunnel</text>
+
+        <!-- cfd -> haproxy: clean straight down -->
+        <line x1="425" y1="260" x2="425" y2="270" stroke="#34d399" stroke-width="1.5" marker-end="url(#arr-g)"/>
+
+        <!-- haproxy -> docker-tng via right corridor -->
+        <!-- haproxy right = (550, 292). Line goes: haproxy right → right to 575 → down to docker's right → left to docker -->
+        <polyline points="550,292 575,292 575,500 552,500" fill="none" stroke="#34d399" stroke-width="1.5" marker-end="url(#arr-g)"/>
+        <text x="580" y="400" fill="#94a3b8" font-size="8">Proxy</text>
 
         <!-- NFS: NAS -> docker-tng -->
-        <path d="M 215 267 L 260 267 L 260 450 L 305 450" fill="none" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-r)"/>
-        <text x="280" y="365" fill="#fb7185" font-size="8" text-anchor="middle">NFS</text>
+        <polyline points="220,285 250,285 250,500 295,500" fill="none" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-r)"/>
+        <text x="265" y="400" fill="#fb7185" font-size="8" text-anchor="middle">NFS</text>
 
-        <!-- Tunnel ingress: CF Tunnel -> cfd-tng -->
-        <!-- CF Tunnel center-bottom = (525, 115). cfd-tng center-top = (410, 291). -->
-        <line x1="525" y1="115" x2="410" y2="286" stroke="#34d399" stroke-width="1.5" marker-end="url(#arr-g)"/>
-        <text x="490" y="198" fill="#94a3b8" font-size="8" text-anchor="end">Tunnel ingress</text>
+        <!-- ═══════════ COL 2: Docker stacks (x=620..1070) ═══════════ -->
+        <rect x="620" y="60" width="450" height="590" rx="8" fill="rgba(6,78,59,.02)" stroke="#34d399" stroke-width="1" stroke-dasharray="6,3"/>
+        <text x="630" y="78" fill="#34d399" font-size="9" font-weight="600">Docker Compose Stacks</text>
+        <text x="630" y="91" fill="#64748b" font-size="8">All run on docker-tng · Local intranet (VLAN 30)</text>
 
-        <!-- Traffic flow: cfd -> haproxy -> docker-tng -->
-        <!-- cfd right edge=(510, 308), haproxy right=(510, 265), docker-tng right=(600, 450) -->
-        <line x1="510" y1="308" x2="510" y2="270" stroke="#34d399" stroke-width="1.5" marker-end="url(#arr-g)"/>
-        <line x1="510" y1="270" x2="580" y2="450" stroke="#34d399" stroke-width="1.5"/>
-        <line x1="580" y1="450" x2="600" y2="450" stroke="#34d399" stroke-width="1.5" marker-end="url(#arr-g)"/>
-        <text x="520" y="290" fill="#94a3b8" font-size="7">Proxy</text>
-        <text x="560" y="365" fill="#94a3b8" font-size="7" text-anchor="end">via HAProxy</text>
+        <rect x="635" y="105" width="420" height="60" rx="6" fill="rgba(6,78,59,.4)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="845" y="125" fill="white" font-size="11" font-weight="600" text-anchor="middle">ArrSuite</text>
+        <text x="845" y="143" fill="#94a3b8" font-size="9" text-anchor="middle">qBittorrent · Radarr · Sonarr · Prowlarr · Bazarr · flaresolverr</text>
+        <text x="845" y="158" fill="#64748b" font-size="8" text-anchor="middle">Media automation</text>
 
-        <!-- ──────────── COL 2: Docker stacks (x=640..1080) ──────────── -->
+        <rect x="635" y="180" width="420" height="55" rx="6" fill="rgba(6,78,59,.4)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="845" y="200" fill="white" font-size="11" font-weight="600" text-anchor="middle">Jellyfin + Seerr</text>
+        <text x="845" y="218" fill="#94a3b8" font-size="9" text-anchor="middle">Media server (8096) · Request manager (5055)</text>
+        <text x="845" y="230" fill="#64748b" font-size="8" text-anchor="middle">Local streaming</text>
 
-        <rect x="650" y="55" width="420" height="620" rx="8" fill="rgba(6,78,59,.02)" stroke="#34d399" stroke-width="1" stroke-dasharray="6,3"/>
-        <text x="660" y="73" fill="#34d399" font-size="9" font-weight="600">Docker Compose Stacks</text>
-        <text x="660" y="86" fill="#64748b" font-size="8">All run on docker-tng · Local intranet only</text>
+        <rect x="635" y="250" width="420" height="55" rx="6" fill="rgba(136,19,55,.25)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="845" y="270" fill="white" font-size="11" font-weight="600" text-anchor="middle">CrowdSec IPS</text>
+        <text x="845" y="288" fill="#94a3b8" font-size="9" text-anchor="middle">Intrusion prevention · Lua bouncer</text>
+        <text x="845" y="300" fill="#64748b" font-size="8" text-anchor="middle">Security</text>
 
-        <!-- ArrSuite -->
-        <rect x="665" y="100" width="390" height="60" rx="6" fill="rgba(6,78,59,.4)" stroke="#34d399" stroke-width="1.5"/>
-        <text x="860" y="120" fill="white" font-size="11" font-weight="600" text-anchor="middle">ArrSuite</text>
-        <text x="860" y="138" fill="#94a3b8" font-size="9" text-anchor="middle">qBittorrent · Radarr · Sonarr · Prowlarr · Bazarr · flaresolverr</text>
-        <text x="860" y="153" fill="#64748b" font-size="8" text-anchor="middle">Media automation · nzbs.org indexer</text>
+        <rect x="635" y="325" width="200" height="55" rx="6" fill="rgba(6,78,59,.4)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="735" y="345" fill="white" font-size="10" font-weight="600" text-anchor="middle">Homepage</text>
+        <text x="735" y="363" fill="#94a3b8" font-size="8" text-anchor="middle">Dashboard (8082)</text>
+        <text x="735" y="375" fill="#64748b" font-size="7" text-anchor="middle">home.alkamfrz.id</text>
 
-        <!-- Jellyfin -->
-        <rect x="665" y="175" width="390" height="55" rx="6" fill="rgba(6,78,59,.4)" stroke="#34d399" stroke-width="1.5"/>
-        <text x="860" y="195" fill="white" font-size="11" font-weight="600" text-anchor="middle">Jellyfin + Seerr</text>
-        <text x="860" y="213" fill="#94a3b8" font-size="9" text-anchor="middle">Media server (8096) · Request manager (5055)</text>
-        <text x="860" y="225" fill="#64748b" font-size="8" text-anchor="middle">arr_net interop</text>
+        <rect x="855" y="325" width="200" height="55" rx="6" fill="rgba(6,78,59,.4)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="955" y="345" fill="white" font-size="10" font-weight="600" text-anchor="middle">UptimeKuma</text>
+        <text x="955" y="363" fill="#94a3b8" font-size="8" text-anchor="middle">Uptime monitoring (3001)</text>
+        <text x="955" y="375" fill="#64748b" font-size="7" text-anchor="middle">uptime.alkamfrz.id</text>
 
-        <!-- CrowdSec -->
-        <rect x="665" y="245" width="390" height="55" rx="6" fill="rgba(136,19,55,.25)" stroke="#fb7185" stroke-width="1.5"/>
-        <text x="860" y="265" fill="white" font-size="11" font-weight="600" text-anchor="middle">CrowdSec IPS</text>
-        <text x="860" y="283" fill="#94a3b8" font-size="9" text-anchor="middle">Intrusion prevention · Lua bouncer</text>
-        <text x="860" y="295" fill="#64748b" font-size="8" text-anchor="middle">Security</text>
+        <rect x="635" y="395" width="200" height="55" rx="6" fill="rgba(6,78,59,.4)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="735" y="415" fill="white" font-size="10" font-weight="600" text-anchor="middle">Upsnap</text>
+        <text x="735" y="433" fill="#94a3b8" font-size="8" text-anchor="middle">Wake-on-LAN (8090)</text>
+        <text x="735" y="445" fill="#64748b" font-size="7" text-anchor="middle">upsnap.alkamfrz.id</text>
 
-        <!-- row 2 -->
-        <rect x="665" y="320" width="190" height="55" rx="6" fill="rgba(6,78,59,.4)" stroke="#34d399" stroke-width="1.5"/>
-        <text x="760" y="340" fill="white" font-size="10" font-weight="600" text-anchor="middle">Homepage</text>
-        <text x="760" y="358" fill="#94a3b8" font-size="8" text-anchor="middle">Dashboard (8082)</text>
-        <text x="760" y="370" fill="#64748b" font-size="7" text-anchor="middle">home.alkamfrz.id</text>
+        <rect x="855" y="395" width="200" height="55" rx="6" fill="rgba(6,78,59,.35)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="955" y="415" fill="white" font-size="10" font-weight="600" text-anchor="middle">Watchtower</text>
+        <text x="955" y="433" fill="#94a3b8" font-size="8" text-anchor="middle">Auto-updater</text>
+        <text x="955" y="445" fill="#64748b" font-size="7" text-anchor="middle">Automatic</text>
 
-        <rect x="870" y="320" width="185" height="55" rx="6" fill="rgba(6,78,59,.4)" stroke="#34d399" stroke-width="1.5"/>
-        <text x="962" y="340" fill="white" font-size="10" font-weight="600" text-anchor="middle">UptimeKuma</text>
-        <text x="962" y="358" fill="#94a3b8" font-size="8" text-anchor="middle">Uptime (3001)</text>
-        <text x="962" y="370" fill="#64748b" font-size="7" text-anchor="middle">uptime.alkamfrz.id</text>
-
-        <rect x="665" y="390" width="190" height="55" rx="6" fill="rgba(6,78,59,.4)" stroke="#34d399" stroke-width="1.5"/>
-        <text x="760" y="410" fill="white" font-size="10" font-weight="600" text-anchor="middle">Upsnap</text>
-        <text x="760" y="428" fill="#94a3b8" font-size="8" text-anchor="middle">Wake-on-LAN (8090)</text>
-        <text x="760" y="440" fill="#64748b" font-size="7" text-anchor="middle">upsnap.alkamfrz.id</text>
-
-        <rect x="870" y="390" width="185" height="55" rx="6" fill="rgba(6,78,59,.35)" stroke="#34d399" stroke-width="1.5"/>
-        <text x="962" y="410" fill="white" font-size="10" font-weight="600" text-anchor="middle">Watchtower</text>
-        <text x="962" y="428" fill="#94a3b8" font-size="8" text-anchor="middle">Auto-updater</text>
-        <text x="962" y="440" fill="#64748b" font-size="7" text-anchor="middle">Automatic</text>
-
-        <!-- docker-tng -> stacks -->
-        <line x1="600" y1="450" x2="648" y2="450" stroke="#34d399" stroke-width="2" marker-end="url(#arr-g)"/>
-        <text x="625" y="442" fill="#94a3b8" font-size="8" text-anchor="end">docker compose</text>
+        <!-- docker-tng -> stacks: orthogonal path -->
+        <!-- docker right center = (550, 500). go right to 600, then up to 135, then right to ArrSuite left -->
+        <polyline points="550,500 600,500 600,135 630,135" fill="none" stroke="#34d399" stroke-width="2" marker-end="url(#arr-g)"/>
+        <text x="605" y="330" fill="#94a3b8" font-size="8">docker compose</text>
 
         <!-- CrowdSec -> HAProxy Lua bouncer -->
-        <!-- CrowdSec left=(665, 272). HAProxy right=(510, 265) -->
-        <line x1="665" y1="272" x2="515" y2="272" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-r)"/>
-        <text x="610" y="268" fill="#fb7185" font-size="8" text-anchor="end">Lua bouncer</text>
+        <!-- CrowdSec left = (635, 277). HAProxy right = (550, 292). -->
+        <polyline points="635,277 595,277 595,292 555,292" fill="none" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-r)"/>
+        <text x="610" y="273" fill="#fb7185" font-size="8" text-anchor="end">Lua bouncer</text>
+
+        <text x="635" y="490" fill="#64748b" font-size="7">Stacks share NAS volumes: configs, media, databases</text>
       </svg>
     </div>
 
@@ -238,10 +230,10 @@
         <div class="card-hdr"><div class="dot dot-cy"></div><h3>Proxmox Instances</h3></div>
         <ul>
           <li>pve-tng — Hypervisor <em>(VLAN 99)</em></li>
-          <li>unbound-tng LXC 100 — Unbound DNS, DNSSEC, adblock <em>(VLAN 30)</em></li>
-          <li>haproxy-tng LXC 101 — Reverse proxy, SSL <em>(VLAN 30)</em></li>
           <li>cfd-tng LXC 102 — Cloudflare Tunnel daemon <em>(VLAN 30)</em></li>
-          <li>tailscale-tng LXC 103 — Tailscale VPN gateway <em>(VLAN 99)</em></li>
+          <li>haproxy-tng LXC 101 — Reverse proxy, SSL <em>(VLAN 30)</em></li>
+          <li>unbound-tng LXC 100 — Unbound DNS, DNSSEC <em>(VLAN 30)</em></li>
+          <li>tailscale-tng LXC 103 — Tailscale VPN <em>(VLAN 99)</em></li>
           <li>ai-tng LXC 104 — 9Router, OpenCode CLI <em>(VLAN 30)</em></li>
           <li>docker-tng VM 200 — Docker engine, TLS <em>(VLAN 30)</em></li>
         </ul>
