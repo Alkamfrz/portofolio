@@ -17,10 +17,10 @@ import { experience, education, certifications, skills, projects, currentlyBuild
         computer vision for agriculture and medical imaging.
       </p>
       <div class="hero-meta">
-        <span class="hero-tag">
+        <a href={currentlyBuilding.url} class="hero-tag" target="_blank" rel="noopener noreferrer">
           <span class="hero-tag-dot"></span>
           {currentlyBuilding.title}
-        </span>
+        </a>
       </div>
       <div class="hero-actions">
         <a href="/CV_Muhammad_Alkam_Alfariz.pdf" class="btn btn-primary" download>
@@ -60,10 +60,30 @@ import { experience, education, certifications, skills, projects, currentlyBuild
             <div class="about-stat">
               <div class="about-stat-value">{e.gpa}</div>
               <div class="about-stat-label">{e.degree}</div>
-              <div style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 0.2rem;">{e.school} · {e.location}</div>
-              <div style="font-size: 0.75rem; color: var(--text-muted);">{e.period}</div>
+              <div class="about-stat-sub">{e.school} · {e.location}</div>
+              <div class="about-stat-period">{e.period}</div>
             </div>
           ))}
+        </div>
+      </div>
+      <!-- ── Publications ── -->
+      <div class="publications-section">
+        <h3 class="publications-title">Publications</h3>
+        <div class="publications-list">
+          <div class="publication-item">
+            <a href="https://garuda.kemdiktisaintek.go.id/documents/detail/5253843" target="_blank" rel="noopener noreferrer" class="publication-link">
+              <span class="publication-icon">📄</span>
+              <span class="publication-text">CFO-RetinaNet: Oil Palm Bunch Ripeness Detection from Aerial Imagery</span>
+              <span class="publication-venue">Garuda/Kemdiktisaintek</span>
+            </a>
+          </div>
+          <div class="publication-item">
+            <a href="https://ijicom.respati.ac.id/index.php/ijicom/article/view/80" target="_blank" rel="noopener noreferrer" class="publication-link">
+              <span class="publication-icon">📄</span>
+              <span class="publication-text">Brain Tumor Classification Using Fine-Tuned ResNet50 and EfficientNet</span>
+              <span class="publication-venue">IJICOM</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -139,9 +159,10 @@ import { experience, education, certifications, skills, projects, currentlyBuild
             </div>
           )}
           <div class="project-card-links">
-            {p.github && <a href={p.github} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">GitHub</a>}
-            {p.live && <a href={p.live} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Live ↗</a>}
-            {p.journal && <a href={p.journal} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Paper ↗</a>}
+            {p.arch && <a href={p.arch} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Diagram ↗</a>}
+            {p.github && <a href={p.github} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">GitHub — {p.id}</a>}
+            {p.live && <a href={p.live} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Live site — {p.id}</a>}
+            {p.journal && <a href={p.journal} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Paper — {p.id}</a>}
           </div>
         </div>
       ))}
