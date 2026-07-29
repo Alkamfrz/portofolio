@@ -4,6 +4,12 @@ export const currentlyBuilding = {
   url: 'https://github.com/alkamfrz/home-server-infrastructure',
 };
 
+export const currentlyReading = {
+  title: 'The Phoenix Project',
+  author: 'Gene Kim',
+  type: 'book',
+};
+
 export const experience = [
   {
     id: 'mekari',

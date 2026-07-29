@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { experience, education, certifications, skills, projects, currentlyBuilding } from '../data/index.js';
+import { experience, education, certifications, skills, projects, currentlyBuilding, currentlyReading } from '../data/index.js';
 ---
 
 <Layout title="Home" description="Muhammad Alkam Alfariz — Infrastructure Engineer specializing in IT automation, homelab systems, and computer vision.">
@@ -33,6 +33,16 @@ import { experience, education, certifications, skills, projects, currentlyBuild
           See projects →
         </a>
       </div>
+      {currentlyReading && (
+      <div class="reading-widget">
+        <span class="reading-icon">{currentlyReading.type === 'book' ? '📖' : '📄'}</span>
+        <div>
+          <div class="reading-label">Now reading</div>
+          <div><span class="reading-title">{currentlyReading.title}</span> <span class="reading-author">· {currentlyReading.author}</span></div>
+        </div>
+        <a href="https://www.goodreads.com" target="_blank" rel="noopener noreferrer" class="reading-link">What's this? →</a>
+      </div>
+      )}
     </div>
 
     <!-- ── About grid ── -->
@@ -130,8 +140,14 @@ import { experience, education, certifications, skills, projects, currentlyBuild
           <span class="section-label-num">Projects</span>
         </h2>
       </div>
+      <div class="filter-bar" role="tablist" aria-label="Filter projects">
+        <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All</button>
+        <button class="filter-btn" data-filter="major" role="tab" aria-selected="false">Flagship</button>
+        <button class="filter-btn" data-filter="simple" role="tab" aria-selected="false">Simple</button>
+      </div>
+      <div id="project-list">
       {projects.map((p, i) => (
-        <div class={`project-card ${p.scope === 'major' ? 'project-card-major' : ''}`}>
+        <div class={`project-card ${p.scope === 'major' ? 'project-card-major' : ''}`} data-scope={p.scope}>
           <div class="project-card-header">
             <div>
               <div class="project-card-num">0{i + 1}</div>
@@ -166,6 +182,7 @@ import { experience, education, certifications, skills, projects, currentlyBuild
           </div>
         </div>
       ))}
+      </div>
     </div>
   </section>
 
@@ -232,8 +249,11 @@ import { experience, education, certifications, skills, projects, currentlyBuild
         <div class="contact-text">
           <p>
             Open to infrastructure, DevOps, and automation roles.
-            I typically respond within 48 hours.
           </p>
+          <div class="contact-response-time">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            I typically respond within 48 hours.
+          </div>
           <div class="contact-links">
             <a href="mailto:alkamfrz@gmail.com" class="contact-link">
               <span class="contact-link-icon">✉</span><span class="contact-link-wrap"> alkamfrz@gmail.com<button class="copy-email-btn" id="copy-email-btn" aria-label="Copy email" title="Copy email">⎘</button></span>
@@ -376,5 +396,32 @@ import { experience, education, certifications, skills, projects, currentlyBuild
       }
       if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send message'; }
     });
+  })();
+</script>
+
+<script>
+  (function() {
+    // ── Project filters ──
+    var filterBar = document.querySelector('.filter-bar');
+    var projectList = document.getElementById('project-list');
+    if (filterBar && projectList) {
+      var cards = Array.from(projectList.children).filter(function(el) { return el.matches('.project-card'); });
+      var btns = filterBar.querySelectorAll('.filter-btn');
+      btns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          btns.forEach(function(b) { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+          btn.classList.add('active'); btn.setAttribute('aria-selected', 'true');
+          var filter = btn.getAttribute('data-filter');
+          cards.forEach(function(card) {
+            var scope = card.getAttribute('data-scope');
+            if (filter === 'all' || scope === filter) {
+              card.style.display = '';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+    }
   })();
 </script>
