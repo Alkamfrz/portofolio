@@ -24,7 +24,7 @@ import { experience, education, certifications, skills, projects, currentlyBuild
         </a>
       </div>
       <div class="hero-actions">
-        <a href="/CV_Muhammad_Alkam_Alfariz_July2026.pdf" class="btn btn-primary" download>
+        <a href="/CV_Muhammad_Alkam_Alfariz_July2026.pdf" class="btn btn-primary" download data-astro-prefetch="false">
           Download CV
         </a>
         <span class="cv-size">79 KB</span>
@@ -214,8 +214,8 @@ import { experience, education, certifications, skills, projects, currentlyBuild
             I typically respond within 48 hours.
           </div>
           <div class="contact-links">
-            <a href="mailto:alkamfrz@gmail.com" class="contact-link">
-              <span class="contact-link-icon">✉</span><span class="contact-link-wrap"> alkamfrz@gmail.com<button class="copy-email-btn" id="copy-email-btn" aria-label="Copy email" title="Copy email">⎘</button></span>
+            <a href="#" class="contact-link" id="email-link">
+              <span class="contact-link-icon">✉</span><span class="contact-link-wrap"> alkamfrz<span aria-hidden="true"> [at] </span><span class="sr-only"> at </span>gmail.com<button class="copy-email-btn" id="copy-email-btn" aria-label="Copy email" title="Copy email">⎘</button></span>
             </a>
             <a href="https://linkedin.com/in/alkamfrz" target="_blank" rel="noopener noreferrer" class="contact-link">
               <span class="contact-link-icon">in</span> linkedin.com/in/alkamfrz
@@ -309,13 +309,18 @@ import { experience, education, certifications, skills, projects, currentlyBuild
       }
 
       // ── Copy email ──
+      var email = 'alkamfrz' + '@' + 'gmail.com';
+      var emailLink = document.getElementById('email-link');
+      if (emailLink) {
+        emailLink.href = 'mailto:' + email;
+      }
       var copyBtn = document.getElementById('copy-email-btn');
       if (copyBtn) {
         copyBtn.addEventListener('click', function(e) {
           e.preventDefault();
           e.stopPropagation();
           if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText('alkamfrz@gmail.com').then(function() {
+            navigator.clipboard.writeText(email).then(function() {
               copyBtn.textContent = '✓';
               copyBtn.style.color = 'var(--green)';
               copyBtn.style.borderColor = 'var(--green)';

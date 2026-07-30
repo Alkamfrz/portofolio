@@ -7,9 +7,7 @@ export default defineConfig({
   site: 'https://alkamfrz.id',
   output: 'static',
   integrations: [sitemap()],
-  prefetch: {
-    defaultStrategy: 'viewport',
-  },
+  prefetch: false,
   build: {
     inlineStylesheets: 'always',
   },
