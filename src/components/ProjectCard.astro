@@ -1,0 +1,61 @@
+---
+interface Props {
+  project: {
+    id: string;
+    title: string;
+    description: string;
+    scope: string;
+    status: string;
+    tech: string[];
+    github?: string;
+    live?: string;
+    journal?: string;
+    arch?: string;
+    overview?: {
+      hosts: string;
+      stacks: string;
+    };
+  };
+  index: number;
+}
+
+const { project: p, index } = Astro.props;
+---
+
+<div
+  class={`project-card ${p.scope === 'major' ? 'project-card-major' : ''}`}
+  data-scope={p.scope}
+>
+  <div class="project-card-header">
+    <div>
+      <div class="project-card-num">0{index + 1}</div>
+      <h3 class="project-card-title">{p.title}</h3>
+    </div>
+    <div class="project-card-badges">
+      {p.scope === 'major' && <span class="scope-badge">Flagship</span>}
+      <span class={`status-dot ${p.status}`}>{p.status}</span>
+    </div>
+  </div>
+  <p class="project-card-desc">{p.description}</p>
+  <div class="project-card-tech">
+    {p.tech.map(t => <span class="tag">{t}</span>)}
+  </div>
+  {p.overview && (
+    <div class="project-overview">
+      <div class="project-overview-item">
+        <span class="project-overview-label">Hosts</span>
+        <span>{p.overview.hosts}</span>
+      </div>
+      <div class="project-overview-item">
+        <span class="project-overview-label">Stacks</span>
+        <span>{p.overview.stacks}</span>
+      </div>
+    </div>
+  )}
+  <div class="project-card-links">
+    {p.arch && <a href={p.arch} class="btn btn-outline btn-sm">Diagram ↗</a>}
+    {p.github && <a href={p.github} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">GitHub — {p.id}</a>}
+    {p.live && <a href={p.live} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Live site — {p.id}</a>}
+    {p.journal && <a href={p.journal} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Paper — {p.id}</a>}
+  </div>
+</div>

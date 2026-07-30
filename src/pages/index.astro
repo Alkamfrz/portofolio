@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 import { experience, education, certifications, skills, projects, currentlyBuilding } from '../data/index.js';
 ---
 
@@ -9,7 +10,7 @@ import { experience, education, certifications, skills, projects, currentlyBuild
   <section id="about" aria-labelledby="hero-title">
     <div class="hero">
       <p class="hero-eyebrow">Activation Specialist · Mekari Qontak · Tangerang, Indonesia</p>
-      <h1 class="hero-title" id="hero-title">Building systems<br>that last.</h1>
+      <h1 class="hero-title" id="hero-title">Systems that stay up.<br>Clients that succeed.</h1>
       <div class="hero-line" aria-hidden="true"></div>
       <p class="hero-lede">
         Infrastructure Engineer who builds homelabs, automates pipelines, and deploys
@@ -138,40 +139,7 @@ import { experience, education, certifications, skills, projects, currentlyBuild
       </div>
       <div id="project-list">
       {projects.map((p, i) => (
-        <div class={`project-card ${p.scope === 'major' ? 'project-card-major' : ''}`} data-scope={p.scope}>
-          <div class="project-card-header">
-            <div>
-              <div class="project-card-num">0{i + 1}</div>
-              <h3 class="project-card-title">{p.title}</h3>
-            </div>
-            <div class="project-card-badges">
-              {p.scope === 'major' && <span class="scope-badge">Flagship</span>}
-              <span class={`status-dot ${p.status}`}>{p.status}</span>
-            </div>
-          </div>
-          <p class="project-card-desc">{p.description}</p>
-          <div class="project-card-tech">
-            {p.tech.map(t => <span class="tag">{t}</span>)}
-          </div>
-          {p.overview && (
-            <div class="project-overview">
-              <div class="project-overview-item">
-                <span class="project-overview-label">Hosts</span>
-                <span>{p.overview.hosts}</span>
-              </div>
-              <div class="project-overview-item">
-                <span class="project-overview-label">Stacks</span>
-                <span>{p.overview.stacks}</span>
-              </div>
-            </div>
-          )}
-          <div class="project-card-links">
-            {p.arch && <a href={p.arch} class="btn btn-outline btn-sm">Diagram ↗</a>}
-            {p.github && <a href={p.github} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">GitHub — {p.id}</a>}
-            {p.live && <a href={p.live} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Live site — {p.id}</a>}
-            {p.journal && <a href={p.journal} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Paper — {p.id}</a>}
-          </div>
-        </div>
+        <ProjectCard project={p} index={i} />
       ))}
       </div>
     </div>
