@@ -335,6 +335,7 @@ code {
   padding: 0.3rem 0.75rem;
   font-size: 0.8125rem;
 }
+.cv-size { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
 
 /* ─── About ─── */
 .about-grid {
