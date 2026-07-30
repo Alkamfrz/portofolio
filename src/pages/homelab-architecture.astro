@@ -125,10 +125,10 @@ import Layout from '../layouts/Layout.astro';
       <text x="550" y="155" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Tunnel</text>
 
       <!-- Route 2: LXC 102 → LXC 101 (↓ vertical down 25px, 30px gap) -->
-      <line x1="462" y1="235" x2="462" y2="260" stroke="#7aaa8a" stroke-width="2" marker-end="url(#arr-g)"/>
+      <line x1="462" y1="235" x2="462" y2="265" stroke="#7aaa8a" stroke-width="2" marker-end="url(#arr-g)"/>
 
       <!-- Route 3: Proxy — HAProxy → Docker stacks (→ right → into stacks box) -->
-      <polyline points="630,285 685,285 685,148 713,148" fill="none" stroke="#7aaa8a" stroke-width="2" marker-end="url(#arr-g)"/>
+      <polyline points="630,285 685,285 685,148 719,148" fill="none" stroke="#7aaa8a" stroke-width="2" marker-end="url(#arr-g)"/>
       <text x="693" y="210" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">Proxy</text>
 
       <!-- Route 4: Lua bouncer — CrowdSec → HAProxy (← left into haproxy) -->
@@ -140,7 +140,7 @@ import Layout from '../layouts/Layout.astro';
       <text x="275" y="404" fill="#c46a5a" font-size="10" font-family="'DM Mono',monospace" text-anchor="middle">NFS</text>
 
       <!-- Route 6: Docker compose — VM 200 → Docker stacks (→ right → into stacks box) -->
-      <polyline points="630,506 685,506 685,502 713,502" fill="none" stroke="#7aaa8a" stroke-width="2.5" marker-end="url(#arr-g)"/>
+      <polyline points="630,506 685,506 685,502 719,502" fill="none" stroke="#7aaa8a" stroke-width="2.5" marker-end="url(#arr-g)"/>
       <text x="693" y="494" fill="#8a8078" font-size="10" font-family="'DM Mono',monospace">compose</text>
 
       <!-- ═══════════ COL 2: Docker stacks ═══════════ -->
