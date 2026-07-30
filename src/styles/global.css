@@ -17,7 +17,7 @@
   --text: #ece8e0;
   --text-secondary: #c0b8a8;
   --text-muted: #8a8078;
-  --text-faint: #8a8078;
+  --text-faint: #5a5048;
   --accent: #d4a05a;
   --accent-hover: #e4b06a;
   --accent-dim: rgba(212, 160, 90, 0.12);
@@ -42,7 +42,7 @@
   --text: #1e1a14;
   --text-secondary: #5a5048;
   --text-muted: #696765;
-  --text-faint: #696765;
+  --text-faint: #b0aca4;
   --accent: #7d5a25;
   --accent-hover: #83622d;
   --accent-dim: rgba(125, 90, 37, 0.12);
@@ -774,15 +774,6 @@ code {
 /* ─── Utilities ─── */
 .accent { color: var(--accent); }
 .text-muted { color: var(--text-muted); }
-.mt-4 { margin-top: 1rem; }
-.mb-6 { margin-bottom: 1.5rem; }
-.border-top { border-top: 1px solid var(--border-light); }
-.pt-6 { padding-top: 1.5rem; }
-.visually-hidden {
-  position: absolute; width: 1px; height: 1px; padding: 0;
-  margin: -1px; overflow: hidden; clip: rect(0,0,0,0);
-  white-space: nowrap; border: 0;
-}
 
 /* ─── Responsive ─── */
 
@@ -906,12 +897,16 @@ body.menu-open { overflow: hidden; }
   to { opacity: 1; transform: translateY(0); }
 }
 section[id] { animation: fade-up 0.5s ease-out both; }
-section[id]:nth-child(1) { animation-delay: 0.05s; }
-section[id]:nth-child(2) { animation-delay: 0.1s; }
-section[id]:nth-child(3) { animation-delay: 0.15s; }
-section[id]:nth-child(4) { animation-delay: 0.2s; }
-section[id]:nth-child(5) { animation-delay: 0.25s; }
-section[id]:nth-child(6) { animation-delay: 0.3s; }
+section[id]:nth-of-type(1) { animation-delay: 0.05s; }
+section[id]:nth-of-type(2) { animation-delay: 0.1s; }
+section[id]:nth-of-type(3) { animation-delay: 0.15s; }
+section[id]:nth-of-type(4) { animation-delay: 0.2s; }
+section[id]:nth-of-type(5) { animation-delay: 0.25s; }
+section[id]:nth-of-type(6) { animation-delay: 0.3s; }
+section[id]:nth-of-type(7) { animation-delay: 0.35s; }
+section[id]:nth-of-type(8) { animation-delay: 0.4s; }
+section[id]:nth-of-type(9) { animation-delay: 0.45s; }
+section[id]:nth-of-type(10) { animation-delay: 0.5s; }
 
 @media (prefers-reduced-motion: reduce) {
   section[id] { animation: none; }
@@ -1044,4 +1039,3 @@ h2.section-label {
   gap: 0.35rem;
 }
 .contact-response-time svg { flex-shrink: 0; }
-.contact-link[aria-label] { position: relative; }

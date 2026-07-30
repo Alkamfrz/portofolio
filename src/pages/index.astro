@@ -130,10 +130,10 @@ import { experience, education, certifications, skills, projects, currentlyBuild
           <span class="section-label-num">Projects</span>
         </h2>
       </div>
-      <div class="filter-bar" role="tablist" aria-label="Filter projects">
-        <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All</button>
-        <button class="filter-btn" data-filter="major" role="tab" aria-selected="false">Flagship</button>
-        <button class="filter-btn" data-filter="simple" role="tab" aria-selected="false">Simple</button>
+      <div class="filter-bar" role="group" aria-label="Filter projects">
+        <button class="filter-btn active" data-filter="all" aria-pressed="true">All</button>
+        <button class="filter-btn" data-filter="major" aria-pressed="false">Flagship</button>
+        <button class="filter-btn" data-filter="simple" aria-pressed="false">Simple</button>
       </div>
       <div id="project-list">
       {projects.map((p, i) => (
@@ -257,7 +257,7 @@ import { experience, education, certifications, skills, projects, currentlyBuild
           </div>
         </div>
 
-        <form id="contact-form" novalidate aria-label="Contact form">
+        <form id="contact-form" action="https://formspree.io/f/meoegore" method="POST" novalidate aria-label="Contact form">
           <!-- honeypot: invisible to humans -->
           <div style="position:absolute;left:-9999px" aria-hidden="true">
             <label for="website">Website</label>
@@ -289,108 +289,115 @@ import { experience, education, certifications, skills, projects, currentlyBuild
 
 <script>
   (function() {
+    // ── Contact form ──
     var form = document.getElementById('contact-form');
-    if (!form) return;
-    var fields = {
-      name: form.querySelector('[name="name"]'),
-      email: form.querySelector('[name="email"]'),
-      message: form.querySelector('[name="message"]'),
-    };
-    var errors = {
-      name: document.getElementById('name-error'),
-      email: document.getElementById('email-error'),
-      message: document.getElementById('message-error'),
-    };
-    var statusEl = document.getElementById('contact-status');
-    var submitBtn = form.querySelector('[type="submit"]');
+    if (form) {
+      var fields = {
+        name: form.querySelector('[name="name"]'),
+        email: form.querySelector('[name="email"]'),
+        message: form.querySelector('[name="message"]'),
+      };
+      var errors = {
+        name: document.getElementById('name-error'),
+        email: document.getElementById('email-error'),
+        message: document.getElementById('message-error'),
+      };
+      var statusEl = document.getElementById('contact-status');
+      var submitBtn = form.querySelector('[type="submit"]');
+      var honeypot = form.querySelector('[name="website"]');
 
-    function clearErrors() {
-      Object.values(errors).forEach(function(e) { if (e) e.textContent = ''; });
-      if (statusEl) { statusEl.style.display = 'none'; statusEl.textContent = ''; statusEl.className = 'form-status'; }
-    }
-
-    function showStatus(msg, type) {
-      if (!statusEl) return;
-      statusEl.textContent = msg;
-      statusEl.className = 'form-status ' + type;
-      statusEl.style.display = 'block';
-    }
-
-    function validate() {
-      clearErrors();
-      var valid = true;
-      if (!fields.name.value.trim()) {
-        if (errors.name) errors.name.textContent = 'Name is required.';
-        valid = false;
+      function clearErrors() {
+        Object.values(errors).forEach(function(e) { if (e) e.textContent = ''; });
+        if (statusEl) { statusEl.style.display = 'none'; statusEl.textContent = ''; statusEl.className = 'form-status'; }
       }
-      if (!fields.email.value.trim()) {
-        if (errors.email) errors.email.textContent = 'Email is required.';
-        valid = false;
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.value.trim())) {
-        if (errors.email) errors.email.textContent = 'Enter a valid email address.';
-        valid = false;
-      }
-      if (!fields.message.value.trim()) {
-        if (errors.message) errors.message.textContent = 'Message is required.';
-        valid = false;
-      }
-      return valid;
-    }
 
-    // ── Copy email ──
-    var copyBtn = document.getElementById('copy-email-btn');
-    if (copyBtn) {
-      copyBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText('alkamfrz@gmail.com').then(function() {
-            copyBtn.textContent = '✓';
-            copyBtn.style.color = 'var(--green)';
-            copyBtn.style.borderColor = 'var(--green)';
-            setTimeout(function() {
-              copyBtn.textContent = '⎘';
-              copyBtn.style.color = '';
-              copyBtn.style.borderColor = '';
-            }, 2000);
-          });
+      function showStatus(msg, type) {
+        if (!statusEl) return;
+        statusEl.textContent = msg;
+        statusEl.className = 'form-status ' + type;
+        statusEl.style.display = 'block';
+      }
+
+      function validate() {
+        clearErrors();
+        var valid = true;
+        if (!fields.name.value.trim()) {
+          if (errors.name) errors.name.textContent = 'Name is required.';
+          valid = false;
         }
+        if (!fields.email.value.trim()) {
+          if (errors.email) errors.email.textContent = 'Email is required.';
+          valid = false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.value.trim())) {
+          if (errors.email) errors.email.textContent = 'Enter a valid email address.';
+          valid = false;
+        }
+        if (!fields.message.value.trim()) {
+          if (errors.message) errors.message.textContent = 'Message is required.';
+          valid = false;
+        }
+        return valid;
+      }
+
+      // ── Copy email ──
+      var copyBtn = document.getElementById('copy-email-btn');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText('alkamfrz@gmail.com').then(function() {
+              copyBtn.textContent = '✓';
+              copyBtn.style.color = 'var(--green)';
+              copyBtn.style.borderColor = 'var(--green)';
+              setTimeout(function() {
+                copyBtn.textContent = '⎘';
+                copyBtn.style.color = '';
+                copyBtn.style.borderColor = '';
+              }, 2000);
+            });
+          }
+        });
+      }
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        if (!validate()) return;
+
+        // Reject if honeypot is filled (bot)
+        if (honeypot && honeypot.value.trim()) {
+          showStatus("Message sent. I'll be in touch soon.", 'success');
+          form.reset();
+          return;
+        }
+
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending...'; }
+
+        try {
+          var resp = await fetch(form.action, {
+            method: form.method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: fields.name.value.trim(),
+              email: fields.email.value.trim(),
+              message: fields.message.value.trim(),
+            }),
+          });
+          if (resp.ok) {
+            showStatus("Message sent. I'll be in touch soon.", 'success');
+            form.reset();
+          } else if (resp.status === 429) {
+            showStatus('Too many requests. Please wait.', 'error');
+          } else {
+            showStatus('Something went wrong. Try again.', 'error');
+          }
+        } catch(err) {
+          showStatus('Network error. Try emailing directly.', 'error');
+        }
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send message'; }
       });
     }
 
-    form.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      if (!validate()) return;
-      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending...'; }
-
-      try {
-        var resp = await fetch('https://formspree.io/f/meoegore', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: fields.name.value.trim(),
-            email: fields.email.value.trim(),
-            message: fields.message.value.trim(),
-          }),
-        });
-        if (resp.ok) {
-          showStatus("Message sent. I'll be in touch soon.", 'success');
-          form.reset();
-        } else if (resp.status === 429) {
-          showStatus('Too many requests. Please wait.', 'error');
-        } else {
-          showStatus('Something went wrong. Try again.', 'error');
-        }
-      } catch(err) {
-        showStatus('Network error. Try emailing directly.', 'error');
-      }
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send message'; }
-    });
-  })();
-</script>
-
-<script>
-  (function() {
     // ── Project filters ──
     var filterBar = document.querySelector('.filter-bar');
     var projectList = document.getElementById('project-list');
@@ -399,16 +406,12 @@ import { experience, education, certifications, skills, projects, currentlyBuild
       var btns = filterBar.querySelectorAll('.filter-btn');
       btns.forEach(function(btn) {
         btn.addEventListener('click', function() {
-          btns.forEach(function(b) { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
-          btn.classList.add('active'); btn.setAttribute('aria-selected', 'true');
+          btns.forEach(function(b) { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
+          btn.classList.add('active'); btn.setAttribute('aria-pressed', 'true');
           var filter = btn.getAttribute('data-filter');
           cards.forEach(function(card) {
             var scope = card.getAttribute('data-scope');
-            if (filter === 'all' || scope === filter) {
-              card.style.display = '';
-            } else {
-              card.style.display = 'none';
-            }
+            card.style.display = (filter === 'all' || scope === filter) ? '' : 'none';
           });
         });
       });

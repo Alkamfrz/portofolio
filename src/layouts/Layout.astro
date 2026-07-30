@@ -29,15 +29,14 @@ const navLinks = [
     <meta property="og:image" content="https://alkamfrz.id/og-image.svg" />
     <meta name="theme-color" content="#0f0e0c" />
     <meta name="keywords" content="Muhammad Alkam Alfariz, infrastructure engineer, homelab, Proxmox VE, DevOps, automation, computer vision, Jakarta" />
+    <link rel="canonical" href="https://alkamfrz.id{Astro.url.pathname}" />
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
     <link rel="dns-prefetch" href="https://formspree.io" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://formspree.io" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=DM+Mono:wght@400;500&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=DM+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'" />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=DM+Mono:wght@400;500&display=swap" /></noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=DM+Mono:wght@400;500&display=swap" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <title>{title} — Alkamfrz</title>
@@ -132,116 +131,8 @@ const navLinks = [
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
     </button>
 
-    <script is:inline>
-      (function() {
-        // ── Theme toggle ──
-        var currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-
-        function applyTheme(theme) {
-          document.documentElement.setAttribute('data-theme', theme);
-          localStorage.setItem('theme', theme);
-          var sun = document.getElementById('icon-sun');
-          var moon = document.getElementById('icon-moon');
-          if (sun && moon) {
-            sun.style.display = theme === 'dark' ? 'block' : 'none';
-            moon.style.display = theme === 'dark' ? 'none' : 'block';
-          }
-        }
-
-        applyTheme(currentTheme);
-
-        var themeBtn = document.getElementById('theme-btn');
-        if (themeBtn) {
-          themeBtn.addEventListener('click', function() {
-            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            applyTheme(currentTheme);
-          });
-        }
-
-        // ── Active nav on scroll ──
-        var sections = document.querySelectorAll('section[id]');
-        var navLinks = document.querySelectorAll('.navbar-link');
-        if (sections.length > 0) {
-          function updateNav() {
-            var scrollY = window.scrollY + 100;
-            var found = false;
-            sections.forEach(function(sec) {
-              if (found) return;
-              var top = sec.offsetTop;
-              var height = sec.offsetHeight;
-              if (scrollY >= top && scrollY < top + height) {
-                navLinks.forEach(function(n) {
-                  n.classList.remove('active');
-                  if (n.getAttribute('href') === '#' + sec.id) {
-                    n.classList.add('active');
-                    found = true;
-                  }
-                });
-              }
-            });
-          }
-          window.addEventListener('scroll', updateNav, { passive: true });
-          // Set first nav link active on page load (before any scroll)
-          if (navLinks.length > 0) {
-            navLinks[0].classList.add('active');
-          }
-          updateNav();
-        }
-
-        // ── Mobile menu ──
-        var menuBtn = document.getElementById('menu-btn');
-        var overlay = document.getElementById('mobile-overlay');
-        if (menuBtn && overlay) {
-        // ── Toggle tabindex on overlay focusables ──
-        function setMobileTabindex(enabled) {
-          overlay.querySelectorAll('.mobile-nav-link').forEach(function(link) {
-            link.setAttribute('tabindex', enabled ? '0' : '-1');
-          });
-        }
-
-        // Start hidden — force tabindex=-1
-        setMobileTabindex(false);
-
-        menuBtn.addEventListener('click', function() {
-          var expanded = menuBtn.getAttribute('aria-expanded') === 'true' ? false : true;
-          menuBtn.setAttribute('aria-expanded', expanded);
-          overlay.setAttribute('aria-hidden', !expanded);
-          document.body.classList.toggle('menu-open');
-          setMobileTabindex(expanded);
-        });
-
-          overlay.querySelectorAll('.mobile-nav-link').forEach(function(link) {
-            link.addEventListener('click', function() {
-              menuBtn.setAttribute('aria-expanded', 'false');
-              overlay.setAttribute('aria-hidden', 'true');
-              document.body.classList.remove('menu-open');
-            });
-          });
-
-          overlay.addEventListener('click', function(e) {
-            if (e.target === overlay) {
-              menuBtn.setAttribute('aria-expanded', 'false');
-              overlay.setAttribute('aria-hidden', 'true');
-              document.body.classList.remove('menu-open');
-            }
-          });
-        }
-
-        // ── Back to top ──
-        var topBtn = document.getElementById('back-to-top');
-        if (topBtn) {
-          window.addEventListener('scroll', function() {
-            topBtn.classList.toggle('visible', window.scrollY > 400);
-          }, { passive: true });
-
-          topBtn.addEventListener('click', function() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          });
-        }
-
-        // ── Footer year ──
-        document.getElementById('footer-year').textContent = new Date().getFullYear();
-      })();
+    <script>
+      import '../scripts/layout.js';
     </script>
   </body>
 </html>
