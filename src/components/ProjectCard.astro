@@ -53,7 +53,7 @@ const { project: p, index } = Astro.props;
     </div>
   )}
   <div class="project-card-links">
-    {p.arch && <a href={p.arch} class="btn btn-outline btn-sm" data-astro-reload>Diagram ↗</a>}
+    {p.arch && <a href={p.arch} class="btn btn-outline btn-sm">Diagram ↗</a>}
     {p.github && <a href={p.github} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">GitHub — {p.id}</a>}
     {p.live && <a href={p.live} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Live site — {p.id}</a>}
     {p.journal && <a href={p.journal} class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Paper — {p.id}</a>}
