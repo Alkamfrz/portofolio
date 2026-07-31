@@ -82,7 +82,7 @@ const navLinks = [
     <!-- ── Top Navbar ── -->
     <header class="navbar" role="banner">
       <div class="navbar-inner">
-        <a href="/" class="navbar-brand" data-astro-reload>Alkam<span class="accent">.</span></a>
+        <a href="/" class="navbar-brand">Alkam<span class="accent">.</span></a>
 
         <button id="menu-btn" class="navbar-menu-btn" aria-label="Toggle menu" aria-expanded="false">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -90,7 +90,7 @@ const navLinks = [
 
         <nav class="navbar-links" aria-label="Main navigation">
           {navLinks.map(link => (
-            <a href={link.href} class="navbar-link" data-astro-reload>{link.label}</a>
+            <a href={link.href} class="navbar-link">{link.label}</a>
           ))}
         </nav>
 
@@ -107,7 +107,7 @@ const navLinks = [
     <div id="mobile-overlay" class="mobile-overlay" aria-hidden="true">
       <nav class="mobile-nav" aria-label="Mobile navigation">
         {navLinks.map(link => (
-          <a href={link.href} class="mobile-nav-link" tabindex="-1" data-astro-reload>{link.label}</a>
+          <a href={link.href} class="mobile-nav-link" tabindex="-1">{link.label}</a>
         ))}
       </nav>
     </div>
