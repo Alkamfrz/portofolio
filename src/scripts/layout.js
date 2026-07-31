@@ -1,5 +1,39 @@
+import { navigate } from 'astro:transitions/client';
+
 (function () {
   'use strict';
+
+  var smoothNavBound = false;
+
+  function bindSmoothNavigation() {
+    if (smoothNavBound) return;
+    smoothNavBound = true;
+
+    document.addEventListener(
+      'click',
+      async function (e) {
+        var a = e.target && e.target.closest ? e.target.closest('a') : null;
+        if (!a) return;
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        if (a.target === '_blank' || a.hasAttribute('download') || a.hasAttribute('data-astro-reload')) return;
+
+        var rawHref = a.getAttribute('href');
+        if (!rawHref || rawHref.startsWith('mailto:') || rawHref.startsWith('tel:')) return;
+
+        var url = new URL(a.href, window.location.href);
+        if (url.origin !== window.location.origin) return;
+        if (url.pathname === window.location.pathname && url.hash) return;
+
+        e.preventDefault();
+        try {
+          await navigate(url.pathname + url.search + url.hash);
+        } catch (_err) {
+          window.location.assign(url.href);
+        }
+      },
+      { capture: true },
+    );
+  }
 
   function init() {
     // ── Theme toggle ──
@@ -112,6 +146,8 @@
   }
 
   // Run on first load and after every View Transitions navigation
+  bindSmoothNavigation();
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
