@@ -1,7 +1,7 @@
 export const currentlyBuilding = {
   title: 'Homelab Expansion',
   description: 'Adding VLAN-separated GPU node for local LLM inference and distributed storage with Ceph.',
-  url: 'https://github.com/Alkamfrz/home-server-infrastructure',
+  url: 'https://home.alkamfrz.id',
 };
 
 export const experience = [
@@ -242,7 +242,6 @@ export const projects = [
     title: 'Homelab Infrastructure',
     description: 'Production-grade homelab on Proxmox VE — 7 Docker Compose stacks, VLAN-segmented RouterOS networking, Cloudflare Tunnel ingress, CrowdSec IPS, and Tailscale VPN. Infrastructure-as-code with SOPS+Age encryption, full CI/CD pipeline (169 tests), and one-command deployment.',
     tech: ['Docker', 'Proxmox VE', 'Cloudflare Tunnel', 'CrowdSec', 'HAProxy', 'Tailscale', 'Bash', 'PowerShell'],
-    github: 'https://github.com/Alkamfrz/home-server-infrastructure',
     live: 'https://home.alkamfrz.id',
     arch: '/homelab-architecture/',
     overview: {

@@ -3,18 +3,16 @@
   "type": "module",
   "version": "2.0.0",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.12.0"
   },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "check:links": "node scripts/check-links.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
     "astro": "^7.1.6"
-  },
-  "devDependencies": {
-    "typescript": "^7.0.2"
   }
 }
