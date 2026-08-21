@@ -1,8 +1,25 @@
+import fs from 'fs';
+import path from 'path';
+
 export const currentlyBuilding = {
   title: 'Homelab Expansion',
   description: 'Adding VLAN-separated GPU node for local LLM inference and distributed storage with Ceph.',
   url: 'https://home.alkamfrz.id',
 };
+
+export const cv = (() => {
+  var filename = 'CV_Muhammad_Alkam_Alfariz_July2026.pdf';
+  var url = '/' + filename;
+  var size = '';
+  try {
+    var pubDir = path.resolve(process.cwd(), 'public', filename);
+    var bytes = fs.statSync(pubDir).size;
+    size = (bytes / 1024 < 100 ? (bytes / 1024).toFixed(0) + ' KB' : (bytes / 1024 / 1024).toFixed(1) + ' MB');
+  } catch (e) {
+    // fallback if file not found at build time
+  }
+  return { url, size, filename };
+})();
 
 export const experience = [
   {
@@ -240,7 +257,7 @@ export const projects = [
   {
     id: 'homelab',
     title: 'Homelab Infrastructure',
-    description: 'Production-grade homelab on Proxmox VE — 7 Docker Compose stacks, VLAN-segmented RouterOS networking, Cloudflare Tunnel ingress, CrowdSec IPS, and Tailscale VPN. Infrastructure-as-code with SOPS+Age encryption, full CI/CD pipeline (169 tests), and one-command deployment.',
+    description: 'Production-grade homelab on Proxmox VE — 7 Docker Compose stacks with Cloudflare Tunnel ingress, CrowdSec IPS, and Tailscale VPN. Infrastructure-as-code with SOPS+Age encryption and one-command deploy (169-test CI suite).',
     tech: ['Docker', 'Proxmox VE', 'Cloudflare Tunnel', 'CrowdSec', 'HAProxy', 'Tailscale', 'Bash', 'PowerShell'],
     live: 'https://home.alkamfrz.id',
     arch: '/homelab-architecture/',

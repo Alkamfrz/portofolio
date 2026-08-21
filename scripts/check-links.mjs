@@ -25,10 +25,12 @@ walk(dist);
 const UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36';
 
-// Sites behind Cloudflare bot protection always 403 automated requests.
-// The links are valid — a human browser passes the challenge.
+// Cloudflare WAF returns 403 to automated requests.
 const WAF_PROTECTED = [
   'ijicom.respati.ac.id',
+  'dicoding.com',
+  'univ.mekari.com',
+  'linkedin.com',
 ];
 
 // Hosts that only resolve on the home LAN (no public DNS). Linked on the

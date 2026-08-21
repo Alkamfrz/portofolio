@@ -1,0 +1,112 @@
+/* homelab-architecture.astro page-specific styles */
+
+.main-content {
+  max-width: 1350px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+.arch-header {
+  margin-bottom: 1.5rem;
+}
+.arch-header-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.pulse-dot {
+  width: 14px;
+  height: 14px;
+  background: #d4a05a;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+  flex-shrink: 0;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.arch-header h1 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: 1.65rem;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  color: var(--text-primary, #ece8e0);
+}
+.arch-subtitle {
+  color: var(--text-muted, #8a8078);
+  font-size: 1rem;
+  margin-left: 1.75rem;
+}
+.diagram {
+  background: #17150f;
+  border: 1px solid #2d2920;
+  border-radius: 1rem;
+  padding: 2rem;
+  overflow-x: auto;
+}
+.diagram svg {
+  width: 100%;
+  min-width: 1250px;
+  display: block;
+}
+.arch-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.arch-card {
+  background: #17150f;
+  border-radius: 0.75rem;
+  border: 1px solid #2d2920;
+  padding: 1.25rem;
+}
+.arch-card-hdr {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-gold { background: #d4a05a; }
+.dot-green { background: #7aaa8a; }
+.dot-rose { background: #c46a5a; }
+.arch-card h3 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-primary, #ece8e0);
+}
+.arch-card ul {
+  list-style: none;
+  color: var(--text-secondary, #c0b8a8);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+.arch-card li {
+  margin-bottom: 0.375rem;
+  padding-left: 0.75rem;
+  position: relative;
+}
+.arch-card li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--text-muted, #8a8078);
+}
+.arch-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #696765;
+  font-size: 0.85rem;
+  font-family: 'DM Mono', monospace;
+}
+@media (max-width: 768px) {
+  .arch-cards { grid-template-columns: 1fr; }
+}
